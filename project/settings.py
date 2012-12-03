@@ -1,31 +1,113 @@
-ADMINS = ()
-ADMIN_MEDIA_PREFIX = /static/admin/
-BUILDOUT_DIR = /Users/michaelwisely/code/django-competition
-COMPETITION_IMAGE_LOC = competition_images
-DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'TEST_MIRROR': None, 'NAME': '/Users/michaelwisely/code/django-competition/var/db/competition.db', 'TEST_CHARSET': None, 'TIME_ZONE': 'America/Chicago', 'TEST_COLLATION': None, 'PORT': '', 'HOST': '', 'USER': '', 'TEST_NAME': None, 'PASSWORD': '', 'OPTIONS': {}}}
-DEBUG = True
-INSTALLED_APPS = ('django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.sites', 'django.contrib.messages', 'django.contrib.staticfiles', 'django_extensions', 'django_nose', 'competition')
-LANGUAGE_CODE = en-us
-LOGGING = {'loggers': {'django.request': {'level': 'ERROR', 'propagate': True, 'handlers': ['mail_admins']}}, 'version': 1, 'filters': {'require_debug_false': {'()': 'django.utils.log.RequireDebugFalse'}}, 'disable_existing_loggers': False, 'handlers': {'mail_admins': {'class': 'django.utils.log.AdminEmailHandler', 'filters': ['require_debug_false'], 'level': 'ERROR'}}}
-MANAGERS = ()
-MEDIA_ROOT = /Users/michaelwisely/code/django-competition/var/uploads
-MEDIA_URL = /media/
-MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware', 'django.contrib.messages.middleware.MessageMiddleware')
+import os
+
+SETTINGS_DIR = os.path.dirname(__file__)
+BUILDOUT_DIR = os.path.dirname(SETTINGS_DIR)
+VAR_DIR = os.path.join(BUILDOUT_DIR, "var")
+
+# If a secret_settings file isn't defined, open a new one and save a
+# SECRET_KEY in it. Then import it.
+try:
+    from secret_settings import *
+except ImportError:
+    print "Couldn't find secret_settings file. Creating a new one."
+    secret_settings_loc = os.path.join(SETTINGS_DIR, "secret_settings.py")
+    with open(secret_settings_loc, 'w') as secret_settings:
+        secret_key = ''.join([chr(ord(x) % 90 + 33) for x in os.urandom(40)])
+        secret_settings.write("SECRET_KEY = '''%s'''\n" % secret_key)
+    from secret_settings import *
+
+# Competition Settings
+COMPETITION_IMAGE_LOC = "competition_images"
+TEAM_IMAGE_LOC = "team_images"
+
+
+# Testing settings
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 NOSE_ARGS = ['--cover-package=competition']
-ROOT_URLCONF = project.urls
-SECRET_KEY = &g71"AXbaR9-Z^IPfz-`o"0]jq]V6Pd,1Q@96=p2
-SETTINGS_DIR = /Users/michaelwisely/code/django-competition/project
+
+ADMINS = (
+    # empty
+)
+
+MANAGERS = ADMINS
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(VAR_DIR, "db", "competition.db"),
+    }
+}
+
+TIME_ZONE = 'America/Chicago'
+LANGUAGE_CODE = 'en-us'
+
 SITE_ID = 1
-STATICFILES_DIRS = ('/Users/michaelwisely/code/django-competition/project/static',)
-STATICFILES_FINDERS = ('django.contrib.staticfiles.finders.FileSystemFinder', 'django.contrib.staticfiles.finders.AppDirectoriesFinder')
-STATIC_ROOT = /Users/michaelwisely/code/django-competition/var/static
-STATIC_URL = /static/
-TEAM_IMAGE_LOC = team_images
-TEMPLATE_DEBUG = True
-TEMPLATE_DIRS = ('/Users/michaelwisely/code/django-competition/project/templates',)
-TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader', 'django.template.loaders.app_directories.Loader')
-TEST_RUNNER = django_nose.NoseTestSuiteRunner
-TIME_ZONE = America/Chicago
+
 USE_I18N = True
 USE_L10N = True
-VAR_DIR = /Users/michaelwisely/code/django-competition/var
+
+MEDIA_ROOT = os.path.join(VAR_DIR, "uploads")
+MEDIA_URL = '/media/'
+STATIC_ROOT = os.path.join(VAR_DIR, "static")
+STATIC_URL = '/static/'
+ADMIN_MEDIA_PREFIX = '/static/admin/'
+
+STATICFILES_DIRS = (
+    os.path.join(SETTINGS_DIR, "static"),
+)
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+)
+
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.middleware.common.CommonMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+)
+
+ROOT_URLCONF = 'project.urls'
+
+TEMPLATE_DIRS = (
+    os.path.join(SETTINGS_DIR, "templates"),
+)
+
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+
+    'django_extensions',
+    'django_nose',
+    'competition',
+)
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler'
+        }
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+    }
+}
