@@ -7,7 +7,7 @@
     max_num_team_members: 3
     min_num_team_members: 1
     name: 'MegaMinerAI 9: Space'
-    picture: ''
+    avatar: null
     questions: [3, 4]
     start_time: 2012-11-03 12:00:00
   model: competition.competition
@@ -21,7 +21,7 @@
     max_num_team_members: 3
     min_num_team_members: 1
     name: 'MegaMinerAI 10: Galapagos'
-    picture: ''
+    avatar: null
     questions: [1, 2, 3, 4]
     start_time: 2012-11-10 12:00:00
   model: competition.competition

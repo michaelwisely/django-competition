@@ -8,6 +8,7 @@ from django.core.validators import validate_slug
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
+from competition.models.avatar_model import Avatar
 from competition.validators import validate_name, positive, greater_than_zero
 
 
@@ -24,8 +25,7 @@ class Competition(models.Model):
                             primary_key=True, blank=True, editable=False,
                             validators=[validate_slug])
     description = models.TextField(help_text="Describe the competition")
-    picture = models.ImageField(upload_to=settings.COMPETITION_IMAGE_LOC,
-                                null=True, blank=True)
+    avatar = models.OneToOneField(Avatar, blank=True, null=True)
 
     # These are the scheduled start and end times for a competition
     start_time = models.DateTimeField()

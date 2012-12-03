@@ -5,7 +5,7 @@
     members: [2, 4]
     name: Team Awesome
     paid: false
-    picture: ''
+    avatar: null
     slug: team-awesome
     time_paid: null
   model: competition.team
@@ -17,7 +17,7 @@
     members: [3]
     name: Test Team
     paid: false
-    picture: ''
+    avatar: null
     slug: test-team
     time_paid: null
   model: competition.team
@@ -29,7 +29,7 @@
     members: [1]
     name: Other Team
     paid: false
-    picture: ''
+    avatar: null
     slug: other-team
     time_paid: null
   model: competition.team
@@ -41,7 +41,7 @@
     members: [2]
     name: Team Awesome
     paid: false
-    picture: ''
+    avatar: null
     slug: team-awesome
     time_paid: null
   model: competition.team
@@ -53,7 +53,7 @@
     members: [4]
     name: Galapagos Team
     paid: false
-    picture: ''
+    avatar: null
     slug: galapagos-team
     time_paid: null
   model: competition.team

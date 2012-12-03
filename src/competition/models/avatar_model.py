@@ -30,7 +30,7 @@ class Avatar(models.Model):
     """Represents an image
     Written based on this snippet: http://djangosnippets.org/snippets/2094/
     """
-    class Mega:
+    class Meta:
         app_label = 'competition'
 
     image = models.ImageField(upload_to=image_location)
