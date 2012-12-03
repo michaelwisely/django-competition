@@ -27,7 +27,9 @@ def thumbnail_location(instance=None, filename=None):
 
 
 class Avatar(models.Model):
-    """Represents an image"""
+    """Represents an image
+    Written based on this snippet: http://djangosnippets.org/snippets/2094/
+    """
     class Mega:
         app_label = 'competition'
 
