@@ -12,8 +12,14 @@ bin/buildout: bootstrap.py
 bootstrap.py:
 	wget $(BOOTSTRAP_URL)
 
+db:
+	rm -f var/db/*.db
+	python bin/django syncdb --noinput
+	python bin/django loaddata src/competition/fixtures/*.yaml
+
 clean:
 	find ./ -name *.pyc -delete
+	find ./ -name *.~ -delete
 
 very-clean: clean
 	@# This may vary depending where buildout sticks stuff.

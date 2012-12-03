@@ -16,10 +16,6 @@ except ImportError:
         secret_settings.write("SECRET_KEY = '''%s'''\n" % secret_key)
     from secret_settings import *
 
-# Competition Settings
-COMPETITION_IMAGE_LOC = "competition_images"
-TEAM_IMAGE_LOC = "team_images"
-
 
 # Testing settings
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
