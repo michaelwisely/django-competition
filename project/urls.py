@@ -2,14 +2,14 @@ from django.conf.urls.defaults import patterns, url, include
 from django.conf import settings
 from django.contrib import admin
 
-import klaus
+import competition
 
 admin.autodiscover()
 
 urlpatterns = patterns(
     '',
 
-    url(r'', include(klaus.urls)),
+    url(r'', include(competition.urls)),
     url(r'^admin/', include(admin.site.urls)),
     )
 
