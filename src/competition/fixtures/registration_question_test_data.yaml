@@ -1,0 +1,40 @@
+- fields: {question: 'Which types of pizza do you prefer? ', question_type: MC}
+  model: competition.registrationquestion
+  pk: 1
+- fields: {question: 'Do you have any dietary restrictions or food allergies?', question_type: SA}
+  model: competition.registrationquestion
+  pk: 2
+- fields: {question: 'By checking the following box, I agree to the terms and conditions
+      for competing in this MegaMinerAI competition.', question_type: AB}
+  model: competition.registrationquestion
+  pk: 3
+- fields: {question: 'Which size T-shirt would you prefer?', question_type: SC}
+  model: competition.registrationquestion
+  pk: 4
+- fields: {choice: Cheese, question: 1}
+  model: competition.registrationquestionchoice
+  pk: 1
+- fields: {choice: Pepperoni, question: 1}
+  model: competition.registrationquestionchoice
+  pk: 2
+- fields: {choice: Sausage, question: 1}
+  model: competition.registrationquestionchoice
+  pk: 3
+- fields: {choice: Bacon, question: 1}
+  model: competition.registrationquestionchoice
+  pk: 4
+- fields: {choice: Small, question: 4}
+  model: competition.registrationquestionchoice
+  pk: 5
+- fields: {choice: Medium, question: 4}
+  model: competition.registrationquestionchoice
+  pk: 6
+- fields: {choice: Large, question: 4}
+  model: competition.registrationquestionchoice
+  pk: 7
+- fields: {choice: XL, question: 4}
+  model: competition.registrationquestionchoice
+  pk: 8
+- fields: {choice: XXL, question: 4}
+  model: competition.registrationquestionchoice
+  pk: 9

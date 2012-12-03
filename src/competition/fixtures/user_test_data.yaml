@@ -1,0 +1,62 @@
+# All the users have the same password: 123
+
+- fields:
+    date_joined: 2012-11-23 23:23:05
+    email: none@none.com
+    first_name: Steve
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: true
+    last_login: 2012-11-23 23:29:10
+    last_name: Smith
+    password: pbkdf2_sha256$10000$vwEYz7pGAHK4$xlqz/LlDyZET06YathUMKm2rU8pT2bb/h05dZu/auu0=
+    user_permissions: []
+    username: superuser_steve
+  model: auth.user
+  pk: 1
+- fields:
+    date_joined: 2012-11-23 23:29:22
+    email: none@none.com
+    first_name: Alice
+    groups: []
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2012-11-23 23:29:22
+    last_name: User
+    password: pbkdf2_sha256$10000$cYjCm9ThlvWa$BZa16VklXF0dz1wV5IQFsIZzMpCAvX3um51oxSRaaw8=
+    user_permissions: []
+    username: alice
+  model: auth.user
+  pk: 2
+- fields:
+    date_joined: 2012-11-23 23:30:10
+    email: none@none.com
+    first_name: Stan
+    groups: []
+    is_active: true
+    is_staff: true
+    is_superuser: false
+    last_login: 2012-11-23 23:30:10
+    last_name: Smith
+    password: pbkdf2_sha256$10000$f6T3ezdSvG54$lHU7BLw17y110p6JrCCt3j6m7WOTtrHwShuQuPeMKw8=
+    user_permissions: []
+    username: staff_stan
+  model: auth.user
+  pk: 3
+- fields:
+    date_joined: 2012-11-23 23:31:20
+    email: none@none.com
+    first_name: Bob
+    groups: []
+    is_active: true
+    is_staff: false
+    is_superuser: false
+    last_login: 2012-11-23 23:31:20
+    last_name: User
+    password: pbkdf2_sha256$10000$XJ0E04NTQaDX$YAlsC0rIcNB8f+wauHjNbGrEQCSm0ZRt30oanAUvSbU=
+    user_permissions: []
+    username: bob
+  model: auth.user
+  pk: 4

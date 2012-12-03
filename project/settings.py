@@ -1,0 +1,31 @@
+ADMINS = ()
+ADMIN_MEDIA_PREFIX = /static/admin/
+BUILDOUT_DIR = /Users/michaelwisely/code/django-competition
+COMPETITION_IMAGE_LOC = competition_images
+DATABASES = {'default': {'ENGINE': 'django.db.backends.sqlite3', 'TEST_MIRROR': None, 'NAME': '/Users/michaelwisely/code/django-competition/var/db/competition.db', 'TEST_CHARSET': None, 'TIME_ZONE': 'America/Chicago', 'TEST_COLLATION': None, 'PORT': '', 'HOST': '', 'USER': '', 'TEST_NAME': None, 'PASSWORD': '', 'OPTIONS': {}}}
+DEBUG = True
+INSTALLED_APPS = ('django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes', 'django.contrib.sessions', 'django.contrib.sites', 'django.contrib.messages', 'django.contrib.staticfiles', 'django_extensions', 'django_nose', 'competition')
+LANGUAGE_CODE = en-us
+LOGGING = {'loggers': {'django.request': {'level': 'ERROR', 'propagate': True, 'handlers': ['mail_admins']}}, 'version': 1, 'filters': {'require_debug_false': {'()': 'django.utils.log.RequireDebugFalse'}}, 'disable_existing_loggers': False, 'handlers': {'mail_admins': {'class': 'django.utils.log.AdminEmailHandler', 'filters': ['require_debug_false'], 'level': 'ERROR'}}}
+MANAGERS = ()
+MEDIA_ROOT = /Users/michaelwisely/code/django-competition/var/uploads
+MEDIA_URL = /media/
+MIDDLEWARE_CLASSES = ('django.middleware.common.CommonMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware', 'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware', 'django.contrib.messages.middleware.MessageMiddleware')
+NOSE_ARGS = ['--cover-package=competition']
+ROOT_URLCONF = project.urls
+SECRET_KEY = &g71"AXbaR9-Z^IPfz-`o"0]jq]V6Pd,1Q@96=p2
+SETTINGS_DIR = /Users/michaelwisely/code/django-competition/project
+SITE_ID = 1
+STATICFILES_DIRS = ('/Users/michaelwisely/code/django-competition/project/static',)
+STATICFILES_FINDERS = ('django.contrib.staticfiles.finders.FileSystemFinder', 'django.contrib.staticfiles.finders.AppDirectoriesFinder')
+STATIC_ROOT = /Users/michaelwisely/code/django-competition/var/static
+STATIC_URL = /static/
+TEAM_IMAGE_LOC = team_images
+TEMPLATE_DEBUG = True
+TEMPLATE_DIRS = ('/Users/michaelwisely/code/django-competition/project/templates',)
+TEMPLATE_LOADERS = ('django.template.loaders.filesystem.Loader', 'django.template.loaders.app_directories.Loader')
+TEST_RUNNER = django_nose.NoseTestSuiteRunner
+TIME_ZONE = America/Chicago
+USE_I18N = True
+USE_L10N = True
+VAR_DIR = /Users/michaelwisely/code/django-competition/var
