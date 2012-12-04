@@ -1,12 +1,18 @@
+from django.views.generic import ListView, DetailView, CreateView
+
+from competition.models.team_model import Team
+from competition.views.mixins import CompetitionViewMixin
+from competition.forms.team_forms import TeamForm
+
+
 class TeamListView(CompetitionViewMixin, ListView):
     """Lists all teams"""
     context_object_name = 'teams'
     template_name = 'competition/team/team_list.html'
 
     def get_queryset(self):
-        """Only lists teams participating in self.get_competition()"""
-        # TODO implement
-        pass
+        """Only list teams participating in self.get_competition()"""
+        return Team.objects.filter(competition=self.get_competition())
 
 
 class TeamDetailView(CompetitionViewMixin, DetailView):
@@ -14,9 +20,8 @@ class TeamDetailView(CompetitionViewMixin, DetailView):
     template_name = 'competition/team/team_detail.html'
 
     def get_queryset(self):
-        """Make sure team is participating in self.get_competition()"""
-        # TODO implement
-        pass
+        """Only list teams participating in self.get_competition()"""
+        return Team.objects.filter(competition=self.get_competition())
 
 
 class TeamCreationView(CompetitionViewMixin, CreateView):

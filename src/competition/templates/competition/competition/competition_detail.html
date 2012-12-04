@@ -1,0 +1,5 @@
+{% block content %}
+  {% for competition in competitions %}
+	<a href="{{ competition.get_absolute_url %}">{{ competition.name }}</a>
+  {% endfor %}  
+{% endblock %}

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
-from competition_model import Competition
+from competition.models.competition_model import Competition
 
 
 class Registration(models.Model):
