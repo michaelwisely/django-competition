@@ -1,4 +1,7 @@
 from django.views.generic import View
+from django.shortcuts import get_object_or_404
+
+from competition.models.competition_model import Competition
 
 
 class CompetitionViewMixin(View):
@@ -8,8 +11,8 @@ class CompetitionViewMixin(View):
     def get_competition(self):
         """Returns the competition for the given view.  This requires
         that self.kwargs be set"""
-        # TODO implement
-        pass
+        comp_slug = self.kwargs['comp_slug']
+        return get_object_or_404(Competition, slug=comp_slug)
 
     def dispatch(self, request, *args, **kwargs):
         """Overrides dispatch function to load competition
@@ -17,14 +20,17 @@ class CompetitionViewMixin(View):
         kwargs['comp_slug'] doesn't exist"""
         self.kwargs = kwargs
         self.get_competition()
-        parent = super(CometitionViewMixin, self)
-        parent.dispatch(request, *args, **kwargs)
+        parent = super(CompetitionViewMixin, self)
+        return parent.dispatch(request, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         """Overrides get_context_data to add 'competition' to the
         template context before rendering"""
-        # TODO implement
-        pass
+        context = {'competition': self.get_competition()}
+        # Update the context with the parent's context
+        parent = super(CompetitionViewMixin, self)
+        context.update(parent.get_context_data(*args, **kwargs))
+        return context
 
 
 class LoggedInMixin(View):

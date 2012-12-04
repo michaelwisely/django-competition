@@ -1,0 +1,27 @@
+<h1>{{ competition.name }}</h1>
+<ul>
+  <li>slug: {{ competition.slug }}</li>
+  <li>description: {{ competition.description }}</li>
+  <li>avatar: {{ competition.avatar }}</li>
+  <li>start_time: {{ competition.start_time }}</li>
+  <li>end_time: {{ competition.end_time }}</li>
+  <li>is_open: {{ competition.is_open }}</li>
+  <li>is_running: {{ competition.is_running }}</li>
+  <li>questions:
+    <ul>
+      {% for question in competition.questions.all %}
+        <li>{{ question }}</li>
+      {% endfor %}
+    </ul>
+  </li>
+  <li>cost_per_team: {{ competition.cost_per_team }}</li>
+  <li>min_num_team_members: {{ competition.min_num_team_members }}</li>
+  <li>max_num_team_members: {{ competition.max_num_team_members }}</li>
+  <li><a href="{% url team_list competition %}">teams:</a>
+    <ul>
+      {% for team in competition.team_set.all %}
+        <li><a href="{{ team.get_absolute_url }}">{{ team }}</a></li>
+      {% endfor %}
+    </ul>
+  </li>
+</ul>

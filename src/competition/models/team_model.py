@@ -36,6 +36,9 @@ class Team(models.Model):
         kwds = {'comp_slug': self.competition.slug, 'slug': self.slug}
         return ('team_detail', (), kwds)
 
+    def __str__(self):
+        return "%s" % self.name
+
 
 @receiver(pre_save, sender=Team)
 def team_pre_save(sender, instance, **kwargs):

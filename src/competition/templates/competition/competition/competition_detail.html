@@ -1,5 +1,5 @@
-{% block content %}
-  {% for competition in competitions %}
-	<a href="{{ competition.get_absolute_url %}">{{ competition.name }}</a>
-  {% endfor %}  
+{% extends "base.html" %}
+
+{% block content %}  
+  {% include "competition/competition/competition_detail.inc.html" %}
 {% endblock %}

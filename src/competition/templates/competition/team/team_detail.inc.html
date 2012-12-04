@@ -1,0 +1,17 @@
+<h1>{{ team.competition }}</h1>
+<ul>
+  <li>members:
+    <ul>
+      {% for member in team.members.all %}
+        <li>{{ member }}</li>
+      {% endfor %}
+    </ul>
+  </li>
+  <li>name: {{ team.name }}</li>
+  <li>slug: {{ team.slug }}</li>
+  <li>avatar: {{ team.avatar }}</li>
+  <li>paid: {{ team.paid }}</li>
+  <li>time_paid: {{ team.time_paid }}</li>
+  <li>created: {{ team.created }}</li>
+  <li>eligible_to_win: {{ team.eligible_to_win }}</li>
+</ul>
