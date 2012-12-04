@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% url team_create competition.slug as form_action %}
+  <form action="{{ form_action }}" class="form-horizontal" method="post">
+    {% csrf_token %}
+
+    {% for field in form %}
+      {% if field.is_hidden %}
+        {{ field }}
+      {% else %}
+        <div class="control-group">
+          <label>{{ field.errors }}</label>
+          <label class="control-label">{{ field.label_tag }}</label>
+          <div class="controls">
+            {{ field }}
+          </div>
+        </div>
+      {% endif %}
+    {% endfor %}
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn">Submit</button>
+      </div>
+    </div>
+  </form>
+{% endblock %}

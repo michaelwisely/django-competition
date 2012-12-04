@@ -1,4 +1,5 @@
 from django.views.generic import ListView, DetailView, CreateView
+from django.db import IntegrityError
 
 from competition.models.team_model import Team
 from competition.views.mixins import CompetitionViewMixin
@@ -30,13 +31,17 @@ class TeamCreationView(CompetitionViewMixin, CreateView):
     form_class = TeamForm
 
     def form_valid(self, form):
-        # TODO implement
-        # Add requesting user to team 
-        # then save
-        # then call parent function
-        pass
-  
+        try:
+            team = form.save()
+            team.members.add(self.request.user)
+            return super(TeamCreationView, self).form_valid(form)
+        except IntegrityError:
+            # If a (competition, team_slug) pair already exists,
+            # return the invalid form
+            return super(TeamCreationView, self).form_invalid(form)
+
     def get_form_kwargs(self):
-        # TODO implement
         # Add competition as a keyword argument
-        pass
+        kwargs = super(TeamCreationView, self).get_form_kwargs()
+        kwargs['instance'] = Team(competition=self.get_competition())
+        return kwargs
