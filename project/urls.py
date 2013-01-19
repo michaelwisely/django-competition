@@ -11,6 +11,8 @@ urlpatterns = patterns(
 
     url(r'', include(competition.urls)),
     url(r'^admin/', include(admin.site.urls)),
+    url (r'^accounts/login/$', 'django.contrib.auth.views.login',
+         {'template_name': 'accounts/login.html'}),
     )
 
 if settings.DEBUG:
