@@ -8,6 +8,7 @@ class CompetitionListView(ListView):
     context_object_name = 'competitions'
     model = Competition
     template_name = 'competition/competition/competition_list.html'
+    paginate_by = 10
 
 
 class CompetitionDetailView(DetailView):
