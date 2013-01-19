@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 import re
 
-NAME_REGULAR_EXPRESSION = re.compile(r'^\w+[\w\-: ]+$')
+NAME_REGULAR_EXPRESSION = re.compile(r'^\w+[\w\-\.: ]+$')
 
 
 def greater_than_zero(value):
@@ -21,8 +21,8 @@ def validate_name(value):
     """Ensures that a string matches a regular expression and that the
     slugified version of a string is not the empty string"""
     if NAME_REGULAR_EXPRESSION.match(value) is None:
-        msg = "Bad string. Must start with a letter or number"
+        msg = "This is not an acceptable name."
         raise ValidationError(msg)
     if slugify(value) == "":
-        msg = "Bad string."
+        msg = "Name must contain some letters or numbers."
         raise ValidationError(msg)
