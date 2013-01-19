@@ -11,5 +11,6 @@ setup(name='django-competition',
       install_requires=['setuptools',
                         'django>=1.4',
                         'PyYAML',
+                        'factory_boy',
                         ],
       )
