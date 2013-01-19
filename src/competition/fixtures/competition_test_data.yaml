@@ -1,5 +1,5 @@
 - fields:
-    cost_per_team: 24.0
+    cost_per_person: 24.0
     description: Space is about space!
     end_time: 2012-11-04 12:00:00
     is_open: false
@@ -13,7 +13,7 @@
   model: competition.competition
   pk: megaminerai-9-space
 - fields:
-    cost_per_team: 24.0
+    cost_per_person: 24.0
     description: Galapagos is about evolution, I guess!
     end_time: 2012-11-11 12:00:00
     is_open: false
