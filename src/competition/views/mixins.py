@@ -5,6 +5,10 @@ from django.contrib.auth.decorators import login_required
 
 from competition.models.competition_model import Competition
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class CompetitionViewMixin(View):
     """A mixin class for adding a competition accessor to the class
@@ -13,7 +17,12 @@ class CompetitionViewMixin(View):
     def get_competition(self):
         """Returns the competition for the given view.  This requires
         that self.kwargs be set"""
-        comp_slug = self.kwargs['comp_slug']
+        try:
+            comp_slug = self.kwargs['comp_slug']
+        except KeyError:
+            logger.error("Couldn't find comp_slug in kwargs")
+            raise Http404
+
         return get_object_or_404(Competition, slug=comp_slug)
 
     def dispatch(self, request, *args, **kwargs):
@@ -21,7 +30,7 @@ class CompetitionViewMixin(View):
         information. Raises a Http404 if the competition with slug
         kwargs['comp_slug'] doesn't exist"""
         self.kwargs = kwargs
-        self.get_competition()
+        self.get_competition()  # Throws Http404 if not found
         parent = super(CompetitionViewMixin, self)
         return parent.dispatch(request, *args, **kwargs)
 
@@ -67,6 +76,7 @@ class RequireRegisteredMixin(CompetitionViewMixin, LoggedInMixin):
            - Checks that a user is reigstered for the loaded competition
                - Raises a Http404 if they aren't registered"""
         self.kwargs = kwargs    # Needed for get_competition()
+
         # Causes a 404 if comp_slug kwarg is bad or if the user
         # isn't registered for the corresponding competition
         self.registered_or_404(request)

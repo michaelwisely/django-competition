@@ -17,7 +17,7 @@
   <li>cost_per_team: {{ competition.cost_per_team }}</li>
   <li>min_num_team_members: {{ competition.min_num_team_members }}</li>
   <li>max_num_team_members: {{ competition.max_num_team_members }}</li>
-  <li><a href="{% url team_list competition %}">teams:</a>
+  <li><a href="{% url team_list competition.slug %}">teams:</a>
     <ul>
       {% for team in competition.team_set.all %}
         <li><a href="{{ team.get_absolute_url }}">{{ team }}</a></li>
