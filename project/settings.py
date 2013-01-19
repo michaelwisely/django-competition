@@ -19,7 +19,7 @@ except ImportError:
 
 # Testing settings
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--cover-package=competition']
+NOSE_ARGS = ['--cover-package=competition', '--verbosity=2', '--with-yanc']
 
 ADMINS = (
     # empty
