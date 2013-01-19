@@ -1,14 +1,12 @@
 from django.test import TestCase
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
+from django.db import IntegrityError
 
 from competition.tests.factories import CompetitionFactory
-
-from competition.models.competition_model import Competition
+from competition.models import Competition
 
 from datetime import datetime, timedelta
-
-import unittest
 
 
 TWELVE_HOURS = timedelta(hours=12)
@@ -88,13 +86,13 @@ class CompetitionModelValidationTest(TestCase):
 
     def test_positive_cost(self):
         """Cost must be greater than 0"""
-        c = CompetitionFactory.build(cost_per_team=-20.3)
+        c = CompetitionFactory.build(cost_per_person=-20.3)
 
         with self.assertRaises(ValidationError) as cm:
             c.full_clean()
 
         self.assertEqual(1, len(cm.exception.message_dict))
-        self.assertIn("cost_per_team", cm.exception.message_dict)
+        self.assertIn("cost_per_person", cm.exception.message_dict)
 
 
     def test_slug_set(self):
@@ -103,3 +101,9 @@ class CompetitionModelValidationTest(TestCase):
         self.assertEqual('', c.slug)
         c.save()
         self.assertEqual(slugify(c.name), c.slug)
+
+    def test_no_duplicate_names(self):
+        """Make sure we can't have two competitions by the same name"""
+        CompetitionFactory.create(name="MegaMinerAI") 
+        with self.assertRaises(IntegrityError):
+            CompetitionFactory.create(name="MegaMinerAI")
