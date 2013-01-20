@@ -1,0 +1,28 @@
+{# This form expects a "forms" variable and a "form_action" variable #}
+{# "forms" should be a list of forms to be displayed #}
+{# "form_action" should be the url to post the completed form to #}
+
+<form action="{{ form_action }}" class="form-horizontal" method="post">
+  {% csrf_token %}
+
+  {% for form in forms %}  
+	{% for field in form %}
+      {% if field.is_hidden %}
+		{{ field }}
+      {% else %}
+		<div class="control-group">
+          <label>{{ field.errors }}</label>
+          <label class="control-label">{{ field.label_tag }}</label>
+          <div class="controls">
+			{{ field }}
+          </div>
+		</div>
+      {% endif %}
+	{% endfor %}
+  {% endfor %}  
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn">Submit</button>
+    </div>
+  </div>
+</form>

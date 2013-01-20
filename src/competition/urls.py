@@ -5,10 +5,13 @@ from competition.views.competition_views import CompetitionDetailView
 from competition.views.team_views import TeamListView
 from competition.views.team_views import TeamDetailView
 from competition.views.team_views import TeamCreationView
+from competition.views.registration_views import RegistrationView
 
 
 urlpatterns = patterns(
     "",
+
+    # Competition Views
     url(r'^competition/$',
         CompetitionListView.as_view(),
         name='competition_list'),
@@ -16,6 +19,7 @@ urlpatterns = patterns(
         CompetitionDetailView.as_view(),
         name='competition_detail'),
 
+    # Team Views
     url(r'^competition/(?P<comp_slug>[\w-]+)/teams/$',
         TeamListView.as_view(),
         name='team_list'),
@@ -24,5 +28,10 @@ urlpatterns = patterns(
         name='team_detail'),
     url(r'^competition/(?P<comp_slug>[\w-]+)/team-create/$',
         TeamCreationView.as_view(),
-        name='team_create')
+        name='team_create'),
+
+    # Registration Views
+    url(r'^competition/(?P<comp_slug>[\w-]+)/register/$',
+        RegistrationView.as_view(),
+        name='registration_create')
     )

@@ -52,6 +52,8 @@ class InlineOrganizerAdmin(admin.TabularInline):
 
 class InlineRegistrationAdmin(admin.TabularInline):
     model = Registration
+    fields = ('user', 'signup_date',)
+    readonly_fields = ('user', 'signup_date',)
 
 
 class InlineRegistrationQuestionAdmin(admin.StackedInline):
@@ -111,10 +113,9 @@ class AvatarAdmin(admin.ModelAdmin):
 class CompetitionAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
     inlines = (InlineTeamAdmin,
-               InlineGameAdmin,
                InlineOrganizerAdmin,
-               InlineRegistrationQuestionAdmin,
-               InlineRegistrationAdmin)
+               InlineRegistrationAdmin,
+               InlineGameAdmin,)
 
 
 class GameAdmin(admin.ModelAdmin):
