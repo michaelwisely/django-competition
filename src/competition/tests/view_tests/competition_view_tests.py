@@ -25,7 +25,7 @@ class CompetitionTestListView(FancyTestCase):
 
     def test_pagination_mid_page(self):
         """Make sure we're paginating another page properly"""
-        response = self.client.rget('competition_list', {'page': '3'})
+        response = self.client.rget('competition_list', data={'page': '3'})
         objects = response.context['competitions']
         page = response.context['page_obj']
         self.assertEqual(10, len(objects))
@@ -33,11 +33,11 @@ class CompetitionTestListView(FancyTestCase):
         self.assertEqual(3, page.number)
         self.assertTrue(page.has_previous())
         self.assertTrue(page.has_next())
-        
+
     def test_sorted_by_start_time(self):
         """Make sure competitions are sorted properly"""
         response = self.client.rget('competition_list')
         competitions = response.context['competitions']
         for i in range(len(competitions) - 1):
-            self.assertGreater(competitions[i].start_time, 
-                               competitions[i+1].start_time)
+            self.assertGreater(competitions[i].start_time,
+                               competitions[i + 1].start_time)
