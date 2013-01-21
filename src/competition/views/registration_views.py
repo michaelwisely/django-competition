@@ -69,12 +69,12 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
             msg += 'Sorry for the inconvenience!'
             messages.warning(request, msg)
 
-            return redirect('registration_create', 
+            return redirect('register_for',
                             comp_slug=self.get_competition().slug)
 
         # Create form instances by passing POST data and prefixes
         forms = [(q, f(request.POST, prefix=q.id)) for q, f in forms]
-        
+
         # If all the forms are valid...
         if all(f.is_valid() for _, f in forms):
             registration = Registration.objects.create(user=request.user,

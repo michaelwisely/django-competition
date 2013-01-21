@@ -33,5 +33,5 @@ urlpatterns = patterns(
     # Registration Views
     url(r'^competition/(?P<comp_slug>[\w-]+)/register/$',
         RegistrationView.as_view(),
-        name='registration_create')
+        name='register_for')
     )
