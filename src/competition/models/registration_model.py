@@ -62,7 +62,7 @@ class RegistrationQuestionResponse(models.Model):
     question = models.ForeignKey(RegistrationQuestion,
                                  related_name="response_set")
     registration = models.ForeignKey(Registration,
-                                 related_name="response_set")
+                                     related_name="response_set")
     text_response = models.TextField(blank=True)
     choices = models.ManyToManyField(RegistrationQuestionChoice,
                                      null=True, blank=True,
