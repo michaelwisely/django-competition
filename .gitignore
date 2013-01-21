@@ -26,3 +26,6 @@ bootstrap.py
 
 # Ignore secret settings file
 secret_settings.py
+
+# Ignore nose-achievements data file
+.achievements
