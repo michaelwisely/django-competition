@@ -1,63 +1,91 @@
-from django.http import Http404
-from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 
 from competition.models.registration_model import Registration
-from competition.models.competition_model import Competition
 from competition.tests.utils import FancyTestCase
 
-from unittest import skip
+from competition.tests.factories import UserFactory, CompetitionFactory
+from competition.tests.factories import RegistrationQuestionFactory as QuestionFactory
+
+import random
 
 
 class RegistrationViewsTest(FancyTestCase):
-    fixtures = ['competition_test_data.yaml',
-                'user_test_data.yaml',
-                'registration_test_data.yaml',
-                'registration_question_test_data.yaml']
 
     def setUp(self):
-        self.alice = User.objects.get(username="alice")
-        self.space = Competition.objects.get(slug__contains="space")
-        self.galapagos = Competition.objects.get(slug__contains="galapagos")
+        self.alice = UserFactory.create(username="alice")
+        self.space = CompetitionFactory.create(name="Space")
+        self.galapagos = CompetitionFactory.create(name="Galapagos")
         self.galapagos.is_open = True
         self.galapagos.save()
 
-    @skip("Not implemented")
+        self.questions = [QuestionFactory.create(question_type=t)
+                          for t in ('SA', 'MC', 'AB', 'SC')]
+        self.galapagos.questions.add(*self.questions)
+
     def test_authentication(self):
         """Users must be logged in to register"""
-        with self.assertRaises(Http404):
-            kwds = {'comp_slug': self.galapagos.slug}
-            self.client.rget("register_for", kwargs=kwds)
+        kwds = {'comp_slug': self.galapagos.slug}
+        register_url = reverse("register_for", kwargs=kwds)
+        response = self.client.get(register_url)
+        self.assertRedirects(response, 
+                             '/accounts/login/?next=' + register_url)
+
         with self.loggedInAs("alice", "123"):
             kwds = {'comp_slug': self.galapagos.slug}
-            self.client.rget("register_for", kwargs=kwds)
+            response = self.client.rget("register_for", kwargs=kwds)
+            self.assertEqual(200, response.status_code)
 
-    @skip("Not implemented")
     def test_get_register_page(self):
         """Users should see some details about the competition and a
-        formset with the competitoin's registration questions."""
+        list of forms with the competition's registration questions."""
         with self.loggedInAs("alice", "123"):
             kwds = {'comp_slug': self.galapagos.slug}
             response = self.client.rget("register_for", kwargs=kwds)
             self.assertIn("competition", response.context)
-            self.assertIn("formset", response.context)  # questions
+            self.assertIn("questions", response.context)
 
-            formset = response.context['formset']
-            self.assertEqual(4, formset.total_form_count())
+            forms = response.context['questions']
+            self.assertEqual(len(self.questions), len(forms))
 
-    @skip("Not implemented")
     def test_post_register_page(self):
         """A registration object should be created when users submit
         their form"""
         num_registrations = Registration.objects.count()
+
         with self.loggedInAs("alice", "123"):
-            # Not sure if we need to do a get before this post
-            data = {'form-0-text_response': "No allergies",
-                    'form-1-agreed': True,
-                    'form-2-choices': 6,  # Large shirt
-                    'form-3-choices': [1, 2]}   # cheese and pepperoni
+            kwds = {'comp_slug': self.galapagos.slug}
+            response = self.client.rget("register_for", kwargs=kwds)
+            forms = [x[1] for x in response.context['questions']]
+
+            # Create a dict of all fields {'prefix-field_name': field, ...}
+            fields = dict(("%d-%s" % (f.prefix, field_name), field)
+                          for f in forms
+                          for field_name, field in f.fields.iteritems())
+
+            data = {}
+            for name, field in fields.iteritems():
+                if 'sa_response' in name:
+                    data[name] = "derp"
+                elif 'ab_response' in name:
+                    data[name] = True
+                else:
+                    choices = [x[0] for x in field.choices]
+                    random.shuffle(choices)
+                    if 'sc_response' in name:
+                        data[name] = choices[0]
+                    elif 'mc_response' in name:
+                        # Choose more than one option
+                        num_choices = (len(choices) / 2) + 1
+                        data[name] = choices[:num_choices]
+
             kwds = {'comp_slug': self.galapagos.slug}
             response = self.client.rpost("register_for", 
                                          kwargs=kwds, data=data)
             # Should have one more registration now.
             self.assertEqual(num_registrations + 1, 
                              Registration.objects.count())
+
+    def test_something(self):
+        # TODO test what happens when a user grabs a form, logs out,
+        # and tries to post. I think it makes request.session unhappy.
+        pass
