@@ -56,7 +56,8 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
         # Instantiate each of the form classes with its prefix
         forms = [(q, f(prefix=q.id)) for q, f in forms]
 
-        return self.render_to_response({'questions': forms})
+        return self.render_to_response({'questions': forms,
+                                        'competition': self.get_competition()})
 
     def post(self, request, *_args, **_kwargs):
         forms = self.create_form_classes()
@@ -85,4 +86,5 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
             messages.success(request, msg)
             return redirect('competition_list')
 
-        return self.render_to_response({'questions': forms})
+        return self.render_to_response({'questions': forms,
+                                        'competition': self.get_competition()})
