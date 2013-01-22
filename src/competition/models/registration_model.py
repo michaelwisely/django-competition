@@ -14,10 +14,23 @@ class Registration(models.Model):
     competition = models.ForeignKey(Competition)
     signup_date = models.DateTimeField(auto_now_add=True)
 
+    active = models.BooleanField(default=True)
+    last_updated = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         username = self.user.username
         competition = self.competition.name
         return "%s's registration for %s" % (username, competition)
+
+    def activate(self):
+        if not self.active:
+            self.active = True
+            self.save()
+
+    def deactivate(self):
+        if self.active:
+            self.active = False
+            self.save()
 
 
 class RegistrationQuestion(models.Model):
