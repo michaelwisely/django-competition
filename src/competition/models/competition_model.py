@@ -51,7 +51,7 @@ class Competition(models.Model):
 
     @models.permalink
     def get_absolute_url(self):
-        return ('competition_detail', (), {'slug': self.slug})
+        return ('competition_detail', (), {'comp_slug': self.slug})
 
     def clean(self):
         if self.start_time > self.end_time:

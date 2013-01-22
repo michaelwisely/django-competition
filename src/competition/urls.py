@@ -15,7 +15,7 @@ urlpatterns = patterns(
     url(r'^competition/$',
         CompetitionListView.as_view(),
         name='competition_list'),
-    url(r'^competition/(?P<slug>[\w-]+)/$',
+    url(r'^competition/(?P<comp_slug>[\w-]+)/$',
         CompetitionDetailView.as_view(),
         name='competition_detail'),
 

@@ -15,4 +15,5 @@ class CompetitionDetailView(DetailView):
     """Shows details about a particular competition"""
     context_object_name = 'competition'
     model = Competition
+    slug_url_kwarg = 'comp_slug'
     template_name = 'competition/competition/competition_detail.html'
