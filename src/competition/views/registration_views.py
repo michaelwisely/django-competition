@@ -64,14 +64,20 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
         question_ids = [q.id for q, _ in forms]
         competition = self.get_competition()
 
-        if question_ids != request.session['question_ids']:
-            msg = 'The registration form for this competition has changed. '
-            msg += 'Please fill out the new forms and resubmit. '
+        try:
+            if question_ids != request.session['question_ids']:
+                msg = 'The registration form for this competition has changed. '
+                msg += 'Please fill out the new forms and resubmit. '
+                msg += 'Sorry for the inconvenience!'
+                messages.warning(request, msg)
+                
+                return redirect('register_for', comp_slug=competition.slug)
+        except KeyError:
+            msg = 'Something odd happened with your session. '
+            msg += 'Please fill out your registration again. '
             msg += 'Sorry for the inconvenience!'
             messages.warning(request, msg)
-
-            return redirect('register_for',
-                            comp_slug=self.get_competition().slug)
+            return redirect('register_for', comp_slug=competition.slug)
 
         # Create form instances by passing POST data and prefixes
         forms = [(q, f(request.POST, prefix=q.id)) for q, f in forms]
