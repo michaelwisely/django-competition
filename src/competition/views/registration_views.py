@@ -51,12 +51,13 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
         response.save()
 
     def user_is_registered(self):
-        """Returns True if a user is already registered for the
-        competition corresponding to comp_slug, otherwise returns
-        False."""
+        """Returns True if a user already has an **active**
+        registration for the competition corresponding to comp_slug,
+        otherwise returns False."""
         return Registration.objects.filter(
             user=self.request.user,
-            competition=self.get_competition()
+            competition=self.get_competition(),
+            active=True
         ).exists()
 
     def get(self, request, *_args, **_kwargs):
