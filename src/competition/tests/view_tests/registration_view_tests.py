@@ -6,7 +6,6 @@ from competition.tests.utils import FancyTestCase
 from competition.tests.factories import UserFactory, CompetitionFactory
 from competition.tests.factories import RegistrationQuestionFactory as QuestionFactory
 
-import unittest
 import random
 
 
@@ -47,14 +46,14 @@ class RegistrationViewsTest(FancyTestCase):
                     num_choices = (len(choices) / 2) + 1
                     data[name] = choices[:num_choices]
         return data
-        
+
 
     def test_authentication(self):
         """Users must be logged in to register"""
         kwds = {'comp_slug': self.galapagos.slug}
         register_url = reverse("register_for", kwargs=kwds)
         response = self.client.get(register_url)
-        self.assertRedirects(response, 
+        self.assertRedirects(response,
                              '/accounts/login/?next=' + register_url)
 
         with self.loggedInAs("alice", "123"):
@@ -81,11 +80,11 @@ class RegistrationViewsTest(FancyTestCase):
         kwds = {'comp_slug': self.galapagos.slug}
         with self.loggedInAs("alice", "123"):
             response = self.client.rget("register_for", kwargs=kwds)
-            
-            response = self.client.rpost("register_for", kwargs=kwds, 
+
+            response = self.client.rpost("register_for", kwargs=kwds,
                                          data=self.fill_in_forms(response))
             # Should have one more registration now.
-            self.assertEqual(num_registrations + 1, 
+            self.assertEqual(num_registrations + 1,
                              Registration.objects.count())
 
     def test_logout_mid_register(self):
@@ -125,10 +124,44 @@ class RegistrationViewsTest(FancyTestCase):
         self.assertIn("changed", messages[0].message)
         self.assertRedirects(response, register_url)
 
-    @unittest.skip
-    def test_users_cannot_reregister(self):
-        """Once a user registers, they shouldn't be able to register
-        again."""
-        pass
+    def test_registered_users_cannot_view_register_page(self):
+        """Users shouldn't be able to view the registration page once
+        they have an active registration"""
+        kwds = {'comp_slug': self.galapagos.slug}
+        register_url = reverse("register_for", kwargs=kwds)
+        with self.loggedInAs("alice", "123"):
+            response = self.client.get(register_url)
+            self.client.post(register_url, follow=True,
+                             data=self.fill_in_forms(response))
+            self.assertEqual(1, Registration.objects.all().count()) # only 1
 
-    
+        with self.loggedInAs("alice", "123"):
+            response = self.client.get(register_url, follow=True)
+
+        self.assertEqual(1, Registration.objects.all().count()) # still only 1
+        messages = list(response.context['messages'])
+        self.assertEqual(1, len(messages))
+        self.assertIn("already", messages[0].message)
+        self.assertRedirects(response, self.galapagos.get_absolute_url())
+
+    def test_registered_users_cannot_resubmit(self):
+        """Users shouldn't be able to submit a new registration once
+        they have an active registration, """
+        kwds = {'comp_slug': self.galapagos.slug}
+        register_url = reverse("register_for", kwargs=kwds)
+        with self.loggedInAs("alice", "123"):
+            response = self.client.get(register_url)
+            data = self.fill_in_forms(response)
+            self.client.post(register_url, follow=True, data=data)
+            self.assertEqual(1, Registration.objects.all().count()) # Only 1
+
+        # Nothing should happen if we resubmit the form
+        with self.loggedInAs("alice", "123"):
+            response = self.client.post(register_url, follow=True, data=data)
+
+        self.assertEqual(1, Registration.objects.all().count()) # Still only 1
+
+        messages = list(response.context['messages'])
+        self.assertEqual(1, len(messages))
+        self.assertIn("already", messages[0].message)
+        self.assertRedirects(response, self.galapagos.get_absolute_url())

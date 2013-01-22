@@ -24,7 +24,10 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
         return [(q, generate_question_form(q)) for q in questions]
 
     def save_response(self, registration, question, form):
-        response = Response.objects.create(question=question, 
+        """Parses a registration form and creates a corresponding
+        RegistrationQuestionResponse object
+        """
+        response = Response.objects.create(question=question,
                                            registration=registration)
 
         # If the response was single choice
@@ -47,7 +50,27 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
 
         response.save()
 
+    def user_is_registered(self):
+        """Returns True if a user is already registered for the
+        competition corresponding to comp_slug, otherwise returns
+        False."""
+        return Registration.objects.filter(
+            user=self.request.user,
+            competition=self.get_competition()
+        ).exists()
+
     def get(self, request, *_args, **_kwargs):
+        """This method is called when a user performs a GET request to
+        this view... namely, when they load the form."""
+        competition = self.get_competition()
+
+        # If the user's already registered, send them back to the
+        # competition's page.
+        if self.user_is_registered():
+            msg = "You're already registered for %s" % competition.name
+            messages.info(request, msg)
+            return redirect('competition_detail', comp_slug=competition.slug)
+
         forms = self.create_form_classes()
 
         # Save a list of the question IDs with the user's session
@@ -60,9 +83,19 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
                                         'competition': self.get_competition()})
 
     def post(self, request, *_args, **_kwargs):
+        """This method is called when a user performs a POST request
+        to this view... namely, when the submit a filled in form"""
+        competition = self.get_competition()
+
+        # If the user's already registered, send them back to the
+        # competition's page.
+        if self.user_is_registered():
+            msg = "You're already registered for %s" % competition.name
+            messages.info(request, msg)
+            return redirect('competition_detail', comp_slug=competition.slug)
+
         forms = self.create_form_classes()
         question_ids = [q.id for q, _ in forms]
-        competition = self.get_competition()
 
         try:
             if question_ids != request.session['question_ids']:
@@ -70,7 +103,7 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
                 msg += 'Please fill out the new forms and resubmit. '
                 msg += 'Sorry for the inconvenience!'
                 messages.warning(request, msg)
-                
+
                 return redirect('register_for', comp_slug=competition.slug)
         except KeyError:
             msg = 'Something odd happened with your session. '
