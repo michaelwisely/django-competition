@@ -3,7 +3,8 @@ from django.core.urlresolvers import reverse
 from competition.models.registration_model import Registration
 from competition.tests.utils import FancyTestCase
 
-from competition.tests.factories import UserFactory, CompetitionFactory
+from competition.tests.factories import (UserFactory, CompetitionFactory,
+                                         RegistrationFactory)
 from competition.tests.factories import RegistrationQuestionFactory as QuestionFactory
 
 from unittest import skip
@@ -47,7 +48,6 @@ class RegistrationViewsTest(FancyTestCase):
                     num_choices = (len(choices) / 2) + 1
                     data[name] = choices[:num_choices]
         return data
-
 
     def test_authentication(self):
         """Users must be logged in to register"""
@@ -128,16 +128,12 @@ class RegistrationViewsTest(FancyTestCase):
     def test_registered_users_cannot_view_register_page(self):
         """Users shouldn't be able to view the registration page once
         they have an active registration"""
-        kwds = {'comp_slug': self.galapagos.slug}
-        register_url = reverse("register_for", kwargs=kwds)
+        # Register Alice
+        RegistrationFactory.create(user=self.alice, competition=self.galapagos)
         with self.loggedInAs("alice", "123"):
-            response = self.client.get(register_url)
-            self.client.post(register_url, follow=True,
-                             data=self.fill_in_forms(response))
-            self.assertEqual(1, Registration.objects.all().count()) # only 1
-
-        with self.loggedInAs("alice", "123"):
-            response = self.client.get(register_url, follow=True)
+            kwargs = {'comp_slug': self.galapagos.slug}
+            response = self.client.rget("register_for", follow=True,
+                                        kwargs=kwargs)
 
         self.assertEqual(1, Registration.objects.all().count()) # still only 1
         messages = list(response.context['messages'])
@@ -167,33 +163,67 @@ class RegistrationViewsTest(FancyTestCase):
         self.assertIn("already", messages[0].message)
         self.assertRedirects(response, self.galapagos.get_absolute_url())
 
-    @skip("Not implemented")
     def test_active_users_can_deactivate(self):
         """If a user has an active registration, they should be able
         to deactivate."""
-        pass
+        RegistrationFactory.create(user=self.alice, competition=self.galapagos)
 
-    @skip("Not implemented")
-    def test_inactive_users_can_reactivate(self):
+        # Try viewing the unregister page
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.rget('unregister_for',
+                                    kwargs={'comp_slug': self.galapagos.slug})
+
+        # Make sure we got the confirmation form
+        self.assertIn('question', resp.context)
+        self.assertIn('form', resp.context)
+
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.rpost('unregister_for', follow=True,
+                                     kwargs={'comp_slug': self.galapagos.slug},
+                                     data={'confirmed': True})
+
+        # No active registrations, but one inactive one.
+        self.assertEqual(0, Registration.objects.filter(active=True).count())
+        self.assertEqual(1, Registration.objects.filter(active=False).count())
+
+        messages = list(resp.context['messages'])
+        self.assertEqual(1, len(messages))
+        self.assertIn("unregistered", messages[0].message)
+        self.assertRedirects(resp, self.galapagos.get_absolute_url())
+
+    def test_inactive_users_can_register(self):
         """If a user has an inactive registration, they should be able
-        to reactivate."""
-        pass
+        to register again."""
+        registration = RegistrationFactory.create(user=self.alice,
+                                                  competition=self.galapagos)
+        registration.deactivate()
 
-    @skip("Not implemented")
-    def test_new_users_cannot_deactivate(self):
+        kwds = {'comp_slug': self.galapagos.slug}
+        register_url = reverse("register_for", kwargs=kwds)
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(register_url)
+            data = self.fill_in_forms(resp)
+            resp = self.client.post(register_url, follow=True, data=data)
+
+        # Two registrations, one active, one inactive.
+        self.assertEqual(1, Registration.objects.filter(active=True).count())
+        self.assertEqual(1, Registration.objects.filter(active=False).count())
+
+    def test_unregistered_users_cannot_deactivate(self):
         """Users cannot deactivate a registration if they aren't
         registered"""
-        pass
+        # Try viewing the unregister page
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.rget('unregister_for',
+                                    kwargs={'comp_slug': self.galapagos.slug})
 
-    @skip("Not implemented")
-    def test_active_users_cannot_activate(self):
-        """If a user has an active registration, they cannot active
-        their registration"""
-        pass
+        # We should get a 404 since the user isn't registered
+        self.assertEqual(404, resp.status_code)
 
-    @skip("Not implemented")
-    def test_inactive_users_cannot_deactivate(self):
-        """If a user has an inactive registration, they cannot
-        deactive their registration"""
-        pass
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.rpost('unregister_for', follow=True,
+                                     kwargs={'comp_slug': self.galapagos.slug},
+                                     data={'confirmed': True})
 
+        # We should get a 404 for a POST as well.
+        self.assertEqual(404, resp.status_code)
