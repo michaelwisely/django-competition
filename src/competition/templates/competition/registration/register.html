@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% url registration_create competition.slug as form_action %}
+  {% url register_for competition.slug as form_action %}
   <form action="{{ form_action }}" class="form-horizontal" method="post">
 	{% csrf_token %}
 

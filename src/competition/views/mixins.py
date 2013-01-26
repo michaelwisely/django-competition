@@ -1,6 +1,8 @@
+from django import forms
 from django.http import Http404
 from django.views.generic import View
-from django.shortcuts import get_object_or_404
+from django.views.generic.edit import FormView
+from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 
 from competition.models.competition_model import Competition
@@ -64,7 +66,7 @@ class LoggedInMixin(View):
         return wrapped_function(request, *args, **kwargs)
 
 
-class RequireRegisteredMixin(CompetitionViewMixin, LoggedInMixin):
+class UserRegisteredMixin(CompetitionViewMixin, LoggedInMixin):
     """A mixin class for checking that a user is registered for a
     competition"""
 
@@ -82,7 +84,7 @@ class RequireRegisteredMixin(CompetitionViewMixin, LoggedInMixin):
         self.registered_or_404(request)
 
         # Checks that a user is logged in before returning
-        parent = super(RequireRegisteredMixin, self)
+        parent = super(UserRegisteredMixin, self)
         wrapped_function = self.login_required(parent.dispatch)
         return wrapped_function(request, *args, **kwargs)
 
@@ -94,3 +96,41 @@ class RequireRegisteredMixin(CompetitionViewMixin, LoggedInMixin):
         competition = self.get_competition()
         if not competition.is_user_registered(request.user):
             raise Http404("User isn't registered")
+
+
+class ConfirmationMixin(FormView):
+    question = None
+    check_box_label = "OK"
+
+    def get_question(self):
+        if self.question is None:
+            raise Exception("question not set for ConfirmationMixin")
+        return self.question
+
+    def get_check_box_label(self):
+        return self.check_box_label
+
+    def get_context_data(self, **kwargs):
+        kwargs['question'] = self.get_question()
+        return super(FormView, self).get_context_data(**kwargs)
+
+    def get_form_class(self):
+
+        class ConfirmationForm(forms.Form):
+            confirmed = forms.BooleanField(required=False,
+                                           label=self.get_check_box_label())
+
+        return ConfirmationForm
+
+    def form_valid(self, form):
+        if form.cleaned_data['confirmed']:
+            return self.agreed()
+        return self.disagreed()
+
+    def agreed(self):
+        """If the user agreed, redirect them to the success url"""
+        return redirect(self.get_success_url())
+
+    def disagreed(self):
+        """If the user disagreed, redirect them to the success url"""
+        return redirect(self.get_success_url())

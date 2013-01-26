@@ -79,7 +79,9 @@ class Competition(models.Model):
         return "%s__organizer" % (self.slug, )
 
     def is_user_registered(self, user):
-        return self.registration_set.filter(user=user).exists()
+        """Return true if the given user has an **active**
+        registration for this competition, else return false"""
+        return self.registration_set.filter(user=user, active=True).exists()
 
 
 @receiver(pre_save, sender=Competition)

@@ -6,6 +6,7 @@ from competition.views.team_views import TeamListView
 from competition.views.team_views import TeamDetailView
 from competition.views.team_views import TeamCreationView
 from competition.views.registration_views import RegistrationView
+from competition.views.registration_views import UnregisterView
 
 
 urlpatterns = patterns(
@@ -33,5 +34,9 @@ urlpatterns = patterns(
     # Registration Views
     url(r'^competition/(?P<comp_slug>[\w-]+)/register/$',
         RegistrationView.as_view(),
-        name='register_for')
+        name='register_for'),
+
+    url(r'^competition/(?P<comp_slug>[\w-]+)/unregister/$',
+        UnregisterView.as_view(),
+        name='unregister_for')
     )

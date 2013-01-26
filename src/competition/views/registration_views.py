@@ -1,9 +1,10 @@
-from django.views.generic.edit import ProcessFormView
+from django.views.generic.edit import FormView, ProcessFormView
 from django.views.generic.base import TemplateResponseMixin
 from django.shortcuts import redirect
 from django.contrib import messages
 
-from competition.views.mixins import LoggedInMixin, CompetitionViewMixin
+from competition.views.mixins import (LoggedInMixin, CompetitionViewMixin,
+                                      UserRegisteredMixin, ConfirmationMixin)
 from competition.forms.registration_forms import generate_question_form
 
 from competition.models import Registration
@@ -14,7 +15,7 @@ from competition.models import RegistrationQuestionResponse as Response
 class RegistrationView(LoggedInMixin, CompetitionViewMixin,
                        TemplateResponseMixin, ProcessFormView):
     """Allows a user to register to compete"""
-    template_name = 'competition/registration/registration_create.html'
+    template_name = 'competition/registration/register.html'
 
     def create_form_classes(self):
         """Generates a list of (question, form) tuples based on the
@@ -54,11 +55,7 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
         """Returns True if a user already has an **active**
         registration for the competition corresponding to comp_slug,
         otherwise returns False."""
-        return Registration.objects.filter(
-            user=self.request.user,
-            competition=self.get_competition(),
-            active=True
-        ).exists()
+        return self.get_competition().is_user_registered(self.request.user)
 
     def get(self, request, *_args, **_kwargs):
         """This method is called when a user performs a GET request to
@@ -128,3 +125,28 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
 
         return self.render_to_response({'questions': forms,
                                         'competition': self.get_competition()})
+
+
+class UnregisterView(UserRegisteredMixin, ConfirmationMixin):
+    template_name = 'competition/registration/unregister.html'
+
+    def get_question(self):
+        name = self.get_competition().name
+        return "Are you sure you want to unregister for %s?" % name
+
+    def get_check_box_label(self):
+        return "Yes I'm sure"
+
+    def agreed(self):
+        competition = self.get_competition()
+        registration = Registration.objects.get(competition=competition, 
+                                                user=self.request.user,
+                                                active=True)
+        registration.deactivate()
+
+        msg = "Successfully unregistered for %s" % competition.name
+        messages.success(self.request, msg)
+        return redirect(competition)
+
+    def disagreed(self):
+        return redirect(self.get_competition())
