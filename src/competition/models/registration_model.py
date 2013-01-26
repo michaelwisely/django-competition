@@ -22,11 +22,6 @@ class Registration(models.Model):
         competition = self.competition.name
         return "%s's registration for %s" % (username, competition)
 
-    def activate(self):
-        if not self.active:
-            self.active = True
-            self.save()
-
     def deactivate(self):
         if self.active:
             self.active = False
