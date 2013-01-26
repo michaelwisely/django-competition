@@ -1,21 +1,18 @@
 - fields: 
     competition: megaminerai-9-space
     signup_date: !!timestamp '2012-12-02 12:51:16.893057'
-    last_updated: !!timestamp '2012-12-02 12:51:16.893057'
     user: 2
   model: competition.registration
   pk: 1
 - fields: 
     competition: megaminerai-10-galapagos
     signup_date: !!timestamp '2012-12-02 12:51:30.606821'
-    last_updated: !!timestamp '2012-12-02 12:51:30.606821'
     user: 2
   model: competition.registration
   pk: 2
 - fields: 
     competition: megaminerai-10-galapagos
     signup_date: !!timestamp '2012-12-02 12:51:37.909641'
-    last_updated: !!timestamp '2012-12-02 12:51:37.909641'
     user: 4
   model: competition.registration
   pk: 3

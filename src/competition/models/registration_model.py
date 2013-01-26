@@ -8,14 +8,12 @@ from competition.models.competition_model import Competition
 class Registration(models.Model):
     class Meta:
         app_label = 'competition'
-        unique_together = (('competition', 'user'), )
 
     user = models.ForeignKey(User)
     competition = models.ForeignKey(Competition)
     signup_date = models.DateTimeField(auto_now_add=True)
 
     active = models.BooleanField(default=True)
-    last_updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         username = self.user.username
