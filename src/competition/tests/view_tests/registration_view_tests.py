@@ -58,8 +58,7 @@ class RegistrationViewsTest(FancyTestCase):
                              '/accounts/login/?next=' + register_url)
 
         with self.loggedInAs("alice", "123"):
-            kwds = {'comp_slug': self.galapagos.slug}
-            response = self.client.rget("register_for", kwargs=kwds)
+            response = self.client.get(register_url)
             self.assertEqual(200, response.status_code)
 
     def test_get_register_page(self):
