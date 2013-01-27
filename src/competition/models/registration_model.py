@@ -1,7 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
+from guardian.shortcuts import assign, remove_perm
+
+from competition.signals import registration_deactivated
 from competition.models.competition_model import Competition
 
 
@@ -22,6 +27,7 @@ class Registration(models.Model):
 
     def deactivate(self):
         if self.active:
+            registration_deactivated.send(sender=self)
             self.active = False
             self.save()
 
@@ -92,3 +98,31 @@ class RegistrationQuestionResponse(models.Model):
             if not self.agreed:
                 msg = "Must agree before proceeding"
                 raise ValidationError(msg)
+
+
+@receiver(post_save, sender=Registration)
+def registration_post_save(sender, instance, created, **kwargs):
+    """Registration has been created and saved
+
+    * Assign user competition.create_team permission if newly created
+    """
+    # If the user just registered...
+    if created:
+        assign("create_team", instance.user, instance.competition)
+
+@receiver(registration_deactivated)
+def received_registration_deactivated(sender, **kwargs):
+    """Registration has been deactivated.
+
+    ``sender`` is the registration being deactivated
+
+    * Revoke the user's permission to create teams
+    * Remove the user from any teams they may be on
+    """
+    # Revoke permissions to create teams
+    remove_perm("create_team", sender.user, sender.competition)
+
+    # Remove the user from any teams they're on for this competition
+    old_teams = sender.user.team_set.filter(competition=sender.competition)
+    for team in old_teams:
+        team.members.remove(sender.user)
