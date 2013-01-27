@@ -57,11 +57,20 @@ class Team(models.Model):
         old_teams = Team.objects.filter(competition=self.competition,
                                         members=new_user)
         for team in old_teams:
-            team.members.remove(new_user)
+            team.remove_team_member(new_user)
 
         # Add the user to this team
         self.members.add(new_user)
 
+    def remove_team_member(self, user):
+        """Removes a user from a team
+
+        Deletes the team if they were the last user
+        """
+        self.members.remove(user)
+
+        if self.members.count() == 0:
+            self.delete()
 
 @receiver(pre_save, sender=Team)
 def team_pre_save(sender, instance, **kwargs):

@@ -117,5 +117,5 @@ class TeamViewsTest(FancyTestCase):
 
     @skip("not implemented")
     def test_team_deleted(self):
-        # When all users leave, team gets deleted
-        pass
+        """Teams get deleted when everyone leaves"""
+        
