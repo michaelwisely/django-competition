@@ -102,6 +102,6 @@ class CompetitionModelValidationTest(TestCase):
 
     def test_no_duplicate_names(self):
         """Make sure we can't have two competitions by the same name"""
-        CompetitionFactory.create(name="MegaMinerAI") 
+        CompetitionFactory.create(name="MegaMinerAI")
         with self.assertRaises(IntegrityError):
             CompetitionFactory.create(name="MegaMinerAI")
