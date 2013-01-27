@@ -1,16 +1,15 @@
 from django.core.urlresolvers import reverse
 
 from competition.tests.utils import FancyTestCase
+from competition.models.team_model import Team
 from competition.tests.factories import (UserFactory, CompetitionFactory,
-                                         TeamFactory)
+                                         TeamFactory, RegistrationFactory)
 
 from unittest import skip
 
 class TeamViewsTest(FancyTestCase):
 
     def setUp(self):
-        self.alice = UserFactory.create(username="alice")
-
         self.space = CompetitionFactory.create(name="Space")
         self.galapagos = CompetitionFactory.create(name="Galapagos")
 
@@ -19,10 +18,14 @@ class TeamViewsTest(FancyTestCase):
                             for _ in range(3)]
         self.galapagos_teams = [TeamFactory.create(competition=self.galapagos,
                                                    num_members=1)
-                            for _ in range(5)]
-
-    def team_num(self, team):
-        return int(team.name.replace("Team #", ""))
+                                for _ in range(5)]
+        self.alice = UserFactory.create(username="alice")
+        self.bob = UserFactory.create(username="bob")
+        # Register Alice and Bob for Space
+        self.alice_reg = RegistrationFactory.create(user=self.alice,
+                                                    competition=self.space)
+        self.bob_reg = RegistrationFactory.create(user=self.bob,
+                                                  competition=self.space)
 
     def test_authenticated(self):
         """Must be logged in to view teams"""
@@ -53,37 +56,66 @@ class TeamViewsTest(FancyTestCase):
         # Paginator sanity check
         self.assertTrue(response.context['is_paginated'])
 
-    @skip("not implemented")
     def test_team_detail(self):
         """Check users for team"""
-        pass
+        team = self.space_teams[1]
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(team.get_absolute_url())
+        self.assertEqual(team, resp.context['team'])
 
-    @skip("not implemented")
     def test_create_team(self):
-        # Must be registered
-        # Can't be on more then one team for a competition
-        pass
+        """Registered users can create teams"""
+        num_teams = Team.objects.all().count()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertIn('form', resp.context)
+            resp = self.client.post(url, follow=True,
+                                    data={'name': 'Team Awesome'})
+        self.assertEqual(num_teams + 1, Team.objects.all().count())
+
+        team = Team.objects.get(competition=self.space, members=self.alice)
+        self.assertRedirects(resp, team.get_absolute_url())
+        self.assertEqual(1, team.members.count())
+        self.assertEqual('Team Awesome', team.name)
+        self.assertEqual('team-awesome', team.slug)  # Make sure slug got set
+
+    def test_create_team_duplicate(self):
+        """Users cannot create duplicate teams"""
+        num_teams = Team.objects.all().count()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            # Alice creates a team
+            resp = self.client.post(url, data={'name': 'Team Awesome'})
+        with self.loggedInAs("bob", "123"):
+            # Bob tries to create a team with the same name
+            resp = self.client.post(url, follow=True,
+                                    data={'name': 'Team Awesome'})
+
+        # Bob didn't create a new team
+        self.assertEqual(num_teams + 1, Team.objects.all().count())
+        self.assertFalse(Team.objects.filter(members=self.bob).exists())
+
+    def test_create_team_registered(self):
+        """Must be registered to create a team"""
+        self.alice_reg.deactivate()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            # Alice creates a team
+            resp = self.client.post(url, data={'name': 'Team Awesome'})
+        self.assert404(resp)
+
+    def test_cant_be_on_a_team_already(self):
+        """Can't create a team if you're already on a team"""
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            # Alice creates a team
+            resp = self.client.post(url, data={'name': 'Team Awesome'})
+            # Alice creates another team
+            resp = self.client.post(url, data={'name': 'Another Team'})
+        self.assert404(resp)
 
     @skip("not implemented")
     def test_team_deleted(self):
         # When all users leave, team gets deleted
-        pass
-
-    @skip("not implemented")
-    def test_invitation_send(self):
-        # cannot sent to myself
-        # cannot send to users on my team
-        # can only send up to max_team_size invitations
-        pass
-
-    @skip("not implemented")
-    def test_invitation_accept(self):
-        # user must be registered for competition
-        # causes user to leave any teams they're on
-        pass
-
-    @skip("not implemented")
-    def test_invitation_reject(self):
-        # user stays on team
-        # sending team is allowed to send another invite
         pass

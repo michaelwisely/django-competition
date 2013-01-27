@@ -1,2 +1,6 @@
-class CompetitionException(exceptions.Exception):
+class CompetitionException(Exception):
+    pass
+
+
+class TeamException(Exception):
     pass

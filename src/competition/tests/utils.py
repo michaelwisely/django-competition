@@ -46,3 +46,6 @@ class FancyTestCase(DjangoTestCase):
         self.client.login(username=username, password=password)
         yield
         self.client.logout()
+
+    def assert404(self, response):
+        return self.assertEqual(404, response.status_code)

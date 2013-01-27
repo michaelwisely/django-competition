@@ -224,7 +224,7 @@ class RegistrationViewsTest(FancyTestCase):
                                     kwargs={'comp_slug': self.galapagos.slug})
 
         # We should get a 404 since the user isn't registered
-        self.assertEqual(404, resp.status_code)
+        self.assert404(resp)
 
         with self.loggedInAs("alice", "123"):
             resp = self.client.rpost('unregister_for', follow=True,
@@ -232,4 +232,4 @@ class RegistrationViewsTest(FancyTestCase):
                                      data={'confirmed': True})
 
         # We should get a 404 for a POST as well.
-        self.assertEqual(404, resp.status_code)
+        self.assert404(resp)
