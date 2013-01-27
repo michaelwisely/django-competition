@@ -121,11 +121,19 @@ def team_m2m_changed(sender, instance, action, reverse,
                 # being added to
                 assign("change_team", user, team)
 
+                # Now they're on a team, don't allow them to create
+                # another team
+                remove_perm("create_team", user, team.competition)
+
     if action == "post_remove":
         for team in teams:
             for user in users:
                 # Revoke the user's permissions to change the old team
                 remove_perm("change_team", user, team)
+
+                # Now they're not on a team anymore, allow them to
+                # create another team
+                assign("create_team", user, team.competition)
 
                 # If there aren't any members left on the team, delete it.
                 if team.members.count() == 0:
@@ -140,3 +148,6 @@ def team_m2m_changed(sender, instance, action, reverse,
                 # members' permissions
                 remove_perm("change_team", user, team)
 
+                # Now they're not on a team anymore, allow them to
+                # create another team
+                assign("create_team", user, team.competition)

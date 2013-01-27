@@ -1,11 +1,14 @@
-from django.views.generic import ListView, DetailView, CreateView
 from django.db import IntegrityError
 from django.http import Http404
 from django.contrib import messages
+from django.views.generic import ListView, DetailView, CreateView
+
+from guardian.mixins import PermissionRequiredMixin
 
 from competition.models.team_model import Team
+from competition.models.competition_model import Competition
 from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
-                                      UserRegisteredMixin)
+                                      UserRegisteredMixin, ConfirmationMixin)
 from competition.forms.team_forms import TeamForm
 
 
@@ -30,26 +33,33 @@ class TeamDetailView(LoggedInMixin, CompetitionViewMixin, DetailView):
         return Team.objects.filter(competition=self.get_competition())
 
 
-class TeamCreationView(UserRegisteredMixin, CreateView):
+class TeamCreationView(UserRegisteredMixin,
+                       PermissionRequiredMixin,
+                       CreateView):
     """Allow users to create new teams"""
     template_name = 'competition/team/team_create.html'
     form_class = TeamForm
+    permission_required = 'competition.create_team'
 
-    def dispatch(self, request, *args, **kwargs):
-        try:
-            current_teams = Team.objects.filter(
-                competition__slug=kwargs['comp_slug'],
-                members=request.user
-            )
+    def get_object(self):
+        """Called by PermissionRequiredMixin to determine if the user
+        has the create_team permission for this competition"""
+        return self.get_competition()
 
-            if current_teams.exists():
-                msg = "You're already on a team! You must leave that "
-                msg += "team before joining another."
-                messages.info(request, msg)
-                raise Http404("User is already on a team")
-            return super(TeamCreationView, self).dispatch(request, *args, **kwargs)
-        except KeyError:
-            raise Http404("comp_slug not found in url kwargs")
+    def on_permission_check_fail(self, request, response, obj=None):
+        """Called when the user doesn't have permission to create a
+        new team
+
+        request - the user's request
+        response - the automatically generated response redirect to /login/
+        obj - the object fetched by get_object
+        """
+        msg = "Cannot create a new team at this time. "
+        msg += "Make sure that you're registered and "
+        msg += "that you're not already on a team."
+        messages.info(request, msg)
+
+        raise Http404("User is already on a team")
 
     def form_valid(self, form):
         try:
