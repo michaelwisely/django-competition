@@ -50,40 +50,22 @@ class Team(models.Model):
         """Adds a user to the calling team
 
         Raises a TeamException if the team is full
-
-        Removes new_user from any teams they may currently be on for
-        the given competition
         """
         # If the team is full, thwo an exception
         if self.members.count() >= self.competition.max_num_team_members:
             raise TeamException("Cannot add new user. Team is already full")
-        
-        # If new_user is already on a team for this competition, kick them off
-        old_teams = new_user.team_set.filter(competition=self.competition)
-
-        for team in old_teams:
-            team.remove_team_member(new_user)
 
         # Add the user to this team
         self.members.add(new_user)
-
-        # Give them permission to change the team
-        assign("change_team", new_user, self)
 
     def remove_team_member(self, user):
         """Removes a user from a team
 
         Deletes the team if they were the last user
         """
-        # Revoke their permission to change this team
-        remove_perm("change_team", user, self)
-
         # Remove them from the team
         self.members.remove(user)
 
-        # Delete the team if there aren't any members
-        if self.members.count() == 0:
-            self.delete()
 
 @receiver(pre_save, sender=Team)
 def team_pre_save(sender, instance, **kwargs):
@@ -91,3 +73,70 @@ def team_pre_save(sender, instance, **kwargs):
     - Sets slug according to name
     """
     instance.slug = slugify(instance.name)
+
+@receiver(m2m_changed, sender=Team.members.through)
+def team_m2m_changed(sender, instance, action, reverse,
+                     model, pk_set, **kwargs):
+    """Called when a Team's members list is changed"""
+    teams = None
+    users = None
+
+    # If actions is pre_clear or post_clear, pk_set will be None. If
+    # this is the case, just set pk_set to the empty list.
+    pk_set = [] if pk_set is None else pk_set
+
+    if reverse:
+        # The query is "reversed" if the members are modified by
+        # making a call to "user.team_set". In this case, pk_set is a
+        # list of Teams, and instance is a User object
+        teams = [Team.objects.get(pk=pk) for pk in pk_set]
+        users = [instance]
+    else:
+        # If the query isn't reversed, the members are being modified
+        # by making a call to "team.members". In this case, pk_set is
+        # a list of Users, and instance is a Team object.
+        teams = [instance]
+        users = [User.objects.get(pk=pk) for pk in pk_set]
+
+    # If we're adding a new user...
+    if action == "pre_add":
+        if len(teams) != 1:
+            logger.warning("Trying to add user to more than one team")
+
+        for team in teams:
+            for user in users:
+                # If the team is full, thwo an exception
+                if team.members.count() >= team.competition.max_num_team_members:
+                    logger.error("%s has too many members on it!", 
+                                 team.name)
+                # Remove the user from any old teams they might
+                # already be on for this competition
+                old_teams = user.team_set.filter(competition=team.competition)
+                for old_team in old_teams:
+                    logger.debug("Removing %s from %s", 
+                                 user.username, old_team.name)
+                    user.team_set.remove(old_team)
+
+                # Give the user permissions to change the team they're
+                # being added to
+                assign("change_team", user, team)
+
+    if action == "post_remove":
+        for team in teams:
+            for user in users:
+                # Revoke the user's permissions to change the old team
+                remove_perm("change_team", user, team)
+
+                # If there aren't any members left on the team, delete it.
+                if team.members.count() == 0:
+                    logger.info("%s has no more team members. Deleting it.",
+                                team.name)
+                    team.delete()
+
+    if action == "pre_clear":
+        for team in teams:
+            for user in team.members.all():
+                # Don't delete the team on a clear, just remove the
+                # members' permissions
+                remove_perm("change_team", user, team)
+

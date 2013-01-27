@@ -96,3 +96,16 @@ class TeamModelTest(FancyTestCase):
         self.assertTrue(member1.has_perm("change_team", t))
         t.remove_team_member(member1)
         self.assertFalse(member1.has_perm("change_team", t))
+
+    def test_members_clear(self):
+        """team.members.clear() removes permissions"""
+        t = TeamFactory.create(name="Team Awesome", competition=self.space,
+                               num_members=2)
+        members = t.members.all()
+        for member in members:
+            self.assertTrue(member.has_perm("change_team", t))
+
+        t.members.clear()
+
+        for member in members:
+            self.assertFalse(member.has_perm("change_team", t))
