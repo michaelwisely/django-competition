@@ -35,6 +35,14 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
+# Django Guardian settings
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
+ANONYMOUS_USER_ID = -1
+
+
 ADMINS = (
     # empty
 )
@@ -103,6 +111,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'django_extensions',
     'django_nose',
+    'guardian',
     'competition',
 )
 

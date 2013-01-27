@@ -12,5 +12,6 @@ setup(name='django-competition',
                         'django>=1.4',
                         'PyYAML',
                         'factory_boy',
+                        'django-guardian',
                         ],
       )
