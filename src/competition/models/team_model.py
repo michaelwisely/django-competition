@@ -10,7 +10,7 @@ from django.contrib.auth.models import User
 from competition.exceptions import TeamException
 from competition.models.competition_model import Competition
 from competition.models.avatar_model import Avatar
-from competition.validators import validate_name, positive, greater_than_zero
+from competition.validators import validate_name
 
 
 class Team(models.Model):

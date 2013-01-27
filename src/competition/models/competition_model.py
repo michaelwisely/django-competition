@@ -9,7 +9,8 @@ from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from competition.models.avatar_model import Avatar
-from competition.validators import validate_name, positive, greater_than_zero
+from competition.validators import (validate_name, non_negative,
+                                    greater_than_zero)
 
 
 class Competition(models.Model):
@@ -39,7 +40,7 @@ class Competition(models.Model):
     questions = models.ManyToManyField("competition.RegistrationQuestion",
                                        blank=True, null=True)
 
-    cost_per_person = models.FloatField(validators=[positive])
+    cost_per_person = models.FloatField(validators=[non_negative])
 
     # Team details
     min_num_team_members = models.IntegerField(verbose_name="Minimum number " +

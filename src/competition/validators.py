@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.template.defaultfilters import slugify
 import re
 
-NAME_REGULAR_EXPRESSION = re.compile(r'^\w+[\w\-\.: ]+$')
+NAME_REGULAR_EXPRESSION = re.compile(r'^\w*[a-zA-Z0-9]+[\w\-\.: ]+$')
 
 
 def greater_than_zero(value):
@@ -11,7 +11,7 @@ def greater_than_zero(value):
         raise ValidationError("Value must be greater than zero.")
 
 
-def positive(value):
+def non_negative(value):
     """Checks if value is greater than or equal to zero"""
     if value < 0:
         raise ValidationError("Value must be greater than or equal to zero.")
