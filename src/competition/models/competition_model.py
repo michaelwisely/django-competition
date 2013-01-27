@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, pre_delete
+from django.db.models.signals import pre_save, pre_delete, post_syncdb
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_slug
@@ -66,19 +66,6 @@ class Competition(models.Model):
     def __str__(self):
         return self.name
 
-    @property
-    def content_type(self):
-        return ContentType.objects.get(app_label='competition',
-                                       model='competition')
-
-    @property
-    def permissions(self):
-        return Permission.objects.filter(content_type=self.content_type)
-
-    @property
-    def group_name(self):
-        return "%s__organizer" % (self.slug, )
-
     def is_user_registered(self, user):
         """Return true if the given user has an **active**
         registration for this competition, else return false"""
@@ -93,19 +80,14 @@ def competition_pre_save(sender, instance, **kwargs):
     if instance.slug == '':
         instance.slug = slugify(instance.name)
 
-    # Create a group with permissions to administer a competition
-    if not Group.objects.filter(name=instance.group_name).exists():
-        g = Group.objects.create(name=instance.group_name)
-        g.permissions = instance.permissions
-        g.save()
-
 
 @receiver(pre_delete, sender=Competition)
 def competition_pre_delete(sender, instance, **kwargs):
     """Called before a Competition is deleted
     """
-    # Remove the group associated with the Competition being deleted
-    try:
-        Group.objects.get(name=instance.group_name).delete()
-    except Group.DoesNotExist:
-        pass
+    pass
+
+
+@receiver(post_syncdb, sender=Competition)
+def my_callback(sender, **kwargs):
+    Group.objects.create(name="Competition Staff")
