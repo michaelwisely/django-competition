@@ -79,7 +79,7 @@ class TeamFactory(factory.Factory):
             for _i in range(num_choices):
                 u = UserFactory.create()
                 RegistrationFactory.create(user=u, competition=team.competition)
-                team.members.add(u)
+                team.add_team_member(u)
         return team
 
 
@@ -87,12 +87,28 @@ class ScoreFactory(factory.Factory):
     FACTORY_FOR = Score
 
 
+class OrganizerRoleFactory(factory.Factory):
+    FACTORY_FOR = OrganizerRole
+
+    name = factory.Sequence(lambda n: "Role #%s" % n)
+    description = "Role description."
+
+
 class OrganizerFactory(factory.Factory):
     FACTORY_FOR = Organizer
 
+    user = factory.SubFactory(UserFactory)
+    competition = factory.SubFactory(CompetitionFactory)
 
-class OrganizerRoleFactory(factory.Factory):
-    FACTORY_FOR = OrganizerRole
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        """Add a role to the Organizer"""
+        num_roles = int(kwargs.pop('num_roles', 1))
+        organizer = super(OrganizerFactory, cls)._prepare(create, **kwargs)
+        if num_roles > 0:
+            for _i in range(num_roles):
+                organizer.role.add(OrganizerRoleFactory.create())
+        return organizer
 
 
 class RegistrationFactory(factory.Factory):
