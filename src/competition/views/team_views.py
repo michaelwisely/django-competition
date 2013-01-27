@@ -2,7 +2,8 @@ from django.views.generic import ListView, DetailView, CreateView
 from django.db import IntegrityError
 
 from competition.models.team_model import Team
-from competition.views.mixins import CompetitionViewMixin, LoggedInMixin
+from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
+                                      UserRegisteredMixin)
 from competition.forms.team_forms import TeamForm
 
 
@@ -10,6 +11,7 @@ class TeamListView(LoggedInMixin, CompetitionViewMixin, ListView):
     """Lists all teams, provided that the user is logged in"""
     context_object_name = 'teams'
     template_name = 'competition/team/team_list.html'
+    paginate_by = 10
 
     def get_queryset(self):
         """Only list teams participating in self.get_competition()"""
@@ -25,7 +27,7 @@ class TeamDetailView(LoggedInMixin, CompetitionViewMixin, DetailView):
         return Team.objects.filter(competition=self.get_competition())
 
 
-class TeamCreationView(LoggedInMixin, CompetitionViewMixin, CreateView):
+class TeamCreationView(UserRegisteredMixin, CreateView):
     """Allow users to create new teams"""
     template_name = 'competition/team/team_create.html'
     form_class = TeamForm

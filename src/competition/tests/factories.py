@@ -67,6 +67,21 @@ class AvatarFactory(factory.Factory):
 class TeamFactory(factory.Factory):
     FACTORY_FOR = Team
 
+    competition = factory.SubFactory(CompetitionFactory)
+    name = factory.Sequence(lambda n: "Team #%s" % n)
+
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        """Register some users and add them as members of the new team"""
+        num_choices = int(kwargs.pop('num_members', 3))
+        team = super(TeamFactory, cls)._prepare(create, **kwargs)
+        if team.members.count() == 0:
+            for _i in range(num_choices):
+                u = UserFactory.create()
+                RegistrationFactory.create(user=u, competition=team.competition)
+                team.members.add(u)
+        return team
+
 
 class ScoreFactory(factory.Factory):
     FACTORY_FOR = Score
