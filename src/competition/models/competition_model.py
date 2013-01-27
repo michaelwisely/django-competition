@@ -17,6 +17,11 @@ class Competition(models.Model):
     class Meta:
         app_label = 'competition'
         ordering = ['-is_running', '-is_open', '-start_time']
+        permissions = (
+            ("moderate_teams", "Can moderate team names and avatars"),
+            ("view_registrations", "Can view competitor registrations"),
+            ("mark_paid", "Can mark a registration as paid"),
+        )
 
     # Typical info
     name = models.CharField(max_length=50, unique=True,
@@ -71,14 +76,19 @@ class Competition(models.Model):
         registration for this competition, else return false"""
         return self.registration_set.filter(user=user, active=True).exists()
 
+    @staticmethod
+    def get_organizer_permissions():
+        """Returns the permission codes for a competition organizer"""
+        return [p[0] for p in Competition._meta.permissions]
+
 
 @receiver(pre_save, sender=Competition)
 def competition_pre_save(sender, instance, **kwargs):
     """Called before a Competition is saved
+
+    Updates the competition's slug
     """
-    # Set instance's slug if necessary
-    if instance.slug == '':
-        instance.slug = slugify(instance.name)
+    instance.slug = slugify(instance.name)
 
 
 @receiver(pre_delete, sender=Competition)
