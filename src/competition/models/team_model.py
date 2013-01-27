@@ -16,6 +16,7 @@ class Team(models.Model):
     class Meta:
         app_label = 'competition'
         unique_together = (('competition', 'slug'),)
+        ordering = ['name']
 
     competition = models.ForeignKey(Competition)
     members = models.ManyToManyField(User)
