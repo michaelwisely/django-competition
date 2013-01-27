@@ -49,14 +49,20 @@ class TeamModelTest(FancyTestCase):
         t.add_team_member(self.alice)
         self.assertEqual(2, t.members.count())
 
+    def test_add_team_member_permissions(self):
+        """add_team_member method updates user permissions"""
+        t = self.space_teams[0]
+        t.add_team_member(self.alice)
+        self.assertTrue(self.alice.has_perm("change_team", t))
+
     def test_add_team_member_max_team_size(self):
         """add_team_member throws an exception if team is full"""
         t = TeamFactory.create(name="Team Awesome", competition=self.space,
-                               num_team_members=3)
+                               num_members=3)
         with self.assertRaises(TeamException):
             t.add_team_member(self.alice)
 
-    def test_add_team_member_max_team_size(self):
+    def test_add_team_member_remove_from_old_teams(self):
         """add_team_member boots users off old teams"""
         t0 = self.space_teams[0]
         t1 = self.space_teams[1]
@@ -80,3 +86,13 @@ class TeamModelTest(FancyTestCase):
         # Remove member 2, team doesn't exist anymore
         t.remove_team_member(member2)
         self.assertFalse(Team.objects.filter(pk=t.pk).exists())
+
+    def test_remove_team_member_permissions(self):
+        """remove_team_member updates user permissions"""
+        t = TeamFactory.create(name="Team Awesome", competition=self.space,
+                               num_members=2)
+        member1 = t.members.all()[0]
+
+        self.assertTrue(member1.has_perm("change_team", t))
+        t.remove_team_member(member1)
+        self.assertFalse(member1.has_perm("change_team", t))
