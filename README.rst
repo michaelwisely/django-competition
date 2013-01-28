@@ -2,6 +2,10 @@
  django-competition
 ====================
 
+.. image:: https://travis-ci.org/michaelwisely/django-competition.png
+  :target: https://travis-ci.org/michaelwisely/django-competition
+  :alt: Build Status
+
 This is a (hopefully) reusable Django_ application for hosting various
 competitions. It's being developed to help run MegaMinerAI_, an
 artificial intelligence programming competition held every semester at
