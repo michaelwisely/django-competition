@@ -12,6 +12,7 @@ from competition.models.registration_model import RegistrationQuestionChoice
 from competition.models.registration_model import RegistrationQuestionResponse
 from competition.models.score_model import Score
 from competition.models.team_model import Team
+from competition.models.invitation_model import Invitation
 
 
 ##############################################################################
@@ -147,6 +148,9 @@ class RegistrationQuestionResponseAdmin(admin.ModelAdmin):
 class TeamAdmin(admin.ModelAdmin):
     pass
 
+class InvitationAdmin(admin.ModelAdmin):
+    pass
+
 
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Game, GameAdmin)
@@ -157,3 +161,4 @@ admin.site.register(RegistrationQuestion, RegistrationQuestionAdmin)
 admin.site.register(RegistrationQuestionResponse,
                     RegistrationQuestionResponseAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Invitation, InvitationAdmin)
