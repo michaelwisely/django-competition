@@ -100,4 +100,8 @@ def competition_pre_delete(sender, instance, **kwargs):
 
 @receiver(post_syncdb, sender=Competition)
 def my_callback(sender, **kwargs):
-    Group.objects.create(name="Competition Staff")
+    comp_content_type = ContentType.objects.get(app_label='competition',
+                                                model='competition')
+    staff = Group.objects.create(name="Competition Staff")
+    perms = Permission.objects.filter(content_type=comp_content_type)
+    staff.permissions = perms
