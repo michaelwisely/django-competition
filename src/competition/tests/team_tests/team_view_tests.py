@@ -115,7 +115,47 @@ class TeamViewsTest(FancyTestCase):
             resp = self.client.post(url, data={'name': 'Another Team'})
         self.assert404(resp)
 
-    @skip("not implemented")
+    def test_leave_team(self):
+        """Confiming leaving a team causes user to leave team"""
+        url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
+        t = TeamFactory.create(competition=self.space, num_members=1)
+        t.members.add(self.alice)
+
+        self.assertEqual(2, t.members.count())   # Sanity check
+
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertEqual(200, resp.status_code)
+            self.assertIn("Are you sure", resp.context['question'])
+
+            resp = self.client.post(url, data={'confirmed': True}, follow=True)
+            self.assertRedirects(resp, self.space.get_absolute_url())
+            self.assertEqual(1, t.members.count())
+            self.assertFalse(self.alice.has_perm("change_team", t))
+            self.assertTrue(self.alice.has_perm("create_team", self.space))
+
+    def test_leave_team_no_team(self):
+        """Users can't leave a team if they're not on a team"""
+        url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertEqual(404, resp.status_code)
+
+        self.assertFalse(self.alice.has_perm("change_team"))
+        self.assertTrue(self.alice.has_perm("create_team", self.space))
+
     def test_team_deleted(self):
         """Teams get deleted when everyone leaves"""
-        
+        url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
+        t = TeamFactory.create(competition=self.space, num_members=0)
+        t.members.add(self.alice)
+
+        # Sanity checks
+        self.assertTrue(Team.objects.filter(pk=t.pk).exists())
+        self.assertEqual(1, t.members.count())
+
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.post(url, data={'confirmed': True}, follow=True)
+            self.assertRedirects(resp, self.space.get_absolute_url())
+            self.assertFalse(Team.objects.filter(pk=t.pk).exists())
+
