@@ -1,5 +1,6 @@
 from django import forms
 from django.http import Http404
+from django.contrib import messages
 from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404, redirect
@@ -137,3 +138,45 @@ class ConfirmationMixin(FormView):
     def disagreed(self):
         """If the user disagreed, redirect them to the success url"""
         return redirect(self.get_success_url())
+
+
+class RequireRunningMixin(View):
+    """This mixin throws a 404 if the current competition is not running
+    """
+    error_message = "You cannot do that because the competition is not running"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_competition(request).is_running:
+            message = self.get_error_message(request)
+            messages.info(request, message)
+            return Http404(message)
+
+        parent = super(RequireRunningMixin, self)
+        return parent.dispatch(request, *args, **kwargs)
+
+    def get_competition(self, request):
+        raise Exception("get_competition() not implemented")
+
+    def get_error_message(self, request):
+        return self.error_message
+
+
+class RequireOpenMixin(View):
+    """This mixin throws a 404 if the current competition is not open
+    """
+    error_message = "You cannot do that because the competition is not open"
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.get_competition(request).is_open:
+            message = self.get_error_message(request)
+            messages.info(request, message)
+            return Http404(message)
+
+        parent = super(RequireRunningMixin, self)
+        return parent.dispatch(request, *args, **kwargs)
+
+    def get_competition(self, request):
+        raise Exception("get_competition() not implemented")
+
+    def get_error_message(self, request):
+        return self.error_message
