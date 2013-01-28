@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <ul>  
+    {% for invitation in invitations %}
+      <li>
+        <a href="{{ invitation.get_absolute_url }}">
+          From {{ invitation.sender }}
+        </a>
+		<p>
+		  {{ invitation.message }}		  
+		</p>		  
+      </li>
+    {% endfor %}  
+  </ul>
+{% endblock %}

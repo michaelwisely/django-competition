@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}  
+  <h1>Invitation to {{ invitation.team.name }}</h1>
+  <ul>
+	<li>sent from: {{ invitation.sender }}</li>
+	<li>message: {{ invitation.message	}}</li>
+	<li>sent at: {{ invitation.sent }}</li>
+	<li>read? {{ invitation.read }}</li>
+	<li>response? {{ invitation.response|default:"None" }}</li>
+  </ul>
+{% endblock %}
