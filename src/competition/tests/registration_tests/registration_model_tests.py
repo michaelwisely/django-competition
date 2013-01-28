@@ -19,18 +19,6 @@ class RegistrationModelTest(FancyTestCase):
         self.bob_reg = RegistrationFactory.create(user=self.bob,
                                                   competition=self.space)
 
-    def test_permissions_set(self):
-        """competition.create_team set for registered users"""
-        # True, since alice is registered for space
-        self.assertTrue(self.alice.has_perm("create_team", self.space))
-        # False since she's not registered for galapagos
-        self.assertFalse(self.alice.has_perm("create_team", self.galapagos))
-
-    def test_permission_unset(self):
-        """competition.create_team revoked for deactivated users"""
-        self.alice_reg.deactivate()
-        self.assertFalse(self.alice.has_perm("create_team", self.space))
-
     def test_left_teams(self):
         """deactivation causes users to leave teams"""
         t = TeamFactory.create(competition=self.space, num_members=0)

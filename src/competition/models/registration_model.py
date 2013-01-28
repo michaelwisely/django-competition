@@ -4,8 +4,6 @@ from django.core.exceptions import ValidationError
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 
-from guardian.shortcuts import assign, remove_perm
-
 from competition.signals import registration_deactivated
 from competition.models.competition_model import Competition
 
@@ -103,15 +101,8 @@ class RegistrationQuestionResponse(models.Model):
 @receiver(post_save, sender=Registration)
 def registration_post_save(sender, instance, created, raw, **kwargs):
     """Registration has been created and saved
-
-    * Assign user competition.create_team permission if newly created
     """
-    # DO NOT modify any other tables if raw is True. raw indicates
-    # that Django is setting up the database tables, and no other
-    # tables should be modified.
-    if created and not raw:
-        # If the user just registered, assign their permissions
-        assign("create_team", instance.user, instance.competition)
+    pass
 
 @receiver(registration_deactivated)
 def received_registration_deactivated(sender, **kwargs):
@@ -119,12 +110,8 @@ def received_registration_deactivated(sender, **kwargs):
 
     ``sender`` is the registration being deactivated
 
-    * Revoke the user's permission to create teams
     * Remove the user from any teams they may be on
     """
-    # Revoke permissions to create teams
-    remove_perm("create_team", sender.user, sender.competition)
-
     # Remove the user from any teams they're on for this competition
     old_teams = sender.user.team_set.filter(competition=sender.competition)
     for team in old_teams:

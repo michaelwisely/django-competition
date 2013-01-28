@@ -49,13 +49,6 @@ class TeamModelTest(FancyTestCase):
         t.add_team_member(self.alice)
         self.assertEqual(2, t.members.count())
 
-    def test_add_team_member_permissions(self):
-        """add_team_member method updates user permissions"""
-        t = self.space_teams[0]
-        t.add_team_member(self.alice)
-        self.assertTrue(self.alice.has_perm("change_team", t))
-        self.assertFalse(self.alice.has_perm("create_team", t.competition))
-
     def test_add_team_member_max_team_size(self):
         """add_team_member throws an exception if team is full"""
         t = TeamFactory.create(name="Team Awesome", competition=self.space,
@@ -88,29 +81,12 @@ class TeamModelTest(FancyTestCase):
         t.remove_team_member(member2)
         self.assertFalse(Team.objects.filter(pk=t.pk).exists())
 
-    def test_remove_team_member_permissions(self):
-        """remove_team_member updates user permissions"""
-        t = TeamFactory.create(name="Team Awesome", competition=self.space,
-                               num_members=2)
-        member1 = t.members.all()[0]
-
-        self.assertTrue(member1.has_perm("change_team", t))
-        self.assertFalse(member1.has_perm("create_team", t.competition))
-        t.remove_team_member(member1)
-        self.assertFalse(member1.has_perm("change_team", t))
-        self.assertTrue(member1.has_perm("create_team", t.competition))
-
     def test_members_clear(self):
-        """team.members.clear() removes permissions"""
+        """team.members.clear() removes all members"""
         t = TeamFactory.create(name="Team Awesome", competition=self.space,
                                num_members=2)
         members = t.members.all()
-        for member in members:
-            self.assertTrue(member.has_perm("change_team", t))
-            self.assertFalse(member.has_perm("create_team", t.competition))
-
         t.members.clear()
 
         for member in members:
-            self.assertFalse(member.has_perm("change_team", t))
-            self.assertTrue(member.has_perm("create_team", t.competition))
+            self.assertFalse(t.is_user_on_team(member))

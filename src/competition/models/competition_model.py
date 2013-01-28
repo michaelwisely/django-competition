@@ -18,7 +18,6 @@ class Competition(models.Model):
         app_label = 'competition'
         ordering = ['-is_running', '-is_open', '-start_time']
         permissions = (
-            ("create_team", "Can create a new team for this competition"),
             ("moderate_teams", "Can moderate team names and avatars"),
             ("view_registrations", "Can view competitor registrations"),
             ("mark_paid", "Can mark a registration as paid"),
@@ -77,6 +76,11 @@ class Competition(models.Model):
         registration for this competition, else return false"""
         return self.registration_set.filter(user=user, active=True).exists()
 
+    def is_user_organizer(self, user):
+        """Return true if the given user is an organizer for this
+        competition, else false"""
+        return self.organizer_set.filter(user=user).exists()
+
     @staticmethod
     def get_organizer_permissions():
         """Returns the permission codes for a competition organizer"""
@@ -101,4 +105,8 @@ def competition_pre_delete(sender, instance, **kwargs):
 
 @receiver(post_syncdb, sender=Competition)
 def my_callback(sender, **kwargs):
-    Group.objects.create(name="Competition Staff")
+    comp_content_type = ContentType.objects.get(app_label='competition',
+                                                model='competition')
+    staff = Group.objects.create(name="Competition Staff")
+    perms = Permission.objects.filter(content_type=comp_content_type)
+    staff.permissions = perms
