@@ -1,6 +1,7 @@
 from django.db import IntegrityError
 from django.http import Http404
 from django.contrib import messages
+from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 
 from guardian.mixins import PermissionRequiredMixin
@@ -59,7 +60,7 @@ class TeamCreationView(UserRegisteredMixin,
         msg += "that you're not already on a team."
         messages.info(request, msg)
 
-        raise Http404("User is already on a team")
+        raise Http404("User is already on a team or isn't registered")
 
     def form_valid(self, form):
         try:
@@ -76,3 +77,30 @@ class TeamCreationView(UserRegisteredMixin,
         kwargs = super(TeamCreationView, self).get_form_kwargs()
         kwargs['instance'] = Team(competition=self.get_competition())
         return kwargs
+
+
+class TeamLeaveView(UserRegisteredMixin,
+                    ConfirmationMixin):
+    template_name = 'competition/team/team_leave.html'
+
+    def get_team(self):
+        return get_object_or_404(Team, members=self.request.user,
+                                 competition=self.get_competition())
+
+    def get_question(self):
+        team = self.get_team()
+        return "Are you sure you want to leave %s?" % team.name
+
+    def get_check_box_label(self):
+        return "Yes I'm sure"
+
+    def agreed(self):
+        team = self.get_team()
+        team.members.remove(self.request.user)
+
+        msg = "Successfully left team %s" % team.name
+        messages.success(self.request, msg)
+        return redirect(self.get_competition())
+
+    def disagreed(self):
+        return redirect(self.get_team())

@@ -5,6 +5,7 @@ from competition.views.competition_views import CompetitionDetailView
 from competition.views.team_views import TeamListView
 from competition.views.team_views import TeamDetailView
 from competition.views.team_views import TeamCreationView
+from competition.views.team_views import TeamLeaveView
 from competition.views.registration_views import RegistrationView
 from competition.views.registration_views import UnregisterView
 
@@ -30,6 +31,9 @@ urlpatterns = patterns(
     url(r'^competition/(?P<comp_slug>[\w-]+)/team-create/$',
         TeamCreationView.as_view(),
         name='team_create'),
+    url(r'^competition/(?P<comp_slug>[\w-]+)/team-leave/$',
+        TeamLeaveView.as_view(),
+        name='team_leave'),
 
     # Registration Views
     url(r'^competition/(?P<comp_slug>[\w-]+)/register/$',

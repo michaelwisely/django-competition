@@ -67,6 +67,11 @@ class Team(models.Model):
         # Remove them from the team
         self.members.remove(user)
 
+    def is_user_on_team(self, user):
+        """Returns true if ``user`` is on the calling team, else
+        False"""
+        return self.members.filter(pk=user.pk).exists()
+
 
 @receiver(pre_save, sender=Team)
 def team_pre_save(sender, instance, **kwargs):
