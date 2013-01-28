@@ -2,7 +2,7 @@
  django-competition
 ====================
 
-.. image:: https://travis-ci.org/michaelwisely/django-competition.png
+.. image:: https://travis-ci.org/michaelwisely/django-competition.png?branch=develop
   :target: https://travis-ci.org/michaelwisely/django-competition
   :alt: Build Status
 
