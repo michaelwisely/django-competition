@@ -82,7 +82,7 @@ class TeamModelTest(FancyTestCase):
         self.assertFalse(Team.objects.filter(pk=t.pk).exists())
 
     def test_members_clear(self):
-        """team.members.clear() removes permissions"""
+        """team.members.clear() removes all members"""
         t = TeamFactory.create(name="Team Awesome", competition=self.space,
                                num_members=2)
         members = t.members.all()

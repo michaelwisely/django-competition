@@ -1,15 +1,12 @@
 from django.db import IntegrityError
-from django.http import Http404
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
 
-from guardian.mixins import PermissionRequiredMixin
-
 from competition.models.team_model import Team
-from competition.models.competition_model import Competition
 from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
-                                      UserRegisteredMixin, ConfirmationMixin)
+                                      UserRegisteredMixin, ConfirmationMixin,
+                                      CheckAllowedMixin)
 from competition.forms.team_forms import TeamForm
 
 
@@ -35,32 +32,38 @@ class TeamDetailView(LoggedInMixin, CompetitionViewMixin, DetailView):
 
 
 class TeamCreationView(UserRegisteredMixin,
-                       PermissionRequiredMixin,
+                       CheckAllowedMixin,
                        CreateView):
     """Allow users to create new teams"""
     template_name = 'competition/team/team_create.html'
     form_class = TeamForm
-    permission_required = 'competition.create_team'
 
-    def get_object(self):
-        """Called by PermissionRequiredMixin to determine if the user
-        has the create_team permission for this competition"""
-        return self.get_competition()
+    def get_team(self, request):
+        """Returns any teams the user may already be on. We have
+        access to get_competition since UserRegisteredMixin inherits
+        from CompetitionViewMixin. Also, we have access to
+        self.request.user since we inherit UserRegisteredMixin also
+        inherits from FancyView"""
+        user = request.user
+        competition = self.get_competition()
+        try:
+            return user.team_set.get(competition=competition)
+        except Team.DoesNotExist:
+            return None
 
-    def on_permission_check_fail(self, request, response, obj=None):
-        """Called when the user doesn't have permission to create a
-        new team
+    def check_if_allowed(self, request):
+        """Checks to see if the user is already on a team. If they
+        are, send them a 404"""
+        # If they're not on a team, they can create a team.
+        return self.get_team(request) is None
+        
 
-        request - the user's request
-        response - the automatically generated response redirect to /login/
-        obj - the object fetched by get_object
+    def get_error_message(self, request):
+        """Called when the user isn't allowed to create a new team
         """
-        msg = "Cannot create a new team at this time. "
-        msg += "Make sure that you're registered and "
-        msg += "that you're not already on a team."
-        messages.info(request, msg)
-
-        raise Http404("User is already on a team or isn't registered")
+        msg = 'If you would like to create a new team, '
+        msg += 'please leave "%s" first' % self.get_team(request).name
+        return msg
 
     def form_valid(self, form):
         try:

@@ -21,6 +21,7 @@ class TeamViewsTest(FancyTestCase):
                                 for _ in range(5)]
         self.alice = UserFactory.create(username="alice")
         self.bob = UserFactory.create(username="bob")
+        self.carl = UserFactory.create(username="carl")
         # Register Alice and Bob for Space
         self.alice_reg = RegistrationFactory.create(user=self.alice,
                                                     competition=self.space)
@@ -79,6 +80,16 @@ class TeamViewsTest(FancyTestCase):
         self.assertEqual(1, team.members.count())
         self.assertEqual('Team Awesome', team.name)
         self.assertEqual('team-awesome', team.slug)  # Make sure slug got set
+
+    def test_create_team_unregistered(self):
+        """unregistered users cannot create teams"""
+        num_teams = Team.objects.all().count()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("carl", "123"):
+            resp = self.client.get(url)
+            self.assert404(resp)
+
+        self.assertEqual(num_teams, Team.objects.all().count())
 
     def test_create_team_duplicate(self):
         """Users cannot create duplicate teams"""

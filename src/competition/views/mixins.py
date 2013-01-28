@@ -140,25 +140,82 @@ class ConfirmationMixin(FormView):
         return redirect(self.get_success_url())
 
 
-class RequireRunningMixin(View):
+class CheckAllowedMixin(View):
+    """This mixin throws a 404 if certain conditions are not met.
+
+    At the beginning of the request, this mixin calls
+    ``check_if_allowed()`` to see if the user is allowed to view the
+    page. If not, it calls ``get_error_message()``, sets an error
+    message with level ``self.message_level`` and throws a 404.
+
+    If the user is allowed to view the page, everything proceeds as
+    usual.
+    """
+    error_message = "You cannot do that"
+    message_level = messages.INFO
+
+    def dispatch(self, request, *args, **kwargs):
+        if not self.check_if_allowed(request):
+            msg = self.get_error_message(request)
+            messages.add_message(request, self.message_level, msg)
+            raise Http404(msg)
+
+        parent = super(CheckAllowedMixin, self)
+        return parent.dispatch(request, *args, **kwargs)
+
+    def check_if_allowed(self, request):
+        """Called to see if a user is allowed to view this page. It
+        should return True if they're allowed, and False otherwise.
+        """
+        raise Exception("check_if_allowed() is not overridden.")
+
+    def get_error_message(self, request):
+        """Called to get the user's error message. If not overridden,
+        we'll just use ``self.error_message``
+        """
+        return self.error_message
+
+
+class RequireRunningMixin(CheckAllowedMixin):
     """This mixin throws a 404 if the current competition is not running
     """
     error_message = "You cannot do that because the competition is not running"
 
-    def dispatch(self, request, *args, **kwargs):
-        if not self.get_competition(request).is_running:
-            message = self.get_error_message(request)
-            messages.info(request, message)
-            return Http404(message)
-
-        parent = super(RequireRunningMixin, self)
-        return parent.dispatch(request, *args, **kwargs)
+    def check_if_allowed(self, request):
+        """Called to see if a user is allowed to view this page.
+        """
+        # If the competition is running, they're allowed to view it
+        return self.get_competition(request).is_running
 
     def get_competition(self, request):
+        """Gets the instance of the competition to check.  
+
+        You could just inherit from CompetitionViewMixin, which
+        provides get_competition, just make sure that it's listed
+        before RequireRunningMixin when inheriting in the view
+        """
         raise Exception("get_competition() not implemented")
 
-    def get_error_message(self, request):
-        return self.error_message
+
+class RequireNotRunningMixin(CheckAllowedMixin):
+    """This mixin throws a 404 if the current competition is running
+    """
+    error_message = "You cannot do that because the competition is running"
+
+    def check_if_allowed(self, request):
+        """Called to see if a user is allowed to view this page.
+        """
+        # If the competition is running, they're NOT allowed to view it
+        return not self.get_competition(request).is_running
+
+    def get_competition(self, request):
+        """Gets the instance of the competition to check.  
+
+        You could just inherit from CompetitionViewMixin, which
+        provides get_competition, just make sure that it's listed
+        before RequireRunningMixin when inheriting in the view
+        """
+        raise Exception("get_competition() not implemented")
 
 
 class RequireOpenMixin(View):
@@ -166,17 +223,65 @@ class RequireOpenMixin(View):
     """
     error_message = "You cannot do that because the competition is not open"
 
-    def dispatch(self, request, *args, **kwargs):
-        if not self.get_competition(request).is_open:
-            message = self.get_error_message(request)
-            messages.info(request, message)
-            return Http404(message)
-
-        parent = super(RequireRunningMixin, self)
-        return parent.dispatch(request, *args, **kwargs)
+    def check_if_allowed(self, request):
+        """Called to see if a user is allowed to view this page.
+        """
+        # If the competition is open, they're allowed to view it
+        return self.get_competition(request).is_open
 
     def get_competition(self, request):
+        """Gets the instance of the competition to check.  
+
+        You could just inherit from CompetitionViewMixin, which
+        provides get_competition, just make sure that it's listed
+        before RequireRunningMixin when inheriting in the view
+        """
         raise Exception("get_competition() not implemented")
 
-    def get_error_message(self, request):
-        return self.error_message
+
+class RequireNotOpenMixin(View):
+    """This mixin throws a 404 if the current competition is not open
+    """
+    error_message = "You cannot do that because the competition is open"
+
+    def check_if_allowed(self, request):
+        """Called to see if a user is allowed to view this page.
+        """
+        # If the competition is open, they're NOT allowed to view it
+        return not self.get_competition(request).is_open
+
+    def get_competition(self, request):
+        """Gets the instance of the competition to check.  
+
+        You could just inherit from CompetitionViewMixin, which
+        provides get_competition, just make sure that it's listed
+        before RequireRunningMixin when inheriting in the view
+        """
+        raise Exception("get_competition() not implemented")
+
+
+class RequireOrganizerMixin(CheckAllowedMixin):
+    """This mixin throws a 404 if the user isn't an organizer for this
+    competition
+    """
+    error_message = "Only organizers can do that"
+
+    def check_if_allowed(self, request):
+        user = self.get_user(request)
+        competition = self.get_competition(request)
+        return competition.is_user_organizer(user)
+
+    def get_competition(self, request):
+        """Gets the instance of the competition to check.  
+
+        You could just inherit from CompetitionViewMixin, which
+        provides get_competition, just make sure that it's listed
+        before RequireRunningMixin when inheriting in the view
+        """
+        raise Exception("get_competition() not implemented")
+
+    def get_user(self, request):
+        """Gets the instance of the user to check
+        """
+        raise Exception("get_user() not implemented")
+
