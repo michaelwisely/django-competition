@@ -17,6 +17,9 @@ db:
 	python bin/django syncdb --noinput
 	python bin/django loaddata src/competition/fixtures/*.yaml
 
+test: default
+	python bin/nosey
+
 clean:
 	find ./ -name *.pyc -delete
 	find ./ -name *.~ -delete
