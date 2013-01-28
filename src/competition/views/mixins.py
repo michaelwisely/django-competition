@@ -19,13 +19,16 @@ class CompetitionViewMixin(View):
     def get_competition(self):
         """Returns the competition for the given view.  This requires
         that self.kwargs be set"""
-        try:
-            comp_slug = self.kwargs['comp_slug']
-        except KeyError:
-            logger.error("Couldn't find comp_slug in kwargs")
-            raise Http404
+        if not hasattr(self, "_comp"):
+            try:
+                comp_slug = self.kwargs['comp_slug']
+                self._comp = get_object_or_404(Competition, slug=comp_slug)
+            except KeyError:
+                msg = "Couldn't find comp_slug in kwargs"
+                logger.error(msg)
+                raise Http404(msg)
 
-        return get_object_or_404(Competition, slug=comp_slug)
+        return self._comp
 
     def dispatch(self, request, *args, **kwargs):
         """Overrides dispatch function to load competition
