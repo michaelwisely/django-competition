@@ -12,6 +12,7 @@ from competition.exceptions import TeamException
 from competition.models.competition_model import Competition
 from competition.models.avatar_model import Avatar
 from competition.validators import validate_name
+from competition.signals import disable_for_loaddata
 
 import logging
 logger = logging.getLogger(__name__)
@@ -75,6 +76,7 @@ def team_pre_save(sender, instance, **kwargs):
     instance.slug = slugify(instance.name)
 
 @receiver(m2m_changed, sender=Team.members.through)
+@disable_for_loaddata
 def team_m2m_changed(sender, instance, action, reverse,
                      model, pk_set, **kwargs):
     """Called when a Team's members list is changed"""

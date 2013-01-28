@@ -101,13 +101,16 @@ class RegistrationQuestionResponse(models.Model):
 
 
 @receiver(post_save, sender=Registration)
-def registration_post_save(sender, instance, created, **kwargs):
+def registration_post_save(sender, instance, created, raw, **kwargs):
     """Registration has been created and saved
 
     * Assign user competition.create_team permission if newly created
     """
-    # If the user just registered...
-    if created:
+    # DO NOT modify any other tables if raw is True. raw indicates
+    # that Django is setting up the database tables, and no other
+    # tables should be modified.
+    if created and not raw:
+        # If the user just registered, assign their permissions
         assign("create_team", instance.user, instance.competition)
 
 @receiver(registration_deactivated)

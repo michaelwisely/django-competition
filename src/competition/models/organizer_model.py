@@ -39,6 +39,10 @@ def organizer_post_save(sender, instance, created, **kwargs):
 
     Adds competition-specific permissions to corresponding user
     """
+    # If django is filling in fixtures, don't change anything
+    if kwargs['raw']:
+        return
+
     # If we just made this organizer, grant them organizer permissions
     if created:
         for permission_code in Competition.get_organizer_permissions():
