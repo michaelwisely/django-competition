@@ -134,6 +134,21 @@ class TeamViewsTest(FancyTestCase):
             self.assertFalse(self.alice.has_perm("change_team", t))
             self.assertTrue(self.alice.has_perm("create_team", self.space))
 
+    def test_leave_team_decline(self):
+        """Declining leaving a team does nothing"""
+        url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
+        t = TeamFactory.create(competition=self.space, num_members=1)
+        t.members.add(self.alice)
+
+        self.assertEqual(2, t.members.count())   # Sanity check
+
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.post(url, data={'confirmed': False}, follow=True)
+            self.assertRedirects(resp, t.get_absolute_url())
+            self.assertEqual(2, t.members.count())
+            self.assertTrue(self.alice.has_perm("change_team", t))
+            self.assertFalse(self.alice.has_perm("create_team", self.space))
+
     def test_leave_team_no_team(self):
         """Users can't leave a team if they're not on a team"""
         url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
