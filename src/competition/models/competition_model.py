@@ -18,7 +18,6 @@ class Competition(models.Model):
         app_label = 'competition'
         ordering = ['-is_running', '-is_open', '-start_time']
         permissions = (
-            ("create_team", "Can create a new team for this competition"),
             ("moderate_teams", "Can moderate team names and avatars"),
             ("view_registrations", "Can view competitor registrations"),
             ("mark_paid", "Can mark a registration as paid"),

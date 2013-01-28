@@ -131,8 +131,6 @@ class TeamViewsTest(FancyTestCase):
             resp = self.client.post(url, data={'confirmed': True}, follow=True)
             self.assertRedirects(resp, self.space.get_absolute_url())
             self.assertEqual(1, t.members.count())
-            self.assertFalse(self.alice.has_perm("change_team", t))
-            self.assertTrue(self.alice.has_perm("create_team", self.space))
 
     def test_leave_team_decline(self):
         """Declining leaving a team does nothing"""
@@ -146,8 +144,6 @@ class TeamViewsTest(FancyTestCase):
             resp = self.client.post(url, data={'confirmed': False}, follow=True)
             self.assertRedirects(resp, t.get_absolute_url())
             self.assertEqual(2, t.members.count())
-            self.assertTrue(self.alice.has_perm("change_team", t))
-            self.assertFalse(self.alice.has_perm("create_team", self.space))
 
     def test_leave_team_no_team(self):
         """Users can't leave a team if they're not on a team"""
@@ -155,9 +151,6 @@ class TeamViewsTest(FancyTestCase):
         with self.loggedInAs("alice", "123"):
             resp = self.client.get(url)
             self.assertEqual(404, resp.status_code)
-
-        self.assertFalse(self.alice.has_perm("change_team"))
-        self.assertTrue(self.alice.has_perm("create_team", self.space))
 
     def test_team_deleted(self):
         """Teams get deleted when everyone leaves"""
