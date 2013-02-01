@@ -183,7 +183,6 @@ class CheckAllowedMixin(View):
         raise Http404(self.get_error_message(request))
 
 
-
 class RequireRunningMixin(CheckAllowedMixin):
     """This mixin throws a 404 if the current competition is not running
     """
@@ -226,7 +225,7 @@ class RequireNotRunningMixin(CheckAllowedMixin):
         raise Exception("get_competition() not implemented")
 
 
-class RequireOpenMixin(View):
+class RequireOpenMixin(CheckAllowedMixin):
     """This mixin throws a 404 if the current competition is not open
     """
     error_message = "You cannot do that because the competition is not open"
@@ -247,7 +246,7 @@ class RequireOpenMixin(View):
         raise Exception("get_competition() not implemented")
 
 
-class RequireNotOpenMixin(View):
+class RequireNotOpenMixin(CheckAllowedMixin):
     """This mixin throws a 404 if the current competition is not open
     """
     error_message = "You cannot do that because the competition is open"
