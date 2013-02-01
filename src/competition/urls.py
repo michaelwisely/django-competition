@@ -54,7 +54,7 @@ urlpatterns = patterns(
     url(r'^invitations/(?P<pk>\d+)/$',
         InvitationDetailView.as_view(),
         name='invitation_detail'),
-    url(r'^invitations/invite/(?P<invitee_id>\d+)/to/(?P<team_id>\d+)/$',
+    url(r'^invitations/invite/$',
         InvitationCreateView.as_view(),
         name='invitation_create'),
     )

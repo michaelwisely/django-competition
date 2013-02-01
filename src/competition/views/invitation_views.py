@@ -10,7 +10,8 @@ from guardian.mixins import PermissionRequiredMixin
 from competition.models.team_model import Team
 from competition.models.invitation_model import Invitation
 from competition.views.mixins import (LoggedInMixin, UserRegisteredMixin,
-                                      ConfirmationMixin, RequireOpenMixin)
+                                      ConfirmationMixin, RequireOpenMixin,
+                                      CheckAllowedMixin)
 from competition.forms.invitation_forms import InvitationForm
 
 
@@ -38,52 +39,58 @@ class InvitationDetailView(LoggedInMixin, DetailView):
 
 
 class InvitationCreateView(LoggedInMixin,
-                           PermissionRequiredMixin,
                            RequireOpenMixin,
                            CreateView):
     """Allow users to create invitations"""
     template_name = 'competition/invitation/invitation_create.html'
     form_class = InvitationForm
-    permission_required = 'competition.change_team'
-
-    def dispatch(self, request, *args, **kwargs):
-        self.request = request
-        self.kwargs = kwargs
-        return super(InvitationCreateView, self).dispatch(request, *args, **kwargs)
-
-    def get_object(self):
-        """Called by PermissionRequiredMixin to determine if the user
-        has the change_team permission for this team"""
-        team = get_object_or_404(self.request.user.team_set,
-                                 pk=self.kwargs['team_id'])
-        print "Using team: ", team
-        print "Perms: ", self.request.user.get_all_permissions()
-        return team
 
     def get_competition(self, request):
         """Called by RequireOpenMixin to determine if the competition
         is open. If it's not open, we throw a 404"""
         return self.get_object().competition
 
-    def on_permission_check_fail(self, request, response, obj=None):
-        """Called when the user doesn't have permission to invite a
-        user to a team
-        """
-        raise Http404("User doesn't have permissions to invite to team")
+    def get_team(self):
+        """If the user provided a 'team' query parameter, look up the
+        team. Otherwise return None"""
+        try:
+            team_id = self.request.GET['team']
+            return self.request.user.team_set.get(pk=team_id)
+        except (Team.DoesNotExist, KeyError):
+            return None
+
+    def get_invitee(self):
+        """If the user provided a 'team' query parameter, look up the
+        team. Otherwise return None"""
+        try:
+            invitee_id = self.request.GET['invitee']
+            return User.objects.get(pk=invitee_id)
+        except (User.DoesNotExist, KeyError):
+            return None
+
+    def get_form(self, form_class):
+        """Limit the teams that the user can choose from to the teams
+        that they are a member of"""
+        form = super(InvitationCreateView, self).get_form(form_class)
+        form.fields["team"].queryset = self.request.user.team_set
+        return form
 
     def get_form_kwargs(self):
-        team = self.get_object()
-        invitee = get_object_or_404(User, pk=self.kwargs['invitee_id'])
+        # Set up keyword arguments for a new Invitation
+        invitation_kwargs = (('sender', self.request.user),
+                             ('receiver', self.get_invitee()),
+                             ('team', self.get_team()))
 
-        # If the user's already on team, don't send them an invite.
-        if self.team.is_user_on_team(self.invitee):
-            msg = "Cannot invite %s to %s. They're already on that team."
-            msg = msg % (self.invitee.username, self.team.name)
-            messages.info(request, msg)
-            return redirect(self.team)        
+        # Filter out the values that are None (e.g., if the 'team'
+        # query parameter wasn't set, self.get_team() will be None, so
+        # we need to filter it out)
+        invitation_kwargs = dict((k, v) for (k, v) in invitation_kwargs
+                                 if v is not None)
 
-        kwargs = super(InvitationCreateView, self).get_form_kwargs()
-        kwargs['instance'] = Invitation(sender=self.request.user,
-                                        receiver=invitee,
-                                        team=self.team)
-        return kwargs
+        # Get the default form keyword arguments created by CreateView
+        form_kwargs = super(InvitationCreateView, self).get_form_kwargs()
+
+        # Set our instance with our special keyword arguments
+        form_kwargs['instance'] = Invitation(**invitation_kwargs)
+
+        return form_kwargs
