@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- CSS -->
-    <link href="/static/css/bootstrap.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/css/bootstrap-combined.min.css" rel="stylesheet">
     <link href="/static/css/sticky-footer.css" rel="stylesheet">
     <style type="text/css">
       .container .credit {
@@ -38,7 +38,7 @@
             <li><a href="#">Logged in as {{ user.username }}</a></li>
           {% else %}
             <li><a href="#">Not logged in</a></li>
-          {% endif %} 
+          {% endif %}
             <!-- <li><a href="index.html">Home</a></li> -->
             <!-- <li><a href="about_us.html">About Us</a></li> -->
           </ul>
@@ -48,13 +48,13 @@
       <!-- Begin page content -->
       <div class="container">
         <div class="content">
-		  {% if messages %}
-			<ul class="messages">
-			  {% for message in messages %}
-				<li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-			  {% endfor %}
-			</ul>
-		  {% endif %}
+          {% if messages %}
+            <ul class="messages">
+              {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
           {% block content%}
           {% endblock %}
         </div>
@@ -65,7 +65,7 @@
     <div id="footer">
       <div class="container">
         <p class="muted credit">
-          <a href="http://github.com/siggame">Django-Competition</a> a 
+          <a href="http://github.com/siggame">Django-Competition</a> a
           <a href="http://megaminerai.com">Missouri S&amp;T ACM SIG-Game</a> project
         </p>
       </div>
@@ -74,7 +74,7 @@
     <!-- JavaScript -->
     <!-- ==================================================  -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery-1.8.2.min.js"></script>
-    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.2.2/js/bootstrap.min.js"></script>
   </body>
 </html>
