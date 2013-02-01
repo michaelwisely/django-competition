@@ -157,7 +157,12 @@ class CheckAllowedMixin(View):
     message_level = messages.INFO
 
     def dispatch(self, request, *args, **kwargs):
-        if not self.check_if_allowed(request):
+        is_allowed = self.check_if_allowed(request)
+        if not isinstance(is_allowed, bool):
+            msg = "check_if_allowed method returned something "
+            msg += "other than True or False"
+            logger.warning(msg)
+        if not is_allowed:
             msg = self.get_error_message(request)
             messages.add_message(request, self.message_level, msg)
             return self.was_not_allowed(request)
