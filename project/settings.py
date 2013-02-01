@@ -23,9 +23,12 @@ NOSE_ARGS = ['--cover-package=competition',  # Only check the
                                              # competition package
                                              # when computing testing
                                              # code coverage
+
              '--verbosity=2',                # Slightly more verbose
                                              # output
+
              '--with-yanc',                  # Use colorized output
+
              '--with-achievements',          # Track achievements!
              ]
 
