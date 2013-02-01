@@ -5,6 +5,12 @@
 <form action="{{ form_action }}" class="form-horizontal" method="post">
   {% csrf_token %}
 
+  <ul>
+    {% for error in form.non_field_errors %}  
+      <li>{{ error }}</li>
+    {% endfor%}
+  </ul>  
+
   {% for field in form %}
     {% if field.is_hidden %}
       {{ field }}
