@@ -4,6 +4,8 @@ from competition_model import Competition
 
 from game_model import Game
 
+from invitation_model import Invitation
+
 from organizer_model import Organizer
 from organizer_model import OrganizerRole
 

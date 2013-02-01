@@ -17,6 +17,7 @@ class Competition(models.Model):
     class Meta:
         app_label = 'competition'
         ordering = ['-is_running', '-is_open', '-start_time']
+        get_latest_by = "created"
         permissions = (
             ("moderate_teams", "Can moderate team names and avatars"),
             ("view_registrations", "Can view competitor registrations"),

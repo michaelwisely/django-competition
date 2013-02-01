@@ -22,6 +22,7 @@ class Team(models.Model):
         app_label = 'competition'
         unique_together = (('competition', 'slug'),)
         ordering = ['name']
+        get_latest_by = "created"
 
     competition = models.ForeignKey(Competition)
     members = models.ManyToManyField(User)
@@ -43,7 +44,7 @@ class Team(models.Model):
         return ('team_detail', (), kwds)
 
     def __str__(self):
-        return "%s" % self.name
+        return "%s (%s)" % (self.name, self.competition.name)
 
     def add_team_member(self, new_user):
         """Adds a user to the calling team
@@ -69,6 +70,15 @@ class Team(models.Model):
         """Returns true if ``user`` is on the calling team, else
         False"""
         return self.members.filter(pk=user.pk).exists()
+
+    def num_invites_left(self):
+        """Returns the number of invites a team has left. 
+
+        e.g., if a competition allows teams of up to 3, and a team has
+        1 member on it, that member can send up to two invites"""
+        pending = self.invitation_set.filter(response=None)
+        max_members = self.competition.max_num_team_members
+        return max_members - (pending.count() + self.members.count())
 
 
 @receiver(pre_save, sender=Team)

@@ -34,6 +34,11 @@
         <div class="navbar-inner">
           <a class="brand" href="#">SIG-Game</a>
           <ul class="nav">
+          {% if user.is_authenticated %}
+            <li><a href="#">Logged in as {{ user.username }}</a></li>
+          {% else %}
+            <li><a href="#">Not logged in</a></li>
+          {% endif %} 
             <!-- <li><a href="index.html">Home</a></li> -->
             <!-- <li><a href="about_us.html">About Us</a></li> -->
           </ul>
