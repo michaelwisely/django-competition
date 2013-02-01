@@ -22,6 +22,7 @@ class Team(models.Model):
         app_label = 'competition'
         unique_together = (('competition', 'slug'),)
         ordering = ['name']
+        get_latest_by = "created"
 
     competition = models.ForeignKey(Competition)
     members = models.ManyToManyField(User)
@@ -43,7 +44,7 @@ class Team(models.Model):
         return ('team_detail', (), kwds)
 
     def __str__(self):
-        return "%s" % self.name
+        return "%s (%s)" % (self.name, self.competition.name)
 
     def add_team_member(self, new_user):
         """Adds a user to the calling team
