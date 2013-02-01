@@ -71,6 +71,15 @@ class Team(models.Model):
         False"""
         return self.members.filter(pk=user.pk).exists()
 
+    def num_invites_left(self):
+        """Returns the number of invites a team has left. 
+
+        e.g., if a competition allows teams of up to 3, and a team has
+        1 member on it, that member can send up to two invites"""
+        pending = self.invitation_set.filter(response=None)
+        max_members = self.competition.max_num_team_members
+        return max_members - (pending.count() + self.members.count())
+
 
 @receiver(pre_save, sender=Team)
 def team_pre_save(sender, instance, **kwargs):
