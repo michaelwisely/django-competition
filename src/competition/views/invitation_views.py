@@ -35,6 +35,14 @@ class InvitationDetailView(LoggedInMixin, DetailView):
         user = self.request.user
         return Invitation.objects.filter(Q(sender=user) | Q(receiver=user))
 
+    def get_object(self, queryset=None):
+        """When we fetch the invitation, mark it as read"""
+        print "BORK BORK BORK"
+        obj = super(InvitationDetailView, self).get_object(queryset)
+        obj.read = True
+        obj.save()
+        return obj
+
 
 class InvitationCreateView(LoggedInMixin,
                            CreateView):
