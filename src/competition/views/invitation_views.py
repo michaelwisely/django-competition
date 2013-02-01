@@ -164,6 +164,8 @@ class InvitationAcceptView(InvitationResponseView):
 
     def get_question(self):
         msg = "Are you sure you want to accept your invitation to join %s?"
+        msg += " Joining another team will cause you to automatically leave"
+        msg += " any teams that you're on right now."
         return msg % self.invitation.team.name
 
     def agreed(self):
