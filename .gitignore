@@ -30,3 +30,6 @@ secret_settings.py
 
 # Ignore nose-achievements data file
 .achievements
+
+# Ignore other nose files
+.noseids
