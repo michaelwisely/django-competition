@@ -146,7 +146,7 @@ class RegistrationQuestionResponseAdmin(admin.ModelAdmin):
 
 
 class TeamAdmin(admin.ModelAdmin):
-    pass
+    filter_horizontal = ('members',)
 
 class InvitationAdmin(admin.ModelAdmin):
     pass
