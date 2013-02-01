@@ -3,7 +3,7 @@ from django.core.urlresolvers import reverse
 from competition.models.invitation_model import Invitation
 from competition.tests.utils import FancyTestCase
 from competition.tests.factories import (UserFactory, CompetitionFactory,
-                                         TeamFactory)
+                                         TeamFactory, InvitationFactory)
 
 from unittest import skip
 
@@ -139,15 +139,22 @@ class InvitationViewsTest(FancyTestCase):
         self.assertEqual(0, Invitation.objects.all().count())
         self.assertIn('__all__', resp.context['form'].errors)
 
-    @skip("Not implemented")
     def test_read_invitation_mark_read(self):
         """Reading an invitation marks it as read"""
-        pass
+        inv = InvitationFactory.create(receiver=self.alice)
+        self.assertFalse(inv.read)
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.rget('invitation_detail', kwargs={'pk': inv.pk})
+        # Have to do a whole query, otherwise we won't hit the database
+        self.assertTrue(Invitation.objects.get(pk=inv.pk).read)
 
-    @skip("Not implemented")
     def test_decrease_allowed_invites(self):
         """Team's invite count goes down after sending invite"""
-        pass
+        self.assertEqual(2, self.alice_team.num_invites_left())
+        InvitationFactory.create(team=self.alice_team)
+        self.assertEqual(1, self.alice_team.num_invites_left())
+        InvitationFactory.create(team=self.alice_team)
+        self.assertEqual(0, self.alice_team.num_invites_left())
 
     @skip("Not implemented")
     def test_invitation_accept(self):
