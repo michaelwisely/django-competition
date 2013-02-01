@@ -10,4 +10,9 @@
 	<li>read? {{ invitation.read }}</li>
 	<li>response? {{ invitation.response|default:"None" }}</li>
   </ul>
+
+{% if invitation.receiver == user %}
+  <a href="{% url invitation_accept pk=invitation.pk %}"> Accept Invitation</a>
+  <a href="{% url invitation_decline pk=invitation.pk %}"> Decline Invitation</a>
+{% endif %}
 {% endblock %}

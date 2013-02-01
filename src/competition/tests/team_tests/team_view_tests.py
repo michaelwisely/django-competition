@@ -177,4 +177,3 @@ class TeamViewsTest(FancyTestCase):
             resp = self.client.post(url, data={'confirmed': True}, follow=True)
             self.assertRedirects(resp, self.space.get_absolute_url())
             self.assertFalse(Team.objects.filter(pk=t.pk).exists())
-

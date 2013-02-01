@@ -9,6 +9,8 @@ from competition.views.team_views import TeamLeaveView
 from competition.views.invitation_views import InvitationListView
 from competition.views.invitation_views import InvitationDetailView
 from competition.views.invitation_views import InvitationCreateView
+from competition.views.invitation_views import InvitationAcceptView
+from competition.views.invitation_views import InvitationDeclineView
 from competition.views.registration_views import RegistrationView
 from competition.views.registration_views import UnregisterView
 
@@ -51,10 +53,16 @@ urlpatterns = patterns(
     url(r'^invitations/$',
         InvitationListView.as_view(),
         name='invitation_list'),
-    url(r'^invitations/(?P<pk>\d+)/$',
-        InvitationDetailView.as_view(),
-        name='invitation_detail'),
     url(r'^invitations/invite/$',
         InvitationCreateView.as_view(),
         name='invitation_create'),
-    )
+    url(r'^invitations/(?P<pk>\d+)/$',
+        InvitationDetailView.as_view(),
+        name='invitation_detail'),
+    url(r'^invitations/(?P<pk>\d+)/accept$',
+        InvitationAcceptView.as_view(),
+        name='invitation_accept'),
+    url(r'^invitations/(?P<pk>\d+)/decline$',
+        InvitationDeclineView.as_view(),
+        name='invitation_decline'),
+)
