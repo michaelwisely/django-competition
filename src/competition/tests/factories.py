@@ -6,7 +6,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 from competition.models import (Competition, Game, Avatar, Team,
                                 Score, Organizer, OrganizerRole,
-                                Registration)
+                                Registration, Invitation)
 from competition.models import RegistrationQuestion as Question
 from competition.models import RegistrationQuestionChoice as Choice
 from competition.models import RegistrationQuestionResponse as Response
@@ -148,3 +148,12 @@ class RegistrationQuestionResponseFactory(factory.Factory):
 
     question = factory.SubFactory(RegistrationQuestionFactory)
     registration = factory.SubFactory(RegistrationFactory)
+
+
+class InvitationFactory(factory.Factory):
+    FACTORY_FOR = Invitation
+
+    team = factory.SubFactory(TeamFactory)
+    sender = factory.SubFactory(UserFactory)
+    receiver = factory.SubFactory(UserFactory)
+    message = factory.Sequence(lambda n: "Message #%s" % n)
