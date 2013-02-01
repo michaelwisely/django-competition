@@ -27,8 +27,6 @@ NOSE_ARGS = ['--cover-package=competition',  # Only check the
 dev_middleware = project.development.MIDDLEWARE_CLASSES
 MIDDLEWARE_CLASSES = tuple(m for m in dev_middleware if m.startswith('django.'))
 
-print MIDDLEWARE_CLASSES
-
 # We're not installing anything other than default Django stuff,
 # django-guardian, and the competition app
 INSTALLED_APPS = (
