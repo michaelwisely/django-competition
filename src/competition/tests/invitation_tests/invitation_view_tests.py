@@ -3,7 +3,8 @@ from django.core.urlresolvers import reverse
 from competition.models.invitation_model import Invitation
 from competition.tests.utils import FancyTestCase
 from competition.tests.factories import (UserFactory, CompetitionFactory,
-                                         TeamFactory, InvitationFactory)
+                                         TeamFactory, InvitationFactory,
+                                         RegistrationFactory)
 
 from unittest import skip
 
@@ -156,15 +157,41 @@ class InvitationViewsTest(FancyTestCase):
         InvitationFactory.create(team=self.alice_team)
         self.assertEqual(0, self.alice_team.num_invites_left())
 
-    @skip("Not implemented")
     def test_invitation_accept(self):
         """Accepting invitations causes user to join team"""
-        pass
+        # Register Carl to compete
+        RegistrationFactory(user=self.carl, competition=self.galapagos)
+        # And send him an invitation
+        inv = InvitationFactory.create(receiver=self.carl,
+                                       team=self.alice_team)
+        with self.loggedInAs("carl", "123"):
+            resp = self.client.rget('invitation_accept', kwargs={'pk': inv.pk})
+            self.assertEqual(200, resp.status_code)
+            resp = self.client.rpost('invitation_accept',
+                                     follow=True,
+                                     kwargs={'pk': inv.pk},
+                                     data={'confirmed': True})
+            self.assertRedirects(resp, inv.team.get_absolute_url())
+        # Set to 'A' for accepted
+        self.assertEqual('A', Invitation.objects.get(pk=inv.pk).response)
+        self.assertTrue(self.alice_team.is_user_on_team(self.carl))
 
-    @skip("Not implemented")
     def test_registered_to_accept(self):
         """A user cannot accept unless registered to compete"""
-        pass
+        # Carl isn't registered!
+        inv = InvitationFactory.create(receiver=self.carl, 
+                                       team=self.alice_team)
+        with self.loggedInAs("carl", "123"):
+            resp = self.client.rget('invitation_accept', kwargs={'pk': inv.pk})
+            self.assertEqual(200, resp.status_code)
+            resp = self.client.rpost('invitation_accept',
+                                     follow=True,
+                                     kwargs={'pk': inv.pk},
+                                     data={'confirmed': True})
+        competition_url = inv.team.competition.get_absolute_url()
+        self.assertRedirects(resp, competition_url + 'register/')
+        self.assertIsNone(Invitation.objects.get(pk=inv.pk).response)
+        self.assertFalse(self.alice_team.is_user_on_team(self.carl))
 
     @skip("Not implemented")
     def test_leave_teams_on_accept(self):

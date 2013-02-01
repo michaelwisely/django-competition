@@ -12,6 +12,11 @@ from competition.views.mixins import (LoggedInMixin, UserRegisteredMixin,
                                       CheckAllowedMixin)
 from competition.forms.invitation_forms import InvitationForm
 
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class InvitationListView(LoggedInMixin, ListView):
     """Lists all teams, provided that the user is logged in"""
@@ -109,31 +114,44 @@ class InvitationCreateView(LoggedInMixin,
 
 
 class InvitationResponseView(LoggedInMixin,
-                             RequireOpenMixin,
+                             CheckAllowedMixin,
                              ConfirmationMixin):
     """Allows a user to accept or decline an invitation"""
     error_message = 'Cannot accept or decline this invitation at this time'
 
-    def check_if_allowed(self, request):
-        # Call RequireOpenMixin's check_if_allowed method. If it
-        # returns False, bail.
+    def dispatch(self, request, *args, **kwargs):
+        """Sets up self.kwargs since we don't have that by default :/"""
+        self.kwargs = kwargs
         parent = super(InvitationResponseView, self)
-        if parent.check_if_allowed(request) == False:
+        return parent.dispatch(request, *args, **kwargs)
+
+    def check_if_allowed(self, request):
+        # Competition has to be open
+        if not self.invitation.team.competition.is_open:
+            logger.debug("Can't change invite. Competition closed")
             return False
         # They can't accept or decline again if they've already
         # responded
         if self.invitation.has_response():
+            logger.debug("Can't change invite. Already responded")
             return False
         # They can't accept or decline if the message wasn't meant for
         # them.
         if request.user != self.invitation.receiver:
+            logger.debug("Can't change invite. Not yours.")
             return False
+
+        # Otherwise we're in good shape.
+        return True
 
     @property
     def invitation(self):
         if not hasattr(self, '_invitation'):
-            self._invitation = get_object_or_404(Invitation,
+            logger.debug("Fetching invitation")
+            invitations = Invitation.objects.select_related()
+            self._invitation = get_object_or_404(invitations,
                                                  pk=self.kwargs['pk'])
+            logger.debug("Invitation Fetched")
         return self._invitation
 
     def get_check_box_label(self):
@@ -149,6 +167,12 @@ class InvitationAcceptView(InvitationResponseView):
         return msg % self.invitation.team.name
 
     def agreed(self):
+        competition = self.invitation.team.competition
+        invitee = self.invitation.receiver
+        if not competition.is_user_registered(invitee):
+            # If the user isn't registered, make them register
+            return redirect('register_for', comp_slug=competition.slug)
+
         self.invitation.accept()
 
         msg = "Successfully joined %s" % self.invitation.team.name
@@ -159,7 +183,7 @@ class InvitationAcceptView(InvitationResponseView):
         return redirect(self.invitation.team.competition)
 
 
-class InvitationDeclineView(LoggedInMixin, ConfirmationMixin):
+class InvitationDeclineView(InvitationResponseView):
     """Allows a user to decline an invitation"""
     template_name = 'competition/invitation/invitation_decline.html'
 
