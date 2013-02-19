@@ -1,5 +1,27 @@
 {% extends "base.html" %}
 
+{% block page-header %}
+  <div class="hero-unit" style="margin-top:20px;">
+    <h1>{{ competition.name }}</h1>    
+    <p>{{ competition.description }}</p>
+    <p>
+      <a class="btn btn-primary btn-large">
+        Register now!
+      </a>
+    </p>
+  </div>
+{% endblock %}
+
 {% block content %}  
-  {% include "competition/competition/competition_detail.inc.html" %}
+  <br>
+  
+  <div class="row">
+    <div class="offset1 span2">
+      <img src="{{ competition.avatar.thumbnail.url }}"
+           class="img-polaroid" alt="{{ competition.name }}"/>
+    </div>
+    <div class="offset1 span8">
+      {% include "competition/competition/competition_detail.inc.html" %}
+    </div>
+  </div>
 {% endblock %}
