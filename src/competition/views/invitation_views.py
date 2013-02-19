@@ -43,8 +43,9 @@ class InvitationDetailView(LoggedInMixin, DetailView):
     def get_object(self, queryset=None):
         """When we fetch the invitation, mark it as read"""
         obj = super(InvitationDetailView, self).get_object(queryset)
-        obj.read = True
-        obj.save()
+        if self.request.user == obj.receiver:
+            obj.read = True
+            obj.save()
         return obj
 
 
