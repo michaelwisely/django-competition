@@ -20,14 +20,31 @@
     <p>
       {{ invitation.message }}
     </p>
+
+    <br>
+
+    {% if invitation.receiver == user %}
+      {% if invitation.response == 'A' %} {# Accepted #}
+        <a href="#" class="btn btn-success disabled">
+          Accepted
+        </a>
+      {% endif %}
+
+      {% if invitation.response == 'D' %} {# Declined #}
+        <a href="#" class="btn btn-danger disabled">
+          Declined
+        </a>
+      {% endif %}
+
+      {% if not invitation.response %}  
+        <a href="{% url invitation_accept pk=invitation.pk %}" class="btn btn-success">
+          Accept Invitation
+        </a>
+        <a href="{% url invitation_decline pk=invitation.pk %}" class="btn btn-danger">
+          Decline Invitation
+        </a>
+      {% endif %}
+    {% endif %}
   </div>
 
-{% if invitation.receiver == user %}
-  <a href="{% url invitation_accept pk=invitation.pk %}" class="btn btn-success">
-    Accept Invitation
-  </a>
-  <a href="{% url invitation_decline pk=invitation.pk %}" class="btn btn-danger">
-    Decline Invitation
-  </a>
-{% endif %}
 {% endblock %}
