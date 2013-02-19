@@ -1,0 +1,43 @@
+{% load url from future %}
+
+<h2 class="text-right">Competition</h2>
+<ul class="nav nav-tabs nav-stacked">
+  <li>
+    <a href="{% url 'competition_detail' competition.slug %}">
+      Competition Details
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'unregister_for' competition.slug %}">
+      Unregister
+    </a>
+  </li>
+</ul>
+
+<h2 class="text-right">Teams</h2>
+<ul class="nav nav-tabs nav-stacked">
+  <li>
+    <a href="{% url 'team_list' competition.slug %}">
+      All Teams      
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'team_create' competition.slug %}">
+      Create Team
+    </a>
+  </li>
+  <li>
+    <a href="{% url 'team_leave' competition.slug %}">
+      Leave Team
+    </a>
+  </li>
+</ul>
+
+<h2 class="text-right">Invitations</h2>
+<ul class="nav nav-tabs nav-stacked" style="margin-top:20px;">
+  <li>
+    <a href="{% url 'invitation_list' %}">
+      View Invitations
+    </a>
+  </li>  
+</ul>

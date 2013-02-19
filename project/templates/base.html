@@ -70,10 +70,16 @@
       <div class="container">
         {% include "_messages.html" %}
         <div class="row">
-          <div id="content">
+          <div id="content" class="span9">
             {% block page-header %}
             {% endblock %}
             {% block content %}
+            {% endblock %}
+          </div>
+
+          <div id="sidebar" class="span3">
+            {% block sidebar %}
+              <div id="no-sidebar"></div>
             {% endblock %}
           </div>
         </div>

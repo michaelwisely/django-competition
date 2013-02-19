@@ -1,11 +1,13 @@
-{% extends "base.html" %}
+{% extends "competition/competition_base.html" %}
+{% load url from future %}
 
 {% block page-header %}
   <div class="hero-unit" style="margin-top:20px;">
     <h1>{{ competition.name }}</h1>    
     <p>{{ competition.description }}</p>
     <p>
-      <a class="btn btn-primary btn-large">
+      <a class="btn btn-primary btn-large"
+         href="{% url 'register_for' competition.slug %}">
         Register now!
       </a>
     </p>
@@ -14,14 +16,14 @@
 
 {% block content %}  
   <br>
-  
+
   <div class="row">
     <div class="offset1 span2">
       <img src="{{ competition.avatar.thumbnail.url }}"
-           class="img-polaroid" alt="{{ competition.name }}"/>
+           class="img-polaroid" alt="{{ competition.name }}" />
     </div>
-    <div class="offset1 span8">
-      {% include "competition/competition/competition_detail.inc.html" %}
+    <div class="offset1 span4">
+      {% include "competition/competition/_competition_detail.html" %}
     </div>
   </div>
 {% endblock %}
