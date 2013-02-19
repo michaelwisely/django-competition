@@ -13,5 +13,6 @@ setup(name='django-competition',
                         'PyYAML==3.10',
                         'factory_boy==1.2.0',
                         'django-guardian==1.0.4',
+                        'django-crispy-forms==1.2.3',
                         ],
       )

@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
 
     'guardian',
+    'crispy_forms',
     'competition',
 )
 
