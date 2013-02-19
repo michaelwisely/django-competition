@@ -12,10 +12,10 @@ THUMB_SIZE = (180, 300)
 
 def image_location(instance=None, filename=None):
     """Determines location of regular sized images
-    example path: MEDIA_ROOT/competition_images/profile/12/my_image.png
+    example path: MEDIA_ROOT/competition_images/12/my_image.png
     """
     return os.path.join(settings.MEDIA_ROOT, "competition_images",
-                        instance.image_subdir, instance.id, filename)
+                        instance.id, filename)
 
 
 def thumbnail_location(instance=None, filename=None):
@@ -39,7 +39,6 @@ class Avatar(models.Model):
     thumbnail = models.ImageField(upload_to=thumbnail_location)
     thumbnail_height = models.IntegerField()
     thumbnail_width = models.IntegerField()
-    image_subdir = models.CharField(max_length=20)
 
     def __str__(self):
         return "%s" % self.image.path

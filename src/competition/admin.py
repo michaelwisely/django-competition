@@ -107,8 +107,7 @@ class InlineAgreementResponseAdmin(InlineResponseAdmin):
 
 class AvatarAdmin(admin.ModelAdmin):
     readonly_fields = ('image_height', 'image_width',
-                       'thumbnail', 'thumbnail_height', 'thumbnail_width',
-                       'image_subdir')
+                       'thumbnail', 'thumbnail_height', 'thumbnail_width')
 
 
 class CompetitionAdmin(admin.ModelAdmin):
@@ -152,6 +151,7 @@ class InvitationAdmin(admin.ModelAdmin):
     pass
 
 
+admin.site.register(Avatar, AvatarAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Game, GameAdmin)
 admin.site.register(OrganizerRole, OrganizerRoleAdmin)
