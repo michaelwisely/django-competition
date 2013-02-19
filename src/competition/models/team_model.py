@@ -28,7 +28,7 @@ class Team(models.Model):
     members = models.ManyToManyField(User)
 
     name = models.CharField(max_length=50, validators=[validate_name])
-    slug = models.CharField(max_length=50, validators=[validate_slug])
+    slug = models.SlugField()
 
     avatar = models.OneToOneField(Avatar, blank=True, null=True)
 

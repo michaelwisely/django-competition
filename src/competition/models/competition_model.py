@@ -28,9 +28,7 @@ class Competition(models.Model):
     name = models.CharField(max_length=50, unique=True,
                             help_text="Name of the competition",
                             validators=[validate_name])
-    slug = models.CharField(max_length=50,
-                            primary_key=True, blank=True, editable=False,
-                            validators=[validate_slug])
+    slug = models.SlugField(blank=True, editable=False)
     description = models.TextField(help_text="Describe the competition")
     avatar = models.OneToOneField(Avatar, blank=True, null=True)
 
