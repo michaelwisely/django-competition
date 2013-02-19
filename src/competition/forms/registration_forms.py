@@ -16,8 +16,11 @@ def generate_question_form(registration_question):
         form_choices = get_form_choices(registration_question)
 
         class SingleChoiceForm(forms.Form):
-            sc_response = forms.ChoiceField(choices=form_choices,
-                                            widget=forms.RadioSelect)
+            sc_response = forms.ChoiceField(
+                label=registration_question.question,
+                choices=form_choices,
+                widget=forms.RadioSelect
+            )
 
         return SingleChoiceForm
 
@@ -25,22 +28,29 @@ def generate_question_form(registration_question):
         form_choices = get_form_choices(registration_question)
 
         class MultipleChoiceForm(forms.Form):
-            mc_response = forms.MultipleChoiceField(choices=form_choices,
-                                                    widget=forms.CheckboxSelectMultiple)
+            mc_response = forms.MultipleChoiceField(
+                label=registration_question.question,
+                choices=form_choices,
+                widget=forms.CheckboxSelectMultiple
+                )
 
         return MultipleChoiceForm
 
     if registration_question.question_type == 'SA':
 
         class ShortAnswerForm(forms.Form):
-            sa_response = forms.CharField()
-            
+            sa_response = forms.CharField(
+                label=registration_question.question,
+            )
+
         return ShortAnswerForm
 
     if registration_question.question_type == 'AB':
 
         class AgreementForm(forms.Form):
-            ab_response = forms.BooleanField(required=True)
-            
-        return AgreementForm
+            ab_response = forms.BooleanField(
+                label=registration_question.question,
+                required=True
+            )
 
+        return AgreementForm

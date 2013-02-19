@@ -1,4 +1,6 @@
-{% extends "base.html" %}
+{% extends "competition/competition_base.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
 
 {% block content %}
   {% url register_for competition.slug as form_action %}
@@ -6,17 +8,7 @@
 	{% csrf_token %}
 
 	{% for question, form in questions %}  
-	  {% for field in form %}
-		{% if field.is_hidden %}
-		  {{ field }}
-		{% else %}
-		  <div class="control-group">
-			<p>{{question.question}}</p>
-			<label>{{ field.errors }}</label>
-			  {{ field }}
-		  </div>
-		{% endif %}
-	  {% endfor %}
+      {{ form|crispy }}
 	{% endfor %}  
 	<div class="control-group">
       <div class="controls">
