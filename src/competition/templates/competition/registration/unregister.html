@@ -1,4 +1,6 @@
-{% extends "base.html" %}
+{% extends "competition/competition_base.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
 
 {% block content %}
   {% url unregister_for competition.slug as form_action %}
