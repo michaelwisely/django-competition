@@ -14,8 +14,7 @@ def image_location(instance=None, filename=None):
     """Determines location of regular sized images
     example path: MEDIA_ROOT/competition_images/12/my_image.png
     """
-    return os.path.join(settings.MEDIA_ROOT, "competition_images",
-                        instance.id, filename)
+    return os.path.join(settings.MEDIA_ROOT, "competition_images", filename)
 
 
 def thumbnail_location(instance=None, filename=None):
@@ -41,10 +40,10 @@ class Avatar(models.Model):
     thumbnail_width = models.IntegerField()
 
     def __str__(self):
-        return "%s" % self.image.path
+        return os.path.basename(self.image.path)
 
     def __unicode__(self):
-        return self.image.path
+        return os.path.basename(self.image.path)
 
     def save(self, force_update=False, force_insert=False,
              thumb_size=THUMB_SIZE):
