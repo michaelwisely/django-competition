@@ -8,8 +8,13 @@ urlpatterns = patterns(
     '',
 
     url(r'', include(competition.urls)),
-    url (r'^accounts/login/$', 'django.contrib.auth.views.login',
-         {'template_name': 'accounts/login.html'}),
+    url (r'^accounts/login/$',
+         'django.contrib.auth.views.login',
+         {'template_name': 'accounts/login.html'},
+         name='account_login'),
+    url (r'^accounts/logout/$',
+         'django.contrib.auth.views.logout_then_login',
+         name='account_logout'),
     )
 
 if settings.DEBUG:
