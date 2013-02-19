@@ -6,15 +6,18 @@ from PIL import Image
 from cStringIO import StringIO
 
 import os
+import datetime
 
 THUMB_SIZE = (180, 300)
 
 
 def image_location(instance=None, filename=None):
     """Determines location of regular sized images
-    example path: MEDIA_ROOT/competition_images/12/my_image.png
     """
-    return os.path.join(settings.MEDIA_ROOT, "competition_images", filename)
+    now = datetime.datetime.now()
+    return os.path.join("competition_images",
+                        now.strftime('%Y/%m/%d'),
+                        filename)
 
 
 def thumbnail_location(instance=None, filename=None):
@@ -32,6 +35,7 @@ class Avatar(models.Model):
     class Meta:
         app_label = 'competition'
 
+    created = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to=image_location)
     image_height = models.IntegerField()
     image_width = models.IntegerField()
