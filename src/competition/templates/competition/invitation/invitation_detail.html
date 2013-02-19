@@ -1,18 +1,33 @@
 {% extends "base.html" %}
 
-{% block content %}  
-  <h1>Invitation to {{ invitation.team.name }}</h1>
-  <ul>
-	<li>sent from: {{ invitation.sender }}</li>
-	<li>sent to: {{ invitation.receiver }}</li>
-	<li>message: {{ invitation.message	}}</li>
-	<li>sent at: {{ invitation.sent }}</li>
-	<li>read? {{ invitation.read }}</li>
-	<li>response? {{ invitation.response|default:"None" }}</li>
-  </ul>
+{% block page-header %}
+  <div class="page-header">
+    <h1>Invitation</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div class="well">
+    <h2>Invitation to <i>{{ invitation.team.name }}</i></h2>
+    <p>
+      <span><strong>To:</strong> {{ invitation.receiver }}</span><br>
+      <span><strong>From:</strong> {{ invitation.sender }}</span><br>
+      <span><strong>Sent:</strong> {{ invitation.sent }}</span>
+    </p>
+
+    <hr>
+
+    <p>
+      {{ invitation.message }}
+    </p>
+  </div>
 
 {% if invitation.receiver == user %}
-  <a href="{% url invitation_accept pk=invitation.pk %}"> Accept Invitation</a>
-  <a href="{% url invitation_decline pk=invitation.pk %}"> Decline Invitation</a>
+  <a href="{% url invitation_accept pk=invitation.pk %}" class="btn btn-success">
+    Accept Invitation
+  </a>
+  <a href="{% url invitation_decline pk=invitation.pk %}" class="btn btn-danger">
+    Decline Invitation
+  </a>
 {% endif %}
 {% endblock %}

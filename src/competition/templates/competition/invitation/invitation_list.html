@@ -16,14 +16,19 @@
     <div class="accordion-group">
       <div class="accordion-heading">
         <a class="accordion-toggle" data-toggle="collapse" data-parent="#invite-accordion" href="#collapse{{ forloop.counter }}">
-          From {{ invitation.sender }}
+          Invitation from <strong>{{ invitation.sender }}</strong> to
+          join <strong>{{ invitation.team.name }}</strong>
+
+          {% if not invitation.read %}
+            <span class="label label-success">Unread</span>
+          {% endif %}
         </a>
       </div>
       <div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
         <div class="accordion-inner">
-		  <p>
-		    {{ invitation.message }}		  
-		  </p>		  
+          <p>
+            {{ invitation.message }}
+          </p>
           <a href="{{ invitation.get_absolute_url }}" class="btn">View Invitation</a>
         </div>
       </div>
@@ -35,7 +40,5 @@
 
     {% empty %}
       <h2>No invitations</h2>
-    {% endfor %}  
+    {% endfor %}
   {% endblock %}
-
-
