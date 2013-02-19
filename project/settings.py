@@ -45,6 +45,7 @@ AUTHENTICATION_BACKENDS = (
 )
 ANONYMOUS_USER_ID = -1
 
+LOGIN_REDIRECT_URL = '/competition/'
 
 ADMINS = (
     # empty
