@@ -121,7 +121,7 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
                 self.save_response(registration, question, form)
             msg = 'Successfully registered for %s!' % competition.name
             messages.success(request, msg)
-            return redirect('competition_list')
+            return redirect('competition_detail', comp_slug=competition.slug)
 
         return self.render_to_response({'questions': forms,
                                         'competition': self.get_competition()})
