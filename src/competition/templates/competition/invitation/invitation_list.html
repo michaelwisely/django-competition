@@ -1,16 +1,41 @@
 {% extends "base.html" %}
+{% load url from future %}
+
+{% block page-header %}
+  <div class="page-header">
+    <h1>Your Invitations</h1>
+  </div>
+{% endblock %}
 
 {% block content %}
-  <ul>  
-    {% for invitation in invitations %}
-      <li>
-        <a href="{{ invitation.get_absolute_url }}">
+  {% for invitation in invitations %}
+    {% if forloop.first %}
+      <div class="accordion" id="invite-accordion">
+    {% endif %}
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#invite-accordion" href="#collapse{{ forloop.counter }}">
           From {{ invitation.sender }}
         </a>
-		<p>
-		  {{ invitation.message }}		  
-		</p>		  
-      </li>
+      </div>
+      <div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
+        <div class="accordion-inner">
+		  <p>
+		    {{ invitation.message }}		  
+		  </p>		  
+          <a href="{{ invitation.get_absolute_url }}" class="btn">View Invitation</a>
+        </div>
+      </div>
+    </div>
+
+    {% if forloop.last %}
+      </div>
+    {% endif %}
+
+    {% empty %}
+      <h2>No invitations</h2>
     {% endfor %}  
-  </ul>
-{% endblock %}
+  {% endblock %}
+
+
