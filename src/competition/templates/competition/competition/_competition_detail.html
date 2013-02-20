@@ -1,0 +1,37 @@
+
+<table class="table table-condensed table-hover table-border">
+  <thead>
+  </thead>
+
+  <tbody>
+    <tr>
+      <th>Starting Time</th>
+      <td>{{ competition.start_time }}</td>
+    </tr>
+    <tr>
+      <th>Ending Time</th>
+      <td>{{ competition.end_time }}</td>
+    </tr>
+    <tr>
+      <th>Is open?</th>
+      <td>{{ competition.is_open }}</td>
+    </tr>
+    <tr>
+      <th>Is running?</th>
+      <td>{{ competition.is_running }}</td>
+    </tr>
+    <tr>
+      <th>Cost per person:</th>
+      <td>${{ competition.cost_per_person|floatformat:2 }}</td>
+    </tr>
+    <tr>
+      <th>Minimum team size</th>      
+      <td>{{ competition.min_num_team_members }}</td>      
+    </tr>
+    <tr>
+      <th>Maximum team size</th>      
+      <td>{{ competition.max_num_team_members }}</td>      
+    </tr>
+  </tbody>
+</table>
+

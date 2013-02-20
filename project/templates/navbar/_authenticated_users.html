@@ -1,0 +1,10 @@
+{% load url from future %}
+
+<li>
+  <a href="#">
+    <strong>{{ user.username }}</strong>
+  </a>
+</li>
+<li>
+  <a href="{% url 'account_logout' %}">Logout</a>
+</li>

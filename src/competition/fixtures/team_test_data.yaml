@@ -1,5 +1,5 @@
 - fields:
-    competition: megaminerai-9-space
+    competition: 1
     created: 2012-11-24 02:17:05.984383
     eligible_to_win: true
     members: [2, 4]
@@ -11,7 +11,7 @@
   model: competition.team
   pk: 1
 - fields:
-    competition: megaminerai-9-space
+    competition: 1
     created: 2012-11-24 02:17:39.663449
     eligible_to_win: true
     members: [3]
@@ -23,7 +23,7 @@
   model: competition.team
   pk: 2
 - fields:
-    competition: megaminerai-9-space
+    competition: 1
     created: 2012-11-24 02:17:54.253563
     eligible_to_win: true
     members: [1]
@@ -35,7 +35,7 @@
   model: competition.team
   pk: 3
 - fields:
-    competition: megaminerai-10-galapagos
+    competition: 2
     created: 2012-11-24 02:27:43.915218
     eligible_to_win: true
     members: [2]
@@ -47,7 +47,7 @@
   model: competition.team
   pk: 4
 - fields:
-    competition: megaminerai-10-galapagos
+    competition: 2
     created: 2012-11-24 02:27:54.953202
     eligible_to_win: true
     members: [4]

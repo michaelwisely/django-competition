@@ -19,7 +19,33 @@ except ImportError:
 
 # Testing settings
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--cover-package=competition']
+NOSE_ARGS = ['--cover-package=competition',  # Only check the
+                                             # competition package
+                                             # when computing testing
+                                             # code coverage
+
+             '--verbosity=2',                # Slightly more verbose
+                                             # output
+
+             '--with-yanc',                  # Use colorized output
+
+             '--with-achievements',          # Track achievements!
+             ]
+
+# Django Debug Toolbar settings
+INTERNAL_IPS = ('127.0.0.1',)
+DEBUG_TOOLBAR_CONFIG = {
+    'INTERCEPT_REDIRECTS': False,
+}
+
+# Django Guardian settings
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
+ANONYMOUS_USER_ID = -1
+
+LOGIN_REDIRECT_URL = '/competition/'
 
 ADMINS = (
     # empty
@@ -68,6 +94,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'project.urls'
@@ -76,7 +103,23 @@ TEMPLATE_DIRS = (
     os.path.join(SETTINGS_DIR, "templates"),
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'django.core.context_processors.request',
+)
+
 INSTALLED_APPS = (
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,8 +128,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'debug_toolbar',
     'django_extensions',
     'django_nose',
+    'guardian',
+    'crispy_forms',
     'competition',
 )
 

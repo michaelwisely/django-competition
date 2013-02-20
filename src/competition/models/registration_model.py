@@ -1,23 +1,33 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
-from competition_model import Competition
+from competition.signals import registration_deactivated
+from competition.models.competition_model import Competition
 
 
 class Registration(models.Model):
     class Meta:
         app_label = 'competition'
-        unique_together = (('competition', 'user'), )
 
     user = models.ForeignKey(User)
     competition = models.ForeignKey(Competition)
     signup_date = models.DateTimeField(auto_now_add=True)
 
+    active = models.BooleanField(default=True)
+
     def __str__(self):
         username = self.user.username
         competition = self.competition.name
         return "%s's registration for %s" % (username, competition)
+
+    def deactivate(self):
+        if self.active:
+            registration_deactivated.send(sender=self)
+            self.active = False
+            self.save()
 
 
 class RegistrationQuestion(models.Model):
@@ -62,7 +72,7 @@ class RegistrationQuestionResponse(models.Model):
     question = models.ForeignKey(RegistrationQuestion,
                                  related_name="response_set")
     registration = models.ForeignKey(Registration,
-                                 related_name="response_set")
+                                     related_name="response_set")
     text_response = models.TextField(blank=True)
     choices = models.ManyToManyField(RegistrationQuestionChoice,
                                      null=True, blank=True,
@@ -86,3 +96,23 @@ class RegistrationQuestionResponse(models.Model):
             if not self.agreed:
                 msg = "Must agree before proceeding"
                 raise ValidationError(msg)
+
+
+@receiver(post_save, sender=Registration)
+def registration_post_save(sender, instance, created, raw, **kwargs):
+    """Registration has been created and saved
+    """
+    pass
+
+@receiver(registration_deactivated)
+def received_registration_deactivated(sender, **kwargs):
+    """Registration has been deactivated.
+
+    ``sender`` is the registration being deactivated
+
+    * Remove the user from any teams they may be on
+    """
+    # Remove the user from any teams they're on for this competition
+    old_teams = sender.user.team_set.filter(competition=sender.competition)
+    for team in old_teams:
+        team.members.remove(sender.user)

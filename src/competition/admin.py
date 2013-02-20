@@ -12,6 +12,7 @@ from competition.models.registration_model import RegistrationQuestionChoice
 from competition.models.registration_model import RegistrationQuestionResponse
 from competition.models.score_model import Score
 from competition.models.team_model import Team
+from competition.models.invitation_model import Invitation
 
 
 ##############################################################################
@@ -52,6 +53,8 @@ class InlineOrganizerAdmin(admin.TabularInline):
 
 class InlineRegistrationAdmin(admin.TabularInline):
     model = Registration
+    fields = ('user', 'signup_date',)
+    readonly_fields = ('user', 'signup_date',)
 
 
 class InlineRegistrationQuestionAdmin(admin.StackedInline):
@@ -104,17 +107,15 @@ class InlineAgreementResponseAdmin(InlineResponseAdmin):
 
 class AvatarAdmin(admin.ModelAdmin):
     readonly_fields = ('image_height', 'image_width',
-                       'thumbnail', 'thumbnail_height', 'thumbnail_width',
-                       'image_subdir')
+                       'thumbnail', 'thumbnail_height', 'thumbnail_width')
 
 
 class CompetitionAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
     inlines = (InlineTeamAdmin,
-               InlineGameAdmin,
                InlineOrganizerAdmin,
-               InlineRegistrationQuestionAdmin,
-               InlineRegistrationAdmin)
+               InlineRegistrationAdmin,
+               InlineGameAdmin,)
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -144,9 +145,13 @@ class RegistrationQuestionResponseAdmin(admin.ModelAdmin):
 
 
 class TeamAdmin(admin.ModelAdmin):
+    filter_horizontal = ('members',)
+
+class InvitationAdmin(admin.ModelAdmin):
     pass
 
 
+admin.site.register(Avatar, AvatarAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Game, GameAdmin)
 admin.site.register(OrganizerRole, OrganizerRoleAdmin)
@@ -156,3 +161,4 @@ admin.site.register(RegistrationQuestion, RegistrationQuestionAdmin)
 admin.site.register(RegistrationQuestionResponse,
                     RegistrationQuestionResponseAdmin)
 admin.site.register(Team, TeamAdmin)
+admin.site.register(Invitation, InvitationAdmin)

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block page-header %}
+  <div class="page-header" style="margin-top:20px;">
+    <h1>{{ competition.name }}</h1>
+  </div>
+{% endblock %}
+
+{% block sidebar %}
+  {% include "competition/_sidebar.html" %}
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends "competition/competition_base.html" %}
+{% load url from future %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+  {% url register_for competition.slug as form_action %}
+  <form action="{{ form_action }}" class="form-horizontal" method="post">
+	{% csrf_token %}
+
+	{% for question, form in questions %}  
+      {{ form|crispy }}
+	{% endfor %}  
+	<div class="control-group">
+      <div class="controls">
+		<button type="submit" class="btn">Submit</button>
+      </div>
+	</div>
+  </form>
+{% endblock %}

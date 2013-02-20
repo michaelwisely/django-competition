@@ -23,6 +23,16 @@ bootstrap.py
 
 # Ignore coverage files
 .coverage
+cover/
 
 # Ignore secret settings file
 secret_settings.py
+
+# Ignore nose-achievements data file
+.achievements
+
+# Ignore other nose files
+.noseids
+
+# Ignore uploads
+var/uploads/

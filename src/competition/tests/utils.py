@@ -1,38 +1,51 @@
 from django.test.client import Client
 from django.test import TestCase as DjangoTestCase
+from django.core.urlresolvers import reverse
 
 import contextlib
 
 
 class FancyClient(Client):
-    def rget(self, viewname, args, kwargs):
+
+    def _get_url(self, viewname, args, kwargs):
+        args = () if args is None else args
+        kwargs = {} if kwargs is None else kwargs
+        return reverse(viewname, args=args, kwargs=kwargs)
+
+    def rget(self, viewname, args=None, kwargs=None, data=None, **extras):
         """Does a reverse before doing a get"""
-        pass
+        data = {} if data is None else data
+        url = self._get_url(viewname, args, kwargs)
+        return self.get(url, data=data, **extras)
 
-    def rpost(self, viewname, args, kwargs):
+    def rpost(self, viewname, args=None, kwargs=None, data=None, **extras):
         """Does a reverse before doing a post"""
-        pass
-
-
-@contextlib.contextmanager
-def login_as(username, password):
-    """Provides a context in which a given user is logged in.
-    
-    Example usage::
-
-        with login_as("alice", "secret") as client:
-            client.get("/")
-
-    """
-    c = FancyClient()
-    c.login(username=username, password=password)
-    yield c
-    c.logout()
+        data = {} if data is None else data
+        url = self._get_url(viewname, args, kwargs)
+        return self.post(url, data=data, **extras)
 
 
 class FancyTestCase(DjangoTestCase):
     client_class = FancyClient
-    
+
+    # @property
+    # def client(self):
+    #     if not hasattr(self, "_client"):
+    #         self._client = self.client_class()
+    #     return self._client
+
+    @contextlib.contextmanager
     def loggedInAs(self, username, password):
-        """Creates and returns a context as a logged in user"""
-        return login_as(username, password)
+        """Provides a context in which a given user is logged in.
+
+        Example usage::
+
+        with login_as("alice", "secret") as client:
+            client.get("/")
+        """
+        self.client.login(username=username, password=password)
+        yield
+        self.client.logout()
+
+    def assert404(self, response):
+        return self.assertEqual(404, response.status_code)

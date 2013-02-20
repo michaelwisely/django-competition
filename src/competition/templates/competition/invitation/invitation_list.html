@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block page-header %}
+  <div class="page-header">
+    <h1>Your Invitations</h1>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% for invitation in invitations %}
+    {% if forloop.first %}
+      <div class="accordion" id="invite-accordion">
+    {% endif %}
+
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#invite-accordion" href="#collapse{{ forloop.counter }}">
+          Invitation from <strong>{{ invitation.sender }}</strong> to
+          join <strong>{{ invitation.team.name }}</strong>
+
+          {% if not invitation.read %}
+            <span class="label label-success pull-right">Unread</span>
+          {% endif %}
+        </a>
+      </div>
+      <div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
+        <div class="accordion-inner">
+          <p>
+            {{ invitation.message }}
+          </p>
+          <a href="{{ invitation.get_absolute_url }}" class="btn">View Invitation</a>
+        </div>
+      </div>
+    </div>
+
+    {% if forloop.last %}
+      </div>
+    {% endif %}
+
+    {% empty %}
+      <h2>No invitations</h2>
+    {% endfor %}
+  {% endblock %}

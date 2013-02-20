@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% url team_create competition.slug as form_action %}
+  {% include "competition/includes/horizontal_form.inc.html" %}    
+{% endblock %}
