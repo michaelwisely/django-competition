@@ -14,5 +14,6 @@ setup(name='django-competition',
                         'factory_boy==1.2.0',
                         'django-guardian==1.0.4',
                         'django-crispy-forms==1.2.3',
+                        'South==0.7.6',
                         ],
       )

@@ -134,6 +134,8 @@ INSTALLED_APPS = (
     'guardian',
     'crispy_forms',
     'competition',
+
+    'south',
 )
 
 LOGGING = {
