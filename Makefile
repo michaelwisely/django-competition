@@ -1,4 +1,4 @@
-BOOTSTRAP_URL=http://svn.zope.org/*checkout*/zc.buildout/trunk/bootstrap/bootstrap.py
+BOOTSTRAP_URL=http://downloads.buildout.org/2/bootstrap.py
 
 .PHONY: default clean very-clean
 
