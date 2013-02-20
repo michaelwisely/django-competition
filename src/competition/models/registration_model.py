@@ -8,6 +8,11 @@ from competition.signals import registration_deactivated
 from competition.models.competition_model import Competition
 
 
+class RegistrationManager(models.Manager):
+    def for_user(self, user):
+        return self.filter(user=user, active=True)
+
+
 class Registration(models.Model):
     class Meta:
         app_label = 'competition'
