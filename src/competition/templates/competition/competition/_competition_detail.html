@@ -14,11 +14,19 @@
     </tr>
     <tr>
       <th>Is open?</th>
-      <td>{{ competition.is_open }}</td>
+      <td>
+        <span class="label label-{% if competition.is_open %}success{% else %}important{% endif %}">
+          {{ competition.is_open|yesno:"Yep!,Nope.," }}
+        </span>
+      </td>
     </tr>
     <tr>
       <th>Is running?</th>
-      <td>{{ competition.is_running }}</td>
+      <td>
+        <span class="label label-{% if competition.is_running %}success{% else %}important{% endif %}">
+          {{ competition.is_running|yesno:"Yep!,Nope.," }}
+        </span>
+      </td>
     </tr>
     <tr>
       <th>Cost per person:</th>

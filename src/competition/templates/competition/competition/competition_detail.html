@@ -2,28 +2,39 @@
 {% load url from future %}
 
 {% block page-header %}
-  <div class="hero-unit" style="margin-top:20px;">
-    <h1>{{ competition.name }}</h1>    
-    <p>{{ competition.description }}</p>
-    <p>
-      <a class="btn btn-primary btn-large"
-         href="{% url 'register_for' competition.slug %}">
-        Register now!
-      </a>
+  <div class="page-header" style="margin-top:20px;">
+    <div class="row">
+      <div class="span7">
+        <h1>{{ competition.name }}</h1>
+      </div>
+      <div class="span2">
+        <a class="btn btn-primary btn-large pull-right"
+           href="{% url 'register_for' competition.slug %}">
+           Register now!
+        </a>
+      </div>
+    </div>
+    <p style="font-size:16px;">
+      <i>{{ competition.description }}</i>
     </p>
   </div>
 {% endblock %}
 
-{% block content %}  
-  <br>
-
+{% block content %}
   <div class="row">
-    <div class="offset1 span2">
-      <img src="{{ competition.avatar.thumbnail.url }}"
-           class="img-polaroid" alt="{{ competition.name }}" />
-    </div>
-    <div class="offset1 span4">
+    <div class="span9">
+      <h2>Details</h2>
       {% include "competition/competition/_competition_detail.html" %}
     </div>
+  </div>
+  <div class="row">
+    {% if competition.avatar %}
+      <div class="span9">
+        <a href="{{ competition.avatar.image.url }}">
+          <img src="{{ competition.avatar.image.url }}"
+               class="img-polaroid" alt="{{ competition.name }}" />
+        </a>
+      </div>
+    {% endif %}
   </div>
 {% endblock %}
