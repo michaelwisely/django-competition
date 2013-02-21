@@ -38,7 +38,7 @@ class Competition(models.Model):
     name = models.CharField(max_length=50, unique=True,
                             help_text="Name of the competition",
                             validators=[validate_name])
-    slug = models.SlugField(blank=True, editable=False)
+    slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(help_text="Describe the competition")
     avatar = models.OneToOneField(Avatar, blank=True, null=True)
 
@@ -100,9 +100,13 @@ class Competition(models.Model):
 def competition_pre_save(sender, instance, **kwargs):
     """Called before a Competition is saved
 
-    Updates the competition's slug
+    Updates the competition's slug, assigning a unique slug if necessary
     """
-    instance.slug = slugify(instance.name)
+    slug, i = slugify(instance.name), 1
+    while Competition.objects.filter(slug=slug).exists():
+        slug = slugify("{0}-{1}".format(instance.name, i))
+        i += 1
+    instance.slug = slug
 
 
 @receiver(pre_delete, sender=Competition)

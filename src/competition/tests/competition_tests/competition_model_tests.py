@@ -108,6 +108,20 @@ class CompetitionModelValidationTest(TestCase):
         with self.assertRaises(IntegrityError):
             CompetitionFactory.create(name="MegaMinerAI")
 
+    def test_no_duplicate_slugs(self):
+        """Make sure we can't have two competitions by the same slug"""
+        c = CompetitionFactory.create(name="MegaMinerAI-Galapagos")
+        c2 = CompetitionFactory.create(name="MegaMinerAI Galapagos")
+        with self.assertRaises(ValidationError):
+            c2.slug = c.slug
+            c2.full_clean()
+
+    def test_different_slug_similar_name(self):
+        """Two competitions with similar names have different slugs"""
+        c = CompetitionFactory.create(name="MegaMinerAI-Galapagos")
+        c2 = CompetitionFactory.create(name="MegaMinerAI Galapagos")
+        self.assertNotEqual(c, c2)
+
     def test_registrated_for_user(self):
         """List competition where a user is registered"""
         c1 = CompetitionFactory.create(name="MegaMinerAI1")
