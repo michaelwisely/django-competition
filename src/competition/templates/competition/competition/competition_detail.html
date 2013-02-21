@@ -7,12 +7,14 @@
       <div id="name" class="span7">
         <h1>{{ competition.name }}</h1>
       </div>
-      <div class="span2">
-        <a class="btn btn-primary btn-large pull-right"
-           href="{% url 'register_for' competition.slug %}">
-           Register now!
-        </a>
-      </div>
+      {% if not user_registered %}
+        <div class="span2">
+          <a class="btn btn-primary btn-large pull-right"
+             href="{% url 'register_for' competition.slug %}">
+             Register now!
+          </a>
+        </div>
+      {% endif %}
     </div>
     <p style="font-size:16px;">
       <i>{{ competition.description }}</i>
