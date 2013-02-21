@@ -1,7 +1,7 @@
 - fields: 
     competition: 1
     signup_date: !!timestamp '2012-12-02 12:51:16.893057'
-    user: 2
+    user: 1
   model: competition.registration
   pk: 1
 - fields: 
