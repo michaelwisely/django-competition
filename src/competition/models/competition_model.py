@@ -16,6 +16,8 @@ from competition.validators import (validate_name, non_negative,
 class CompetitionManager(models.Manager):
 
     def user_registered(self, user):
+        if not isinstance(user, int):
+            user = user.pk
         return self.filter(registration__user=user,
                            registration__active=True)
 
