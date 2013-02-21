@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 from competition.views.mixins import (LoggedInMixin, CompetitionViewMixin,
-                                      UserRegisteredMixin, ConfirmationMixin)
+                                      UserRegisteredMixin, ConfirmationMixin,
+                                      RequireOpenMixin)
 from competition.forms.registration_forms import generate_question_form
 
 from competition.models import Registration
@@ -12,8 +13,11 @@ from competition.models import RegistrationQuestionChoice as Choice
 from competition.models import RegistrationQuestionResponse as Response
 
 
-class RegistrationView(LoggedInMixin, CompetitionViewMixin,
-                       TemplateResponseMixin, ProcessFormView):
+class RegistrationView(LoggedInMixin,
+                       CompetitionViewMixin,
+                       RequireOpenMixin,
+                       TemplateResponseMixin,
+                       ProcessFormView):
     """Allows a user to register to compete"""
     template_name = 'competition/registration/register.html'
 
@@ -127,7 +131,9 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
                                         'competition': self.get_competition()})
 
 
-class UnregisterView(UserRegisteredMixin, ConfirmationMixin):
+class UnregisterView(UserRegisteredMixin,
+                     RequireOpenMixin,
+                     ConfirmationMixin):
     template_name = 'competition/registration/unregister.html'
 
     def get_question(self):

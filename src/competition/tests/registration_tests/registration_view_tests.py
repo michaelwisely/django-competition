@@ -233,3 +233,21 @@ class RegistrationViewsTest(FancyTestCase):
 
         # We should get a 404 for a POST as well.
         self.assert404(resp)
+
+    def test_cannot_register_when_closed(self):
+        """Can't register when competition is closed"""
+        self.galapagos.is_open = False
+        self.galapagos.save()
+        with self.loggedInAs("alice", "123"):
+            kwds = {'comp_slug': self.galapagos.slug}
+            response = self.client.rget("register_for", kwargs=kwds)
+            self.assert404(response)
+
+    def test_cannot_unregister_when_closed(self):
+        """Can't unregister when competition is closed"""
+        self.galapagos.is_open = False
+        self.galapagos.save()
+        with self.loggedInAs("alice", "123"):
+            kwds = {'comp_slug': self.galapagos.slug}
+            response = self.client.rget("unregister_for", kwargs=kwds)
+            self.assert404(response)
