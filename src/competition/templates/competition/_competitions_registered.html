@@ -1,0 +1,7 @@
+{% for competition in competitions %}
+  <li>
+    <a href="{{competition.get_absolute_url }}">
+      {{ competition.name }}
+    </a>
+  </li>
+{% endfor %}
