@@ -1,25 +1,13 @@
 {% load url from future %}
 
-
 <h2 class="text-right">Competition</h2>
-<div class="accordion" id="competition-detail">
-  <div class="accordion-group">
-    <div class="accordion-heading">
-      <a class="accordion-toggle" data-toggle="collapse"
-         data-parent="#competition-detail" href="#collapseOne">
-         Competition Details
-      </a>
-    </div>
-    <div id="collapseOne" class="accordion-body collapse">
-      <div class="accordion-inner">
-        {% include "competition/competition/_competition_detail.html" %}
-        <a href="{% url 'competition_detail' competition.slug %}" class="btn">
-          See more
-        </a>
-      </div>
-    </div>
-  </div>
-</div>
+<ul class="nav nav-tabs nav-stacked">
+  <li>
+    <a href="{% url 'competition_detail' competition.slug %}">
+      Competition Details
+    </a>
+  </li>
+</ul>
 
 <h2 class="text-right">Teams</h2>
 <ul class="nav nav-tabs nav-stacked">
