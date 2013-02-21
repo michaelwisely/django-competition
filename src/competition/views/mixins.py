@@ -210,9 +210,9 @@ class RequireRunningMixin(CheckAllowedMixin):
         """Called to see if a user is allowed to view this page.
         """
         # If the competition is running, they're allowed to view it
-        return self.get_competition(request).is_running
+        return self.get_competition().is_running
 
-    def get_competition(self, request):
+    def get_competition(self):
         """Gets the instance of the competition to check.  
 
         You could just inherit from CompetitionViewMixin, which
@@ -231,9 +231,9 @@ class RequireNotRunningMixin(CheckAllowedMixin):
         """Called to see if a user is allowed to view this page.
         """
         # If the competition is running, they're NOT allowed to view it
-        return not self.get_competition(request).is_running
+        return not self.get_competition().is_running
 
-    def get_competition(self, request):
+    def get_competition(self):
         """Gets the instance of the competition to check.  
 
         You could just inherit from CompetitionViewMixin, which
@@ -252,9 +252,9 @@ class RequireOpenMixin(CheckAllowedMixin):
         """Called to see if a user is allowed to view this page.
         """
         # If the competition is open, they're allowed to view it
-        return self.get_competition(request).is_open
+        return self.get_competition().is_open
 
-    def get_competition(self, request):
+    def get_competition(self):
         """Gets the instance of the competition to check.  
 
         You could just inherit from CompetitionViewMixin, which
@@ -273,9 +273,9 @@ class RequireNotOpenMixin(CheckAllowedMixin):
         """Called to see if a user is allowed to view this page.
         """
         # If the competition is open, they're NOT allowed to view it
-        return not self.get_competition(request).is_open
+        return not self.get_competition().is_open
 
-    def get_competition(self, request):
+    def get_competition(self):
         """Gets the instance of the competition to check.  
 
         You could just inherit from CompetitionViewMixin, which
@@ -293,10 +293,10 @@ class RequireOrganizerMixin(CheckAllowedMixin):
 
     def check_if_allowed(self, request):
         user = self.get_user(request)
-        competition = self.get_competition(request)
+        competition = self.get_competition()
         return competition.is_user_organizer(user)
 
-    def get_competition(self, request):
+    def get_competition(self):
         """Gets the instance of the competition to check.  
 
         You could just inherit from CompetitionViewMixin, which
