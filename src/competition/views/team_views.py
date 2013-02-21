@@ -30,6 +30,11 @@ class TeamDetailView(LoggedInMixin, CompetitionViewMixin, DetailView):
         """Only list teams participating in self.get_competition()"""
         return Team.objects.filter(competition=self.get_competition())
 
+    def get_context_data(self, **kwargs):
+        context = super(TeamDetailView, self).get_context_data(**kwargs)
+        context['on_team'] = self.object.is_user_on_team(self.request.user)
+        return context
+
 
 class TeamCreationView(UserRegisteredMixin,
                        CheckAllowedMixin,
