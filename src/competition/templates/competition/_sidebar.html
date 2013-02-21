@@ -16,22 +16,23 @@
       All Teams
     </a>
   </li>
-  <li>
-    {% if not user_team %}
+  {% if not user_team %}
+    <li>
       <a href="{% url 'team_create' competition.slug %}">
         Create Team
       </a>
-    {% else %}
+    </li>
+  {% else %}
+    <li>
       <a href="{{ user_team.get_absolute_url }}">
         My Team
       </a>
-    {% endif %}
-  </li>
+    </li>
   <li>
     <a href="{% url 'team_leave' competition.slug %}">
       Leave Team
     </a>
-  </li>
+  {% endif %}
 </ul>
 
 <h2 class="text-right">Registration</h2>
