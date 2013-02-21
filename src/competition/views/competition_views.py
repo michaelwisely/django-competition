@@ -17,3 +17,10 @@ class CompetitionDetailView(DetailView):
     model = Competition
     slug_url_kwarg = 'comp_slug'
     template_name = 'competition/competition/competition_detail.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(CompetitionDetailView, self).get_context_data(**kwargs)
+        competition = self.object
+        user = self.request.user
+        context['user_registered'] = competition.is_user_registered(user)
+        return context
