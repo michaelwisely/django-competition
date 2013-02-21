@@ -43,7 +43,10 @@ class CompetitionViewMixin(View):
     def get_context_data(self, *args, **kwargs):
         """Overrides get_context_data to add 'competition' to the
         template context before rendering"""
-        context = {'competition': self.get_competition()}
+        c = self.get_competition()
+        context = {'competition': c,
+                   'user_registered': c.is_user_registered(self.request.user),
+        }
         # Update the context with the parent's context
         parent = super(CompetitionViewMixin, self)
         context.update(parent.get_context_data(*args, **kwargs))
