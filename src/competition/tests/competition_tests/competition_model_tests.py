@@ -3,7 +3,9 @@ from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from competition.tests.factories import CompetitionFactory
+from competition.tests.factories import (CompetitionFactory,
+                                         RegistrationFactory,
+                                         UserFactory)
 from competition.models import Competition
 
 from datetime import datetime, timedelta
@@ -105,3 +107,16 @@ class CompetitionModelValidationTest(TestCase):
         CompetitionFactory.create(name="MegaMinerAI")
         with self.assertRaises(IntegrityError):
             CompetitionFactory.create(name="MegaMinerAI")
+
+    def test_registrated_for_user(self):
+        """List competition where a user is registered"""
+        c1 = CompetitionFactory.create(name="MegaMinerAI1")
+        c2 = CompetitionFactory.create(name="MegaMinerAI2")
+        c3 = CompetitionFactory.create(name="MegaMinerAI3")
+        alice = UserFactory.create()
+        RegistrationFactory.create(user=alice, competition=c1)
+        RegistrationFactory.create(user=alice, competition=c3)
+        l = list(Competition.objects.user_registered(alice))
+        self.assertEqual(2, len(l))
+        self.assertIn(c1, l)
+        self.assertIn(c3, l)

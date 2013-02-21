@@ -13,6 +13,13 @@ from competition.validators import (validate_name, non_negative,
                                     greater_than_zero)
 
 
+class CompetitionManager(models.Manager):
+
+    def user_registered(self, user):
+        return self.filter(registration__user=user,
+                           registration__active=True)
+
+
 class Competition(models.Model):
     class Meta:
         app_label = 'competition'
@@ -23,6 +30,9 @@ class Competition(models.Model):
             ("view_registrations", "Can view competitor registrations"),
             ("mark_paid", "Can mark a registration as paid"),
         )
+
+    # Custom object manager
+    objects = CompetitionManager()
 
     # Typical info
     name = models.CharField(max_length=50, unique=True,
