@@ -17,21 +17,26 @@
     </a>
   </li>
   {% if not user_team %}
-    <li>
-      <a href="{% url 'team_create' competition.slug %}">
-        Create Team
-      </a>
-    </li>
+    {% if competition.is_open %}
+      <li>
+        <a href="{% url 'team_create' competition.slug %}">
+          Create Team
+        </a>
+      </li>
+    {% endif %}
   {% else %}
     <li>
       <a href="{{ user_team.get_absolute_url }}">
         My Team
       </a>
     </li>
-  <li>
-    <a href="{% url 'team_leave' competition.slug %}">
-      Leave Team
-    </a>
+    {% if competition.is_open %}
+      <li>
+        <a href="{% url 'team_leave' competition.slug %}">
+          Leave Team
+        </a>
+      </li>
+    {% endif %}
   {% endif %}
 </ul>
 
