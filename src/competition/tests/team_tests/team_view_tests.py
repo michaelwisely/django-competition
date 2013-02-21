@@ -10,8 +10,10 @@ from unittest import skip
 class TeamViewsTest(FancyTestCase):
 
     def setUp(self):
-        self.space = CompetitionFactory.create(name="Space")
-        self.galapagos = CompetitionFactory.create(name="Galapagos")
+        self.space = CompetitionFactory.create(name="Space",
+                                               is_open=True)
+        self.galapagos = CompetitionFactory.create(name="Galapagos",
+                                                   is_open=True)
 
         self.space_teams = [TeamFactory.create(competition=self.space,
                                                num_members=1)
@@ -177,3 +179,21 @@ class TeamViewsTest(FancyTestCase):
             resp = self.client.post(url, data={'confirmed': True}, follow=True)
             self.assertRedirects(resp, self.space.get_absolute_url())
             self.assertFalse(Team.objects.filter(pk=t.pk).exists())
+
+    def test_create_team_competition_closed(self):
+        """Users can't create a team if competition is closed"""
+        self.space.is_open = False
+        self.space.save()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertEqual(404, resp.status_code)
+
+    def test_leave_team_competition_closed(self):
+        """Users can't leave a team if competition is closed"""
+        self.space.is_open = False
+        self.space.save()
+        url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertEqual(404, resp.status_code)
