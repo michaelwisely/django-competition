@@ -1,4 +1,5 @@
 from django.views.generic import ListView, DetailView
+from django.core.exceptions import ObjectDoesNotExist
 
 from competition.models.competition_model import Competition
 
@@ -23,4 +24,8 @@ class CompetitionDetailView(DetailView):
         competition = self.object
         user = self.request.user
         context['user_registered'] = competition.is_user_registered(user)
+        try:
+            context['user_team'] = competition.team_set.get(members=user)
+        except ObjectDoesNotExist:
+            context['user_team'] = None
         return context
