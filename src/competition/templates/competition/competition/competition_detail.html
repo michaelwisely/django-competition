@@ -22,19 +22,17 @@
 
 {% block content %}
   <div class="row">
-    <div class="span9">
-      <h2>Details</h2>
-      {% include "competition/competition/_competition_detail.html" %}
-    </div>
-  </div>
-  <div class="row">
     {% if competition.avatar %}
-      <div class="span9">
+      <div class="span5">
         <a href="{{ competition.avatar.image.url }}">
           <img src="{{ competition.avatar.image.url }}"
                class="img-polaroid" alt="{{ competition.name }}" />
         </a>
       </div>
     {% endif %}
+    <div class="span4">
+      <h2>Details</h2>
+      {% include "competition/competition/_competition_detail.html" %}
+    </div>
   </div>
 {% endblock %}
