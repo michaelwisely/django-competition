@@ -6,7 +6,7 @@ from competition.models.team_model import Team
 class TeamForm(forms.ModelForm):
     class Meta:
         model = Team
-        fields = ('name', 'avatar')
+        fields = ('name', )
 
     def validate_unique(self):
         exclude = self._get_validation_exclusions()
