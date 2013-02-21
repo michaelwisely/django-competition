@@ -17,9 +17,15 @@
     </a>
   </li>
   <li>
-    <a href="{% url 'team_create' competition.slug %}">
-      Create Team
-    </a>
+    {% if not user_team %}
+      <a href="{% url 'team_create' competition.slug %}">
+        Create Team
+      </a>
+    {% else %}
+      <a href="{{ user_team.get_absolute_url }}">
+        My Team
+      </a>
+    {% endif %}
   </li>
   <li>
     <a href="{% url 'team_leave' competition.slug %}">
