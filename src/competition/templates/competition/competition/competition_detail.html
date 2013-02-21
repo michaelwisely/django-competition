@@ -4,7 +4,7 @@
 {% block page-header %}
   <div class="page-header" style="margin-top:20px;">
     <div class="row">
-      <div class="span7">
+      <div id="name" class="span7">
         <h1>{{ competition.name }}</h1>
       </div>
       <div class="span2">
@@ -23,7 +23,7 @@
 {% block content %}
   <div class="row">
     {% if competition.avatar %}
-      <div class="span5">
+      <div id="avatar" class="span5">
         <a href="{{ competition.avatar.image.url }}">
           <img src="{{ competition.avatar.image.url }}"
                class="img-polaroid" alt="{{ competition.name }}" />
@@ -35,4 +35,15 @@
       {% include "competition/competition/_competition_detail.html" %}
     </div>
   </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(function() {
+      if($("#no-sidebar").length > 0) {
+        $("#name").removeClass('span7').addClass('span10');
+        $("#avatar").removeClass('span5').addClass('span8');
+      }
+    });
+  </script>
 {% endblock %}
