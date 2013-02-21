@@ -5,6 +5,7 @@ from django.views.generic import View
 from django.views.generic.edit import FormView
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
 
 from competition.models.competition_model import Competition
 
@@ -44,8 +45,17 @@ class CompetitionViewMixin(View):
         """Overrides get_context_data to add 'competition' to the
         template context before rendering"""
         c = self.get_competition()
-        context = {'competition': c,
-                   'user_registered': c.is_user_registered(self.request.user),
+        user = self.request.user
+
+        try:
+            team = c.team_set.get(members=user)
+        except ObjectDoesNotExist:
+            team = None
+
+        context = {
+            'competition': c,
+            'user_registered': c.is_user_registered(user),
+            'user_team': team,
         }
         # Update the context with the parent's context
         parent = super(CompetitionViewMixin, self)
