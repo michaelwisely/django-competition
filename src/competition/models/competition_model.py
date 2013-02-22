@@ -124,7 +124,7 @@ def competition_pre_delete(sender, instance, **kwargs):
 
 
 @receiver(post_syncdb, sender=Competition)
-def my_callback(sender, **kwargs):
+def setup_organizer_group(sender, **kwargs):
     comp_content_type = ContentType.objects.get(app_label='competition',
                                                 model='competition')
     staff = Group.objects.create(name="Competition Staff")
