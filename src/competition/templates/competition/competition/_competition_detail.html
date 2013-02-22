@@ -32,14 +32,20 @@
       <th>Cost per person:</th>
       <td>${{ competition.cost_per_person|floatformat:2 }}</td>
     </tr>
-    <tr>
-      <th>Minimum team size</th>      
-      <td>{{ competition.min_num_team_members }}</td>      
-    </tr>
-    <tr>
-      <th>Maximum team size</th>      
-      <td>{{ competition.max_num_team_members }}</td>      
-    </tr>
+    {% if competition.min_num_team_members == competition.max_num_team_members %}
+      <tr>
+        <th>Team size</th>
+        <td>{{ competition.min_num_team_members }}</td>
+      </tr>
+    {% else %}
+      <tr>
+        <th>Minimum team size</th>
+        <td>{{ competition.min_num_team_members }}</td>
+      </tr>
+      <tr>
+        <th>Maximum team size</th>
+        <td>{{ competition.max_num_team_members }}</td>
+      </tr>
+    {% endif %}
   </tbody>
 </table>
-
