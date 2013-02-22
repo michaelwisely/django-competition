@@ -13,7 +13,13 @@ def competitions_registered(context):
     return {'competitions': competitions}
 
 
-@register.simple_tag(takes_context=True)
-def invitation_count(context):
+@register.filter
+def has_unread_invitations(user):
     user = context['user']
-    return Invitation.objects.filter(receiver=user.pk).count()
+    return Invitation.objects.filter(receiver=user.pk, read=False).exists()
+
+
+@register.simple_tag(takes_context=True)
+def unread_invitation_count(context):
+    user = context['user']
+    return Invitation.objects.filter(receiver=user.pk, read=False).count()
