@@ -16,6 +16,18 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class TeamManager(models.Manager):
+
+    def invitable(self, user):
+        """Returns teams that have room for invitations"""
+        if user.is_anonymous():
+            return []
+        teams = self.filter(
+            members=user,               # Teams for this user
+            competition__is_open=True,  # where the competition is open
+        )
+        return [t for t in teams if t.num_invites_left() > 0]
+
 class Team(models.Model):
 
     class Meta:
@@ -23,6 +35,9 @@ class Team(models.Model):
         unique_together = (('competition', 'slug'),)
         ordering = ['name']
         get_latest_by = "created"
+
+    # Use a custom manager
+    objects = TeamManager()
 
     competition = models.ForeignKey(Competition)
     members = models.ManyToManyField(User)
@@ -72,7 +87,7 @@ class Team(models.Model):
         return self.members.filter(pk=user.pk).exists()
 
     def num_invites_left(self):
-        """Returns the number of invites a team has left. 
+        """Returns the number of invites a team has left.
 
         e.g., if a competition allows teams of up to 3, and a team has
         1 member on it, that member can send up to two invites"""
@@ -122,13 +137,13 @@ def team_m2m_changed(sender, instance, action, reverse,
             for user in users:
                 # If the team is full, thwo an exception
                 if team.members.count() >= team.competition.max_num_team_members:
-                    logger.error("%s has too many members on it!", 
+                    logger.error("%s has too many members on it!",
                                  team.name)
                 # Remove the user from any old teams they might
                 # already be on for this competition
                 old_teams = user.team_set.filter(competition=team.competition)
                 for old_team in old_teams:
-                    logger.debug("Removing %s from %s", 
+                    logger.debug("Removing %s from %s",
                                  user.username, old_team.name)
                     user.team_set.remove(old_team)
 
@@ -140,4 +155,3 @@ def team_m2m_changed(sender, instance, action, reverse,
                     logger.info("%s has no more team members. Deleting it.",
                                 team.name)
                     team.delete()
-

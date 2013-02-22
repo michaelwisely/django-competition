@@ -1,6 +1,6 @@
 from django import template
 
-from ..models import Competition, Invitation
+from ..models import Competition, Invitation, Team
 
 register = template.Library()
 
@@ -22,3 +22,25 @@ def has_unread_invitations(user):
 def unread_invitation_count(context):
     user = context['user']
     return Invitation.objects.filter(receiver=user.pk, read=False).count()
+
+
+class TeamNode(template.Node):
+    def __init__(self, variable_name):
+        self.variable_name = variable_name
+
+    def render(self, context):
+        user = context['user']
+        context[self.variable_name] = Team.objects.invitable(user)
+        return ''
+
+
+@register.tag
+def invitable_teams(parser, token):
+    try:
+        contents = token.split_contents()
+        _tag_name, _as, variable_name = contents
+    except AssertionError:
+        msg = "%r tag requires one argument" % contents[0]
+        raise template.TemplateSyntaxError(msg)
+
+    return TeamNode(variable_name)
