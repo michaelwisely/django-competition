@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save, pre_delete, post_syncdb
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_slug
-from django.contrib.auth.models import AnonymousUser, Group, Permission
+from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from competition.models.avatar_model import Avatar
@@ -17,11 +17,9 @@ class CompetitionManager(models.Manager):
 
     def user_registered(self, user):
         """Returns competitions that the user is registered for"""
-        if isinstance(user, AnonymousUser):
+        if user.is_anonymous():
             return []
-        if not isinstance(user, int):
-            user = user.pk
-        return self.filter(registration__user=user,
+        return self.filter(registration__user=user.pk,
                            registration__active=True)
 
 
@@ -88,14 +86,14 @@ class Competition(models.Model):
     def is_user_registered(self, user):
         """Return true if the given user has an **active**
         registration for this competition, else return false"""
-        if isinstance(user, AnonymousUser):
+        if user.is_anonymous():
             return False
         return self.registration_set.filter(user=user.pk, active=True).exists()
 
     def is_user_organizer(self, user):
         """Return true if the given user is an organizer for this
         competition, else false"""
-        if isinstance(user, AnonymousUser):
+        if user.is_anonymous():
             return False
         return self.organizer_set.filter(user=user.pk).exists()
 

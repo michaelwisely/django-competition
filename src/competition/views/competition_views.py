@@ -24,8 +24,10 @@ class CompetitionDetailView(DetailView):
         competition = self.object
         user = self.request.user
         context['user_registered'] = competition.is_user_registered(user)
+        context['user_team'] = None
         try:
-            context['user_team'] = competition.team_set.get(members=user)
+            if not user.is_anonymous():
+                context['user_team'] = competition.team_set.get(members=user.pk)
         except ObjectDoesNotExist:
-            context['user_team'] = None
+            pass
         return context
