@@ -29,7 +29,8 @@ NOSE_ARGS = ['--cover-package=competition',  # Only check the
 
              '--with-yanc',                  # Use colorized output
 
-             '--with-achievements',          # Track achievements!
+             # Achievements have been misbehaving. Leave them out for now
+             # '--with-achievements',          # Track achievements!
              ]
 
 # Django Debug Toolbar settings
