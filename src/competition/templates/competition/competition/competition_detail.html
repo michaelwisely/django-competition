@@ -35,6 +35,13 @@
     <div class="span4">
       <h2>Details</h2>
       {% include "competition/competition/_competition_detail.html" %}
+      {% if user.is_authenticated and competition.is_open and not user_team %}
+        <p class="text-info text-center">
+          <span class="label label-info">Heads up</span>
+          You must be on a team to access competition code. Be
+          sure to join one!
+        </p>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
