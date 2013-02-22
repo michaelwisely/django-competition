@@ -68,20 +68,20 @@ class InvitationCreateView(LoggedInMixin,
         """If the user provided a 'team' query parameter, look up the
         team. Otherwise return None"""
         try:
-            team_id = self.request.GET.get('team')
+            team_id = int(self.request.GET.get('team'))
             if team_id is not None:
                 return self.get_available_teams().get(pk=team_id)
             return self.get_available_teams().latest()
-        except Team.DoesNotExist:
+        except (Team.DoesNotExist, ValueError):
             return None
 
     def get_invitee(self):
-        """If the user provided a 'team' query parameter, look up the
+        """If the user provided a 'invitee' query parameter, look up the
         team. Otherwise return None"""
         try:
-            invitee_id = self.request.GET['invitee']
+            invitee_id = int(self.request.GET['invitee'])
             return self.get_available_invitees().get(pk=invitee_id)
-        except (User.DoesNotExist, KeyError):
+        except (User.DoesNotExist, KeyError, ValueError):
             return None
 
     def get_form(self, form_class):
