@@ -12,7 +12,8 @@
     <p>
       <span><strong>To:</strong> {{ invitation.receiver }}</span><br>
       <span><strong>From:</strong> {{ invitation.sender }}</span><br>
-      <span><strong>Sent:</strong> {{ invitation.sent }}</span>
+      <span><strong>Sent:</strong> {{ invitation.sent }}</span><br>
+      <span><strong>Competition:</strong> {{ invitation.team.competition.name }}</span>
     </p>
 
     <hr>
@@ -23,27 +24,25 @@
 
     <br>
 
-    {% if invitation.receiver == user %}
-      {% if invitation.response == 'A' %} {# Accepted #}
-        <a href="#" class="btn btn-success disabled">
-          Accepted
-        </a>
-      {% endif %}
+    {% if invitation.response == 'A' %} {# Accepted #}
+      <a href="#" class="btn btn-success disabled">
+        Accepted
+      </a>
+    {% endif %}
 
-      {% if invitation.response == 'D' %} {# Declined #}
-        <a href="#" class="btn btn-danger disabled">
-          Declined
-        </a>
-      {% endif %}
+    {% if invitation.response == 'D' %} {# Declined #}
+      <a href="#" class="btn btn-danger disabled">
+        Declined
+      </a>
+    {% endif %}
 
-      {% if not invitation.response %}  
-        <a href="{% url invitation_accept pk=invitation.pk %}" class="btn btn-success">
-          Accept Invitation
-        </a>
-        <a href="{% url invitation_decline pk=invitation.pk %}" class="btn btn-danger">
-          Decline Invitation
-        </a>
-      {% endif %}
+    {% if invitation.receiver == user and not invitation.response %}
+      <a href="{% url invitation_accept pk=invitation.pk %}" class="btn btn-success">
+        Accept Invitation
+      </a>
+      <a href="{% url invitation_decline pk=invitation.pk %}" class="btn btn-danger">
+        Decline Invitation
+      </a>
     {% endif %}
   </div>
 
