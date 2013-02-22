@@ -21,19 +21,39 @@
           <div class="span2 pull-right">
             <h2>Your team!</h2>
             {% if team.eligible_to_win %}
-              <span class="label label-success">Eligible to win prizes</span>
+              <a id="eligible" href="#" data-toggle="tooltip"
+                 title="Your team is presently eligible to win prizes">
+                 <span class="label label-success">Eligible to win prizes</span>
+              </a>
             {% else %}
-              <span class="label label-important">Ineligible to win prizes</span>
+              <a id="ineligible" href="#" data-toggle="tooltip"
+                 title="Your team is presently not eligible to win prizes">
+                 <span class="label label-important">Ineligible to win prizes</span>
+              </a>
             {% endif %}
             {% if team.paid %}
-              <span class="label label-success">
-                Paid up {% if team.time_paid %} at {{ team.time_paid }}{% endif %}
-              </span>
+              <a id="paid-up" href="#" data-toggle="tooltip"
+                 title="Your team has fully paid!">
+                 <span class="label label-success">
+                   Paid up {% if team.time_paid %} at {{ team.time_paid }}{% endif %}
+                 </span>
+              </a>
             {% endif %}
             {% if team.num_invites_left == 0 %}
-              <span class="label label-warning">
-                Out of invites
-              </span>
+              <a id="out-of-invites" href="#" data-toggle="tooltip"
+                 title="Your team has maxed out its number of sent invites for now. Wait until invitees respond or someone leaves.">
+                <span class="label label-warning">
+                  Out of invites
+                </span>
+              </a>
+            {% endif %}
+            {% if team.members.count == team.competition.max_num_team_members %}
+              <a id="full-team" href="#" data-toggle="tooltip"
+                 title="Your team is full">
+                <span class="label label-warning">
+                  Full team!
+                </span>
+              </a>
             {% endif %}
           </div>
         {% endif %}
