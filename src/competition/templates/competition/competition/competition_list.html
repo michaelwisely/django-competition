@@ -9,15 +9,6 @@
 {% endblock %}
 
 {% block content %}
-  {% if user.is_authenticated %}
-    <h2>Competitions you're registered for</h2>
-    <ul>
-      {% competitions_registered %}
-    </ul>
-  {% endif %}
-
-  <hr>
-
   <ul class="nav nav-tabs nav-stacked">
     {% for competition in competitions %}
       <li>
