@@ -20,4 +20,6 @@
       <h2>No competitions, yet.</h2>
     {% endfor %}
   </ul>
+
+{% include "competition/_paginator.html" with page=page_obj %}
 {% endblock %}

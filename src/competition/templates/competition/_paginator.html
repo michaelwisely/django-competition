@@ -1,0 +1,10 @@
+{% load url from future %}
+
+<ul class="pager">
+  <li class="previous {% if not page.has_previous %}disabled{% endif%}">
+    <a href="?page={{ page.previous_page_number }}">&larr; Previous</a>
+  </li>
+  <li class="next {% if not page.has_next %}disabled{% endif%}">
+    <a href="?page={{ page.next_page_number }}">Next &rarr;</a>
+  </li>
+</ul>
