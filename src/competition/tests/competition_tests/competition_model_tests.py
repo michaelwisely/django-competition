@@ -122,6 +122,14 @@ class CompetitionModelValidationTest(TestCase):
         c2 = CompetitionFactory.create(name="MegaMinerAI Galapagos")
         self.assertNotEqual(c, c2)
 
+    def test_slug_stays_same(self):
+        """Changing a name won't change the slug"""
+        c = CompetitionFactory.create(name="MegaMinerAI-Galapagos")
+        slug = c.slug
+        c.name = "derp"
+        c.save()
+        self.assertEqual(slug, c.slug)
+
     def test_registrated_for_user(self):
         """List competition where a user is registered"""
         c1 = CompetitionFactory.create(name="MegaMinerAI1")
