@@ -77,7 +77,13 @@ class InvitationCreateView(LoggedInMixin,
     def get_available_teams(self):
         """Returns a list of competitions that are open for
         registration and team changes"""
-        return self.request.user.team_set.filter(competition__is_open=True)
+        teams = self.request.user.team_set.filter(competition__is_open=True)
+        if not teams.exists():
+            msg = "Can't send invites at this time. You're not"
+            msg += " registered for any open competitions"
+            messages.error(self.request, msg)
+            raise Http404(msg)
+        return teams
 
     def get_available_invitees(self):
         """Returns a list of users who can be invited"""

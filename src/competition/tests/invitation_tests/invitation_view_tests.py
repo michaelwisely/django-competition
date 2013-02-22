@@ -110,8 +110,7 @@ class InvitationViewsTest(FancyTestCase):
                                      data={'team': self.alice_team.pk,
                                            'receiver': self.carl.pk,
                                            'message': "Hello"})
-        self.assertIn('team', resp.context['form'].errors)
-        self.assertEqual(0, Invitation.objects.all().count())
+        self.assert404(resp)
 
     def test_cannot_invite_team_members(self):
         """Can't send invites to already members"""
