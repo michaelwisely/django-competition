@@ -15,7 +15,6 @@ def competitions_registered(context):
 
 @register.filter
 def has_unread_invitations(user):
-    user = context['user']
     return Invitation.objects.filter(receiver=user.pk, read=False).exists()
 
 
