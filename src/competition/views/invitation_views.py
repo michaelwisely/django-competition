@@ -68,8 +68,9 @@ class InvitationCreateView(LoggedInMixin,
         """If the user provided a 'team' query parameter, look up the
         team. Otherwise return None"""
         try:
-            team_id = int(self.request.GET.get('team'))
+            team_id = self.request.GET.get('team')
             if team_id is not None:
+                team_id = int(team_id)
                 return self.get_available_teams().get(pk=team_id)
             return self.get_available_teams().latest()
         except (Team.DoesNotExist, ValueError):
