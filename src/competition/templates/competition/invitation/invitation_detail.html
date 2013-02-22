@@ -8,12 +8,17 @@
 
 {% block content %}
   <div class="well">
-    <h2>Invitation to <i>{{ invitation.team.name }}</i></h2>
+    <h2>Invitation to <a href="{{ invitation.team.get_absolute_url }}"><i>{{ invitation.team.name }}</i></a></h2>
     <p>
       <span><strong>To:</strong> {{ invitation.receiver }}</span><br>
       <span><strong>From:</strong> {{ invitation.sender }}</span><br>
       <span><strong>Sent:</strong> {{ invitation.sent }}</span><br>
-      <span><strong>Competition:</strong> {{ invitation.team.competition.name }}</span>
+      <span>
+        <strong>Competition:</strong>
+        <a href="{{ invitation.team.competition.get_absolute_url }}">
+          {{ invitation.team.competition.name }}
+        </a>
+      </span>
     </p>
 
     <hr>

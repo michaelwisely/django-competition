@@ -30,6 +30,11 @@
                 Paid up {% if team.time_paid %} at {{ team.time_paid }}{% endif %}
               </span>
             {% endif %}
+            {% if team.num_invites_left == 0 %}
+              <span class="label label-warning">
+                Out of invites
+              </span>
+            {% endif %}
           </div>
         {% endif %}
       </div>
