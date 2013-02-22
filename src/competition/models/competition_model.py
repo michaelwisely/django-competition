@@ -109,11 +109,12 @@ def competition_pre_save(sender, instance, **kwargs):
 
     Updates the competition's slug, assigning a unique slug if necessary
     """
-    slug, i = slugify(instance.name), 1
-    while Competition.objects.filter(slug=slug).exists():
-        slug = slugify("{0}-{1}".format(instance.name, i))
-        i += 1
-    instance.slug = slug
+    if instance.slug == "":
+        slug, i = slugify(instance.name), 1
+        while Competition.objects.filter(slug=slug).exists():
+            slug = slugify("{0}-{1}".format(instance.name, i))
+            i += 1
+        instance.slug = slug
 
 
 @receiver(pre_delete, sender=Competition)
