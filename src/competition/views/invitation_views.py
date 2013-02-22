@@ -31,6 +31,12 @@ class InvitationListView(LoggedInMixin, ListView):
         user = self.request.user
         return Invitation.objects.filter(Q(sender=user) | Q(receiver=user))
 
+    def get_context_data(self, **kwargs):
+        context = super(InvitationListView, self).get_context_data(**kwargs)
+        context['received'] = self.get_queryset().filter(receiver=self.request.user)
+        context['sent'] = self.get_queryset().filter(sender=self.request.user)
+        return context
+
 
 class InvitationDetailView(LoggedInMixin, DetailView):
     """Show details about a particular team"""
