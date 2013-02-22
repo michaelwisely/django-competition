@@ -1,13 +1,40 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Fieldset, Submit, HTML
+from crispy_forms.bootstrap import FormActions
+
 from competition.models.invitation_model import Invitation
 
+
+cancel_button = """
+<a href="{% url invitation_list %}" class="btn">
+  Cancel
+</a>
+"""
 
 class InvitationForm(forms.ModelForm):
     class Meta:
         model = Invitation
         fields = ('team', 'receiver', 'message',)
+
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Send an Invitation',
+                'team',
+                'receiver',
+                'message'
+            ),
+            FormActions (
+                Submit('submit', 'Submit'),
+                HTML(cancel_button)
+            )
+        )
+        super(InvitationForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         cleaned_data = super(InvitationForm, self).clean()
