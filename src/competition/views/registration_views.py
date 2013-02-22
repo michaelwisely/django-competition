@@ -125,6 +125,8 @@ class RegistrationView(LoggedInMixin,
                 self.save_response(registration, question, form)
             msg = 'Successfully registered for %s!' % competition.name
             messages.success(request, msg)
+            if request.GET.get('next'):
+                return redirect(request.GET.get('next'))
             return redirect('competition_detail', comp_slug=competition.slug)
 
         return self.render_to_response({'questions': forms,
@@ -145,7 +147,7 @@ class UnregisterView(UserRegisteredMixin,
 
     def agreed(self):
         competition = self.get_competition()
-        registration = Registration.objects.get(competition=competition, 
+        registration = Registration.objects.get(competition=competition,
                                                 user=self.request.user,
                                                 active=True)
         registration.deactivate()

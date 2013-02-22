@@ -4,6 +4,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
+from django.core.urlresolvers import reverse
 
 from competition.models.team_model import Team
 from competition.models.invitation_model import Invitation
@@ -12,6 +13,7 @@ from competition.views.mixins import (LoggedInMixin, UserRegisteredMixin,
                                       CheckAllowedMixin)
 from competition.forms.invitation_forms import InvitationForm
 
+import urllib
 import logging
 
 
@@ -175,7 +177,14 @@ class InvitationAcceptView(InvitationResponseView):
         invitee = self.invitation.receiver
         if not competition.is_user_registered(invitee):
             # If the user isn't registered, make them register
-            return redirect('register_for', comp_slug=competition.slug)
+            msg = "You need to register for %s before you can join a team"
+            messages.error(self.request, msg % competition.name)
+            url = reverse('register_for',
+                          kwargs={'comp_slug': competition.slug})
+            query = urllib.urlencode(
+                {'next': self.invitation.get_absolute_url()}
+            )
+            return redirect(url + '?' + query)
 
         self.invitation.accept()
 
