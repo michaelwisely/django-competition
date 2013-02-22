@@ -88,12 +88,12 @@ class Competition(models.Model):
     def is_user_registered(self, user):
         """Return true if the given user has an **active**
         registration for this competition, else return false"""
-        return self.registration_set.filter(user=user, active=True).exists()
+        return self.registration_set.filter(user=user.pk, active=True).exists()
 
     def is_user_organizer(self, user):
         """Return true if the given user is an organizer for this
         competition, else false"""
-        return self.organizer_set.filter(user=user).exists()
+        return self.organizer_set.filter(user=user.pk).exists()
 
     @staticmethod
     def get_organizer_permissions():
