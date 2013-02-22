@@ -16,6 +16,8 @@
           {{ competition.name }}
         </a>
       </li>
+    {% empty %}
+      <h2>No competitions, yet.</h2>
     {% endfor %}
   </ul>
 {% endblock %}
