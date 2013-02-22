@@ -3,8 +3,9 @@ from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import TemplateView, DetailView, CreateView
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from competition.models.team_model import Team
 from competition.models.invitation_model import Invitation
@@ -20,21 +21,31 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class InvitationListView(LoggedInMixin, ListView):
+class InvitationListView(LoggedInMixin, TemplateView):
     """Lists all teams, provided that the user is logged in"""
-    context_object_name = 'invitations'
     template_name = 'competition/invitation/invitation_list.html'
     paginate_by = 10
 
-    def get_queryset(self):
-        """Only list invitations for this user"""
-        user = self.request.user
-        return Invitation.objects.filter(Q(sender=user) | Q(receiver=user))
+    def process_page(self, items, query_param):
+        paginator = Paginator(items, self.paginate_by)
+        page_num = self.request.GET.get(query_param)
+
+        try:
+            return paginator.page(page_num)
+        except PageNotAnInteger:
+            return paginator.page(1)
+        except EmptyPage:
+            return paginator.page(paginator.num_pages)
 
     def get_context_data(self, **kwargs):
         context = super(InvitationListView, self).get_context_data(**kwargs)
-        context['received'] = self.get_queryset().filter(receiver=self.request.user)
-        context['sent'] = self.get_queryset().filter(sender=self.request.user)
+        user = self.request.user
+        invitations = Invitation.objects.filter(Q(sender=user) | Q(receiver=user))
+        received = self.process_page(invitations.filter(receiver=user),
+                                     'received_page')
+        sent = self.process_page(invitations.filter(sender=user),
+                                 'sent_page')
+        context.update({'received': received, 'sent': sent})
         return context
 
 

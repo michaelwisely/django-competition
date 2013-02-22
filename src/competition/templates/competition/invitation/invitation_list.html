@@ -12,10 +12,54 @@
     <div class="span6">
       <h2>Received Invitations</h2>
       {% include "competition/invitation/_invitation_list.html" with invitations=received %}
+
+      <!-- Multiple pagers makes it hard to use the default pager :/ -->
+      <ul class="pager">
+        <li class="previous {% if not received.has_previous %}disabled{% endif%}">
+          {% if received.has_previous %}
+            <a href="?received_page={{ received.previous_page_number }}&sent_page={{ sent.number }}">
+          {% else %}
+            <a href="#">
+          {% endif %}
+          &larr; Previous
+            </a>
+        </li>
+        <li class="next {% if not received.has_next %}disabled{% endif%}">
+          {% if received.has_next %}
+            <a href="?received_page={{ received.next_page_number }}&sent_page={{ sent.number }}">
+          {% else %}
+            <a href="#">
+          {% endif %}
+          Next &rarr;
+            </a>
+        </li>
+      </ul>
+
     </div>
     <div class="span6">
       <h2>Sent Invitations</h2>
       {% include "competition/invitation/_invitation_list.html" with invitations=sent %}
+
+     <ul class="pager">
+        <li class="previous {% if not sent.has_previous %}disabled{% endif%}">
+          {% if sent.has_previous %}
+            <a href="?sent_page={{ sent.previous_page_number }}&received_page={{ received.number }}">
+          {% else %}
+            <a href="#">
+          {% endif %}
+          &larr; Previous
+            </a>
+        </li>
+        <li class="next {% if not sent.has_next %}disabled{% endif%}">
+          {% if sent.has_next %}
+            <a href="?sent_page={{ sent.next_page_number }}&received_page={{ received.number }}">
+          {% else %}
+            <a href="#">
+          {% endif %}
+          Next &rarr;
+            </a>
+        </li>
+      </ul>
     </div>
   </div>
 {% endblock %}
