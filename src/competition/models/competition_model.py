@@ -5,7 +5,7 @@ from django.db.models.signals import pre_save, pre_delete, post_syncdb
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_slug
-from django.contrib.auth.models import Group, Permission
+from django.contrib.auth.models import AnonymousUser, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
 from competition.models.avatar_model import Avatar
@@ -16,6 +16,9 @@ from competition.validators import (validate_name, non_negative,
 class CompetitionManager(models.Manager):
 
     def user_registered(self, user):
+        """Returns competitions that the user is registered for"""
+        if isinstance(user, AnonymousUser):
+            return []
         if not isinstance(user, int):
             user = user.pk
         return self.filter(registration__user=user,
