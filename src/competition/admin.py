@@ -112,6 +112,10 @@ class AvatarAdmin(admin.ModelAdmin):
 
 class CompetitionAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
+    list_display = ('name', 'is_open', 'is_running',
+                    'start_time', 'end_time')
+    list_filter = ('is_open', 'is_running', 'start_time', 'end_time')
+    prepopulated_fields = {"slug": ("name",)}
     inlines = (InlineTeamAdmin,
                InlineOrganizerAdmin,
                InlineRegistrationAdmin,
@@ -146,6 +150,9 @@ class RegistrationQuestionResponseAdmin(admin.ModelAdmin):
 
 class TeamAdmin(admin.ModelAdmin):
     filter_horizontal = ('members',)
+    list_display = ('name', 'competition', 'paid')
+    list_filter = ('competition', 'paid')
+    prepopulated_fields = {"slug": ("name",)}
 
 class InvitationAdmin(admin.ModelAdmin):
     pass
