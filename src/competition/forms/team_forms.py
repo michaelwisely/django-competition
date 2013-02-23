@@ -29,10 +29,12 @@ class TeamForm(forms.ModelForm):
 
     def clean_name(self):
         c = self.instance.competition
-        s = slugify(self.cleaned_data['name'])
+        n = self.cleaned_data['name']
+        s = slugify(n)
         if Team.objects.filter(competition=c, slug=s).exists():
             msg = "This name is already taken for %s" % c.name
             raise forms.ValidationError(msg)
+        return n
 
     def validate_unique(self):
         exclude = self._get_validation_exclusions()
