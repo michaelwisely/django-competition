@@ -1,10 +1,10 @@
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, m2m_changed
+from django.db.models.signals import (pre_save, post_save,
+                                      pre_delete, m2m_changed)
 from django.template.defaultfilters import slugify
-from django.core.validators import validate_slug
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from competition.exceptions import TeamException
 from competition.models.competition_model import Competition
@@ -27,6 +27,7 @@ class TeamManager(models.Manager):
             competition__is_open=True,  # where the competition is open
         )
         return [t for t in teams if t.num_invites_left() > 0]
+
 
 class Team(models.Model):
 
@@ -61,12 +62,19 @@ class Team(models.Model):
     def __str__(self):
         return "%s (%s)" % (self.name, self.competition.name)
 
+    @property
+    def group_name(self):
+        return "team-{0}-{1}".format(self.competition.pk, self.pk)
+
+    def get_group(self):
+        return Group.objects.get(name=self.group_name)
+
     def add_team_member(self, new_user):
         """Adds a user to the calling team
 
         Raises a TeamException if the team is full
         """
-        # If the team is full, thwo an exception
+        # If the team is full, throw an exception
         if self.members.count() >= self.competition.max_num_team_members:
             raise TeamException("Cannot add new user. Team is already full")
 
@@ -103,6 +111,24 @@ def team_pre_save(sender, instance, **kwargs):
     """
     instance.slug = slugify(instance.name)
 
+
+@receiver(post_save, sender=Team)
+def team_post_save(sender, instance, created, raw, **kwargs):
+    """Called after a Team is saved
+    - Creates an auth.group for the team
+    """
+    if created and not raw:
+        Group.objects.create(name=instance.group_name)
+
+
+@receiver(pre_delete, sender=Team)
+def team_pre_delete(sender, instance, **kwargs):
+    """Called before a team is deleted
+    - Deletes the auth.group for the team
+    """
+    instance.get_group().delete()
+
+
 @receiver(m2m_changed, sender=Team.members.through)
 @disable_for_loaddata
 def team_m2m_changed(sender, instance, action, reverse,
@@ -135,7 +161,7 @@ def team_m2m_changed(sender, instance, action, reverse,
 
         for team in teams:
             for user in users:
-                # If the team is full, thwo an exception
+                # If the team is full, throw an exception
                 if team.members.count() >= team.competition.max_num_team_members:
                     logger.error("%s has too many members on it!",
                                  team.name)
@@ -147,11 +173,17 @@ def team_m2m_changed(sender, instance, action, reverse,
                                  user.username, old_team.name)
                     user.team_set.remove(old_team)
 
+                # Add the user to the team's auth.group
+                user.groups.add(team.get_group())
+
     if action == "post_remove":
         for team in teams:
+            # Remove the user from the team's auth.group
             for user in users:
-                # If there aren't any members left on the team, delete it.
-                if team.members.count() == 0:
-                    logger.info("%s has no more team members. Deleting it.",
-                                team.name)
-                    team.delete()
+                user.groups.remove(team.get_group())
+
+            # If there aren't any members left on the team, delete it.
+            if team.members.count() == 0:
+                logger.info("%s has no more team members. Deleting it.",
+                            team.name)
+                team.delete()

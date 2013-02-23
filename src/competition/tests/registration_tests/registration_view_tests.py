@@ -25,7 +25,7 @@ class RegistrationViewsTest(FancyTestCase):
         self.galapagos.questions.add(*self.questions)
 
     def fill_in_forms(self, response):
-        """Fills in a registration form with random data 
+        """Fills in a registration form with random data
 
         Assumes that ``response``'s context contains a ``questions``
         item, which we can iterate through and fill in
