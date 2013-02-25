@@ -4,4 +4,10 @@
       {{ competition.name }}
     </a>
   </li>
+{% empty %}
+  <li class="disabled">
+    <a href="#">
+      None. Go register for something!
+    </a>
+  </li>
 {% endfor %}
