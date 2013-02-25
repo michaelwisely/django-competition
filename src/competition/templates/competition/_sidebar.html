@@ -4,6 +4,7 @@
 <ul class="nav nav-tabs nav-stacked">
   <li>
     <a href="{% url 'competition_detail' competition.slug %}">
+      <i class="icon-comment"></i>
       Competition Details
     </a>
   </li>
@@ -13,6 +14,7 @@
 <ul class="nav nav-tabs nav-stacked">
   <li>
     <a href="{% url 'team_list' competition.slug %}">
+      <i class="icon-th-list"></i>
       All Teams
     </a>
   </li>
@@ -20,6 +22,7 @@
     {% if competition.is_open %}
       <li>
         <a href="{% url 'team_create' competition.slug %}">
+          <i class="icon-plus"></i>
           Create Team
         </a>
       </li>
@@ -27,12 +30,14 @@
   {% else %}
     <li>
       <a href="{{ user_team.get_absolute_url }}">
+        <i class="icon-user"></i>
         My Team
       </a>
     </li>
     {% if competition.is_open %}
       <li>
         <a href="{% url 'team_leave' competition.slug %}">
+          <i class="icon-remove"></i>
           Leave Team
         </a>
       </li>
@@ -44,6 +49,7 @@
 <ul class="nav nav-tabs nav-stacked" style="margin-top:20px;">
   <li>
     <a href="{% url 'unregister_for' competition.slug %}">
+      <i class="icon-remove"></i>
       Unregister
     </a>
   </li>
