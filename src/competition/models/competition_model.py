@@ -34,6 +34,13 @@ class Competition(models.Model):
             ("mark_paid", "Can mark a registration as paid"),
         )
 
+    PER_TEAM_PAYMENT = 'T'
+    PER_PERSON_PAYMENT = 'P'
+    PAYMENT_OPTIONS = (
+        (PER_TEAM_PAYMENT, 'Per-team Payment'),
+        (PER_PERSON_PAYMENT, 'Per-person Payment'),
+    )
+
     # Custom object manager
     objects = CompetitionManager()
 
@@ -57,6 +64,8 @@ class Competition(models.Model):
     questions = models.ManyToManyField("competition.RegistrationQuestion",
                                        blank=True, null=True)
 
+    payment_option= models.CharField(max_length=1, choices=PAYMENT_OPTIONS,
+                                     default=PER_TEAM_PAYMENT)
     cost = models.FloatField(validators=[non_negative])
 
     # Team details
