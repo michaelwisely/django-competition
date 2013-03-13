@@ -87,13 +87,13 @@ class CompetitionModelValidationTest(TestCase):
 
     def test_positive_cost(self):
         """Cost must be greater than 0"""
-        c = CompetitionFactory.build(cost_per_person=-20.3)
+        c = CompetitionFactory.build(cost=-20.3)
 
         with self.assertRaises(ValidationError) as cm:
             c.full_clean()
 
         self.assertEqual(1, len(cm.exception.message_dict))
-        self.assertIn("cost_per_person", cm.exception.message_dict)
+        self.assertIn("cost", cm.exception.message_dict)
 
     def test_slug_set(self):
         """Competition slug should be set when it's saved"""

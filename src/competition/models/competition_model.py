@@ -57,7 +57,7 @@ class Competition(models.Model):
     questions = models.ManyToManyField("competition.RegistrationQuestion",
                                        blank=True, null=True)
 
-    cost_per_person = models.FloatField(validators=[non_negative])
+    cost = models.FloatField(validators=[non_negative])
 
     # Team details
     min_num_team_members = models.IntegerField(verbose_name="Minimum number " +

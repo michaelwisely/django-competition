@@ -50,7 +50,7 @@ class CompetitionFactory(factory.Factory):
     name = factory.Sequence(lambda n: "MegaMinerAI: %s" % n)
     start_time = factory.LazyAttribute(now)
     end_time = factory.LazyAttribute(later)
-    cost_per_person = 8.00
+    cost = 8.00
     min_num_team_members = 1
     max_num_team_members = 3
     description = "This is the best MegaMinerAI ever yay!"
