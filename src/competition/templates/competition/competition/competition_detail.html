@@ -3,12 +3,12 @@
 
 {% block page-header %}
   <div class="page-header" style="margin-top:20px;">
-    <div class="row">
-      <div id="name" class="span7">
+    <div class="row-fluid">
+      <div id="name" class="span9">
         <h1>{{ competition.name }}</h1>
       </div>
       {% if not user_registered and competition.is_open %}
-        <div class="span2">
+        <div class="span3">
           <a class="btn btn-primary btn-large pull-right"
              href="{% url 'register_for' competition.slug %}">
              Register now!
@@ -23,16 +23,16 @@
 {% endblock %}
 
 {% block content %}
-  <div class="row">
+  <div class="row-fluid">
     {% if competition.avatar %}
-      <div id="avatar" class="span5">
+      <div id="avatar" class="span3">
         <a href="{{ competition.avatar.image.url }}">
           <img src="{{ competition.avatar.image.url }}"
                class="img-polaroid" alt="{{ competition.name }}" />
         </a>
       </div>
     {% endif %}
-    <div class="span4">
+    <div class="span9">
       <h2>Details</h2>
       {% include "competition/competition/_competition_detail.html" %}
       {% if user.is_authenticated and competition.is_open and not user_team %}
