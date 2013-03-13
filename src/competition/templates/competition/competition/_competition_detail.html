@@ -29,7 +29,12 @@
       </td>
     </tr>
     <tr>
-      <th>Cost per person:</th>
+      {% if competition.payment_option == competition.PER_PERSON_PAYMENT %}
+        <th>Cost per person:</th>
+      {% endif %}
+      {% if competition.payment_option == competition.PER_TEAM_PAYMENT %}
+        <th>Cost per team:</th>
+      {% endif %}
       <td>${{ competition.cost|floatformat:2 }}</td>
     </tr>
     {% if competition.min_num_team_members == competition.max_num_team_members %}
