@@ -12,10 +12,14 @@ class Game(models.Model):
 
     competition = models.ForeignKey(Competition)
 
-    extra_data = models.TextField(null=True)
+    # Default to JSON null, which gets loaded as None
+    extra_data = models.TextField(null=True, default="null")
 
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+
+    def __unicode__(self):
+        return "Game #%d" % self.id
 
     def clean(self):
         if self.start_time > self.end_time:
@@ -25,3 +29,7 @@ class Game(models.Model):
                 json.loads(self.extra_data)
         except ValueError:
             raise ValidationError("Invalid JSON string.")
+
+    @property
+    def data(self):
+        return json.loads(self.extra_data)

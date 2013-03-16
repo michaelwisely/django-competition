@@ -1,0 +1,500 @@
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:15.652799', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:15.652791'}
+  model: competition.game
+  pk: 1
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:16.174788', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:16.174779'}
+  model: competition.game
+  pk: 2
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:16.701554', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:16.701547'}
+  model: competition.game
+  pk: 3
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:17.178345', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:17.178337'}
+  model: competition.game
+  pk: 4
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:17.622579', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:17.622571'}
+  model: competition.game
+  pk: 5
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:18.049368', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:18.049360'}
+  model: competition.game
+  pk: 6
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:18.551181', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:18.551173'}
+  model: competition.game
+  pk: 7
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:19.061305', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:19.061297'}
+  model: competition.game
+  pk: 8
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:19.513881', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:19.513873'}
+  model: competition.game
+  pk: 9
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:19.940704', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:19.940696'}
+  model: competition.game
+  pk: 10
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:20.392495', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:20.392486'}
+  model: competition.game
+  pk: 11
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:20.927635', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:20.927627'}
+  model: competition.game
+  pk: 12
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:21.404430', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:21.404422'}
+  model: competition.game
+  pk: 13
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:21.840345', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:21.840338'}
+  model: competition.game
+  pk: 14
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:22.283853', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:22.283844'}
+  model: competition.game
+  pk: 15
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:22.802279', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:22.802272'}
+  model: competition.game
+  pk: 16
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:23.304122', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:23.304114'}
+  model: competition.game
+  pk: 17
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:23.789970', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:23.789962'}
+  model: competition.game
+  pk: 18
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:24.233493', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:24.233484'}
+  model: competition.game
+  pk: 19
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:24.693586', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:24.693579'}
+  model: competition.game
+  pk: 20
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:25.203763', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:25.203756'}
+  model: competition.game
+  pk: 21
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:25.680537', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:25.680529'}
+  model: competition.game
+  pk: 22
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:26.116490', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:26.116482'}
+  model: competition.game
+  pk: 23
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:26.568214', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:26.568206'}
+  model: competition.game
+  pk: 24
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:27.061709', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:27.061701'}
+  model: competition.game
+  pk: 25
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:27.580160', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:27.580152'}
+  model: competition.game
+  pk: 26
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:28.040319', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:28.040311'}
+  model: competition.game
+  pk: 27
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:28.492884', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:28.492876'}
+  model: competition.game
+  pk: 28
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:28.944697', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:28.944689'}
+  model: competition.game
+  pk: 29
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:29.438145', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:29.438137'}
+  model: competition.game
+  pk: 30
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:29.923302', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:29.923295'}
+  model: competition.game
+  pk: 31
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:30.367518', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:30.367509'}
+  model: competition.game
+  pk: 32
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:30.819304', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:30.819297'}
+  model: competition.game
+  pk: 33
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:31.405112', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:31.405104'}
+  model: competition.game
+  pk: 34
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:31.881915', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:31.881907'}
+  model: competition.game
+  pk: 35
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:32.401340', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:32.401331'}
+  model: competition.game
+  pk: 36
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:32.861491', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:32.861484'}
+  model: competition.game
+  pk: 37
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:33.404925', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:33.404911'}
+  model: competition.game
+  pk: 38
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:33.831549', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:33.831541'}
+  model: competition.game
+  pk: 39
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:34.224954', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:34.224946'}
+  model: competition.game
+  pk: 40
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:34.660724', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:34.660715'}
+  model: competition.game
+  pk: 41
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:35.112446', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:35.112437'}
+  model: competition.game
+  pk: 42
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:35.547468', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:35.547460'}
+  model: competition.game
+  pk: 43
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:35.965865', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:35.965851'}
+  model: competition.game
+  pk: 44
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:36.367650', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:36.367642'}
+  model: competition.game
+  pk: 45
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:36.803436', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:36.803428'}
+  model: competition.game
+  pk: 46
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:37.246800', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:37.246791'}
+  model: competition.game
+  pk: 47
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:37.673482', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:37.673473'}
+  model: competition.game
+  pk: 48
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:38.108549', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:38.108540'}
+  model: competition.game
+  pk: 49
+- fields: {competition: 1, end_time: !!timestamp '2013-03-16 14:53:38.560304', extra_data: "null",
+    start_time: !!timestamp '2013-03-16 14:53:38.560295'}
+  model: competition.game
+  pk: 50
+- fields: {game: 1, score: 62, team: 1}
+  model: competition.score
+  pk: 1
+- fields: {game: 1, score: 3, team: 2}
+  model: competition.score
+  pk: 2
+- fields: {game: 2, score: 85, team: 2}
+  model: competition.score
+  pk: 3
+- fields: {game: 2, score: 7, team: 1}
+  model: competition.score
+  pk: 4
+- fields: {game: 3, score: 86, team: 1}
+  model: competition.score
+  pk: 5
+- fields: {game: 3, score: 56, team: 2}
+  model: competition.score
+  pk: 6
+- fields: {game: 4, score: 16, team: 1}
+  model: competition.score
+  pk: 7
+- fields: {game: 4, score: 79, team: 3}
+  model: competition.score
+  pk: 8
+- fields: {game: 5, score: 64, team: 2}
+  model: competition.score
+  pk: 9
+- fields: {game: 5, score: 65, team: 3}
+  model: competition.score
+  pk: 10
+- fields: {game: 6, score: 84, team: 2}
+  model: competition.score
+  pk: 11
+- fields: {game: 6, score: 0, team: 1}
+  model: competition.score
+  pk: 12
+- fields: {game: 7, score: 28, team: 1}
+  model: competition.score
+  pk: 13
+- fields: {game: 7, score: 20, team: 3}
+  model: competition.score
+  pk: 14
+- fields: {game: 8, score: 55, team: 1}
+  model: competition.score
+  pk: 15
+- fields: {game: 8, score: 11, team: 2}
+  model: competition.score
+  pk: 16
+- fields: {game: 9, score: 100, team: 3}
+  model: competition.score
+  pk: 17
+- fields: {game: 9, score: 36, team: 2}
+  model: competition.score
+  pk: 18
+- fields: {game: 10, score: 86, team: 1}
+  model: competition.score
+  pk: 19
+- fields: {game: 10, score: 3, team: 3}
+  model: competition.score
+  pk: 20
+- fields: {game: 11, score: 41, team: 2}
+  model: competition.score
+  pk: 21
+- fields: {game: 11, score: 26, team: 1}
+  model: competition.score
+  pk: 22
+- fields: {game: 12, score: 100, team: 3}
+  model: competition.score
+  pk: 23
+- fields: {game: 12, score: 33, team: 1}
+  model: competition.score
+  pk: 24
+- fields: {game: 13, score: 91, team: 2}
+  model: competition.score
+  pk: 25
+- fields: {game: 13, score: 43, team: 1}
+  model: competition.score
+  pk: 26
+- fields: {game: 14, score: 7, team: 3}
+  model: competition.score
+  pk: 27
+- fields: {game: 14, score: 53, team: 1}
+  model: competition.score
+  pk: 28
+- fields: {game: 15, score: 24, team: 1}
+  model: competition.score
+  pk: 29
+- fields: {game: 15, score: 6, team: 2}
+  model: competition.score
+  pk: 30
+- fields: {game: 16, score: 33, team: 3}
+  model: competition.score
+  pk: 31
+- fields: {game: 16, score: 60, team: 2}
+  model: competition.score
+  pk: 32
+- fields: {game: 17, score: 80, team: 3}
+  model: competition.score
+  pk: 33
+- fields: {game: 17, score: 92, team: 2}
+  model: competition.score
+  pk: 34
+- fields: {game: 18, score: 48, team: 1}
+  model: competition.score
+  pk: 35
+- fields: {game: 18, score: 94, team: 2}
+  model: competition.score
+  pk: 36
+- fields: {game: 19, score: 37, team: 3}
+  model: competition.score
+  pk: 37
+- fields: {game: 19, score: 19, team: 2}
+  model: competition.score
+  pk: 38
+- fields: {game: 20, score: 34, team: 2}
+  model: competition.score
+  pk: 39
+- fields: {game: 20, score: 13, team: 1}
+  model: competition.score
+  pk: 40
+- fields: {game: 21, score: 43, team: 1}
+  model: competition.score
+  pk: 41
+- fields: {game: 21, score: 100, team: 2}
+  model: competition.score
+  pk: 42
+- fields: {game: 22, score: 85, team: 2}
+  model: competition.score
+  pk: 43
+- fields: {game: 22, score: 58, team: 1}
+  model: competition.score
+  pk: 44
+- fields: {game: 23, score: 33, team: 1}
+  model: competition.score
+  pk: 45
+- fields: {game: 23, score: 68, team: 3}
+  model: competition.score
+  pk: 46
+- fields: {game: 24, score: 18, team: 3}
+  model: competition.score
+  pk: 47
+- fields: {game: 24, score: 83, team: 1}
+  model: competition.score
+  pk: 48
+- fields: {game: 25, score: 74, team: 3}
+  model: competition.score
+  pk: 49
+- fields: {game: 25, score: 87, team: 2}
+  model: competition.score
+  pk: 50
+- fields: {game: 26, score: 11, team: 1}
+  model: competition.score
+  pk: 51
+- fields: {game: 26, score: 78, team: 2}
+  model: competition.score
+  pk: 52
+- fields: {game: 27, score: 32, team: 3}
+  model: competition.score
+  pk: 53
+- fields: {game: 27, score: 82, team: 2}
+  model: competition.score
+  pk: 54
+- fields: {game: 28, score: 9, team: 3}
+  model: competition.score
+  pk: 55
+- fields: {game: 28, score: 28, team: 2}
+  model: competition.score
+  pk: 56
+- fields: {game: 29, score: 82, team: 3}
+  model: competition.score
+  pk: 57
+- fields: {game: 29, score: 51, team: 2}
+  model: competition.score
+  pk: 58
+- fields: {game: 30, score: 28, team: 2}
+  model: competition.score
+  pk: 59
+- fields: {game: 30, score: 27, team: 1}
+  model: competition.score
+  pk: 60
+- fields: {game: 31, score: 86, team: 2}
+  model: competition.score
+  pk: 61
+- fields: {game: 31, score: 89, team: 3}
+  model: competition.score
+  pk: 62
+- fields: {game: 32, score: 52, team: 1}
+  model: competition.score
+  pk: 63
+- fields: {game: 32, score: 76, team: 3}
+  model: competition.score
+  pk: 64
+- fields: {game: 33, score: 50, team: 3}
+  model: competition.score
+  pk: 65
+- fields: {game: 33, score: 91, team: 1}
+  model: competition.score
+  pk: 66
+- fields: {game: 34, score: 7, team: 3}
+  model: competition.score
+  pk: 67
+- fields: {game: 34, score: 16, team: 1}
+  model: competition.score
+  pk: 68
+- fields: {game: 35, score: 38, team: 2}
+  model: competition.score
+  pk: 69
+- fields: {game: 35, score: 41, team: 1}
+  model: competition.score
+  pk: 70
+- fields: {game: 36, score: 10, team: 2}
+  model: competition.score
+  pk: 71
+- fields: {game: 36, score: 52, team: 3}
+  model: competition.score
+  pk: 72
+- fields: {game: 37, score: 38, team: 1}
+  model: competition.score
+  pk: 73
+- fields: {game: 37, score: 10, team: 3}
+  model: competition.score
+  pk: 74
+- fields: {game: 38, score: 82, team: 2}
+  model: competition.score
+  pk: 75
+- fields: {game: 38, score: 16, team: 3}
+  model: competition.score
+  pk: 76
+- fields: {game: 39, score: 94, team: 3}
+  model: competition.score
+  pk: 77
+- fields: {game: 39, score: 15, team: 2}
+  model: competition.score
+  pk: 78
+- fields: {game: 40, score: 0, team: 2}
+  model: competition.score
+  pk: 79
+- fields: {game: 40, score: 20, team: 3}
+  model: competition.score
+  pk: 80
+- fields: {game: 41, score: 84, team: 3}
+  model: competition.score
+  pk: 81
+- fields: {game: 41, score: 80, team: 1}
+  model: competition.score
+  pk: 82
+- fields: {game: 42, score: 19, team: 3}
+  model: competition.score
+  pk: 83
+- fields: {game: 42, score: 63, team: 1}
+  model: competition.score
+  pk: 84
+- fields: {game: 43, score: 36, team: 1}
+  model: competition.score
+  pk: 85
+- fields: {game: 43, score: 92, team: 2}
+  model: competition.score
+  pk: 86
+- fields: {game: 44, score: 93, team: 1}
+  model: competition.score
+  pk: 87
+- fields: {game: 44, score: 19, team: 2}
+  model: competition.score
+  pk: 88
+- fields: {game: 45, score: 68, team: 2}
+  model: competition.score
+  pk: 89
+- fields: {game: 45, score: 65, team: 1}
+  model: competition.score
+  pk: 90
+- fields: {game: 46, score: 39, team: 2}
+  model: competition.score
+  pk: 91
+- fields: {game: 46, score: 81, team: 1}
+  model: competition.score
+  pk: 92
+- fields: {game: 47, score: 27, team: 1}
+  model: competition.score
+  pk: 93
+- fields: {game: 47, score: 54, team: 3}
+  model: competition.score
+  pk: 94
+- fields: {game: 48, score: 90, team: 2}
+  model: competition.score
+  pk: 95
+- fields: {game: 48, score: 89, team: 3}
+  model: competition.score
+  pk: 96
+- fields: {game: 49, score: 50, team: 1}
+  model: competition.score
+  pk: 97
+- fields: {game: 49, score: 28, team: 3}
+  model: competition.score
+  pk: 98
+- fields: {game: 50, score: 70, team: 1}
+  model: competition.score
+  pk: 99
+- fields: {game: 50, score: 14, team: 2}
+  model: competition.score
+  pk: 100
