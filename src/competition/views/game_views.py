@@ -13,9 +13,9 @@ class GameListView(UserRegisteredMixin,
     template_name = 'competition/game/game_list.html'
 
     def get_queryset(self):
-        team = get_object_or_404(self.request.user.team_set,
-                                 competition=self.get_competition())
-        return Game.objects.filter(score__team=team)
+        self.team = get_object_or_404(self.request.user.team_set,
+                                      competition=self.get_competition())
+        return Game.objects.filter(score__team=self.team).select_related()
 
     def parse_data(self, games):
         fields = set()
@@ -29,4 +29,5 @@ class GameListView(UserRegisteredMixin,
     def get_context_data(self, **kwargs):
         context = super(GameListView, self).get_context_data(**kwargs)
         context['data_fields'] = self.parse_data(context['page_obj'])
+        context['team'] = self.team
         return context

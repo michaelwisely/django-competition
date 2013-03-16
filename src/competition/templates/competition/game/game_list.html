@@ -5,10 +5,11 @@
   <h2>Played Games</h2>
   {% for game in games %}
     {% if forloop.first %}
-      <table class="table">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>Game Number</th>
+            <th>Opponents</th>
             <th>Start Time</th>
             <th>End Time</th>
             {% for field in data_fields %}
@@ -21,8 +22,14 @@
 
     <tr>
       <td>{{ game.id }}</td>
-      <td>{{ game.start_time }}</td>
-      <td>{{ game.end_time }}</td>
+      <td>
+        {% for score in game.score_set.all %}
+          <span {% if team = score.team %} class="label label-info"{% endif %}>{{ score.team.name }}:</span> {{ score.score }}
+          <br>
+        {% endfor %}
+      </td>
+      <td>{{ game.start_time|date:"SHORT_DATETIME_FORMAT" }}</td>
+      <td>{{ game.end_time|date:"SHORT_DATETIME_FORMAT" }}</td>
       {% for field in data_fields %}
         <td>{{ game.data.display|get_item:field|default:"--" }}</td>
       {% endfor %}
