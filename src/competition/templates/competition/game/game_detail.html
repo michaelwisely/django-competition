@@ -1,0 +1,82 @@
+{% extends "competition/competition_base.html" %}
+{% load competition_tags %}
+
+{% block content %}
+  <table class="table table-hover">
+    <tbody>
+      <tr>
+        <th>Game #</th>
+        <td>{{ game.id }}</td>
+      </tr>
+      {% if team == game.team1 %}
+        <tr>
+          <th>Opponent</th>
+          <td>{{ game.team2.name }}</td>
+        </tr>
+        <tr>
+          <th>Them</th>
+          <td>{{ game.team2_score }}</td>
+        </tr>
+        <tr>
+          <th>Us</th>
+          <td>{{ game.team1_score }}</td>
+        </tr>
+        <tr>
+          <th>Result</th>
+          {% if game.team1_score > game.team2_score %}
+            <td class="win">Win</td>
+          {% endif %}
+          {% if game.team1_score < game.team2_score %}
+            <td class="loss">Loss</td>
+          {% endif %}
+          {% if game.team1_score == game.team2_score %}
+            <td class="tie">Tie</td>
+          {% endif %}
+        </tr>
+      {% else %}
+        <tr>
+          <th>Opponent</th>
+          <td>{{ game.team1.name }}</td>
+        </tr>
+        <tr>
+          <th>Them</th>
+          <td>{{ game.team1_score }}</td>
+        </tr>
+        <tr>
+          <th>Us</th>
+          <td>{{ game.team2_score }}</td>
+        </tr>
+        <tr>
+          <th>Result</th>
+          {% if game.team2_score > game.team1_score %}
+            <td class="win">Win</td>
+          {% endif %}
+          {% if game.team2_score < game.team1_score %}
+            <td class="loss">Loss</td>
+          {% endif %}
+          {% if game.team2_score == game.team1_score %}
+            <td class="tie">Tie</td>
+          {% endif %}
+        </tr>
+      {% endif %}
+      {% for field in data_fields %}
+        <tr>
+          <th>{{ field }}</th>
+          <td>{{ game.data.display|get_item:field|default:"--" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(function(){
+    $('#eligible').tooltip({placement: "left"});
+    $('#ineligible').tooltip({placement: "left"});
+    $('#paid-up').tooltip({placement: "left"});
+    $('#out-of-invites').tooltip({placement: "left"});
+    $('#full-team').tooltip({placement: "left"});
+    });
+  </script>
+{% endblock %}

@@ -50,6 +50,11 @@ class Game(models.Model):
         except ValueError:
             raise ValidationError("Invalid JSON string.")
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('game_detail', (), {'pk': self.pk,
+                                    'comp_slug': self.competition.slug})
+
     @property
     def data(self):
         return json.loads(self.extra_data)

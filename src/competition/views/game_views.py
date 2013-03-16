@@ -1,25 +1,13 @@
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from ..models import Game
-from .mixins import UserRegisteredMixin, RequireRunningMixin
+from .mixins import CompetitionViewMixin, RequireRunningMixin
 
 
-class GameListView(UserRegisteredMixin,
-                   RequireRunningMixin,
-                   ListView):
-    paginate_by = 25
-    context_object_name = 'games'
-    template_name = 'competition/game/game_list.html'
-
-    def get_queryset(self):
-        self.team = get_object_or_404(self.request.user.team_set,
-                                      competition=self.get_competition())
-        q = Game.objects.prefetch_related('team1', 'team2')
-        q = q.filter(Q(team1=self.team)|Q(team2=self.team))
-        return q.order_by('start_time')
-
+class GameView(CompetitionViewMixin, RequireRunningMixin):
     def parse_data(self, games):
         fields = set()
         for game in games:
@@ -29,8 +17,36 @@ class GameListView(UserRegisteredMixin,
                 pass
         return fields
 
+
+class GameListView(GameView, ListView):
+    paginate_by = 25
+    context_object_name = 'games'
+    template_name = 'competition/game/game_list.html'
+
+    def get_queryset(self):
+        self.team = get_object_or_404(self.request.user.team_set,
+                                      competition=self.get_competition())
+        q = Game.objects.prefetch_related('team1', 'team2', 'competition')
+        q = q.filter(Q(team1=self.team)|Q(team2=self.team))
+        return q.order_by('start_time')
+
     def get_context_data(self, **kwargs):
         context = super(GameListView, self).get_context_data(**kwargs)
         context['data_fields'] = self.parse_data(context['page_obj'])
+        context['team'] = self.team
+        return context
+
+
+class GameDetailView(GameView, DetailView):
+    template_name = 'competition/game/game_detail.html'
+
+    def get_queryset(self):
+        self.team = get_object_or_404(self.request.user.team_set,
+                                      competition=self.get_competition())
+        return Game.objects.filter(Q(team1=self.team)|Q(team2=self.team))
+
+    def get_context_data(self, **kwargs):
+        context = super(GameDetailView, self).get_context_data(**kwargs)
+        context['data_fields'] = self.parse_data([self.object])
         context['team'] = self.team
         return context

@@ -21,7 +21,7 @@
         <tbody>
     {% endif %}
 
-    <tr>
+    <tr class="game-info" game_url="{{ game.get_absolute_url }}">
       <td>{{ game.id }}</td>
       {% if team == game.team1 %}
         <td>{{ game.team2.name }}</td>
@@ -74,6 +74,9 @@
       $(".win").parent().toggleClass("success");
       $(".loss").parent().toggleClass("error");
       $(".tie").parent().toggleClass("warning");
+      $(".game-info").click(function() {
+        document.location.href = $(this).attr("game_url");
+      });
     });
   </script>
 {% endblock %}
