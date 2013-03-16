@@ -5,7 +5,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from competition.models import (Competition, Game, Avatar, Team,
-                                Score, Organizer, OrganizerRole,
+                                Organizer, OrganizerRole,
                                 Registration, Invitation)
 from competition.models import RegistrationQuestion as Question
 from competition.models import RegistrationQuestionChoice as Choice
@@ -85,10 +85,6 @@ class TeamFactory(factory.Factory):
                 RegistrationFactory.create(user=u, competition=team.competition)
                 team.add_team_member(u)
         return team
-
-
-class ScoreFactory(factory.Factory):
-    FACTORY_FOR = Score
 
 
 class OrganizerRoleFactory(factory.Factory):
