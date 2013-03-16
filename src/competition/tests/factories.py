@@ -59,6 +59,10 @@ class CompetitionFactory(factory.Factory):
 class GameFactory(factory.Factory):
     FACTORY_FOR = Game
 
+    competition = factory.SubFactory(CompetitionFactory)
+    start_time = factory.LazyAttribute(now)
+    end_time = factory.LazyAttribute(now)
+
 
 class AvatarFactory(factory.Factory):
     FACTORY_FOR = Avatar
