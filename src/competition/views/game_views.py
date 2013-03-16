@@ -1,5 +1,6 @@
 from django.views.generic.list import ListView
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from ..models import Game
 from .mixins import UserRegisteredMixin, RequireRunningMixin
@@ -15,7 +16,9 @@ class GameListView(UserRegisteredMixin,
     def get_queryset(self):
         self.team = get_object_or_404(self.request.user.team_set,
                                       competition=self.get_competition())
-        return Game.objects.filter(score__team=self.team).select_related()
+        q = Game.objects.prefetch_related('team1', 'team2')
+        q = q.filter(Q(team1=self.team)|Q(team2=self.team))
+        return q.order_by('start_time')
 
     def parse_data(self, games):
         fields = set()
