@@ -8,7 +8,7 @@
       Competition Details
     </a>
   </li>
-  {% if competition.is_running %}
+  {% if competition.is_running and user_team %}
   <li>
     <a href="{% url 'game_list' competition.slug %}">
       <i class="icon-flag"></i>
