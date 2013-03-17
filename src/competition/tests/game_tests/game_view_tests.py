@@ -34,6 +34,12 @@ class GameViewsTest(FancyTestCase):
         self.space_teams[0].members.add(self.alice)
         self.space_teams[1].members.add(self.bob)
 
+        GameFactory.create(team1=self.space_teams[0],
+                           team2=self.space_teams[1],
+                           competition=self.space)
+        GameFactory.create(team1=self.space_teams[0],
+                           team2=self.space_teams[2],
+                           competition=self.space)
         for _ in range(20):
             team1, team2 = random.sample(self.space_teams, 2)
             GameFactory.create(team1=team1, team2=team2,
