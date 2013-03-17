@@ -109,10 +109,7 @@ class CompetitionAdmin(admin.ModelAdmin):
                     'start_time', 'end_time')
     list_filter = ('is_open', 'is_running', 'start_time', 'end_time')
     prepopulated_fields = {"slug": ("name",)}
-    inlines = (InlineTeamAdmin,
-               InlineOrganizerAdmin,
-               InlineRegistrationAdmin,
-               InlineGameAdmin,)
+    inlines = (InlineOrganizerAdmin,)
 
 
 class GameAdmin(admin.ModelAdmin):
@@ -120,10 +117,11 @@ class GameAdmin(admin.ModelAdmin):
 
 
 class OrganizerRoleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'description')
 
 
 class OrganizerAdmin(admin.ModelAdmin):
+    list_display = ('competition', 'user')
     filter_horizontal = ('role',)
 
 
@@ -131,24 +129,25 @@ class RegistrationAdmin(admin.ModelAdmin):
     inlines = (InlineShortAnswerResponseAdmin,
                InlineMultipleChoiceResponseAdmin,
                InlineAgreementResponseAdmin)
+    list_display = ('user', 'competition', 'signup_date', 'active')
+    list_filter = ('signup_date', 'active')
 
 
 class RegistrationQuestionAdmin(admin.ModelAdmin):
     inlines = (InlineRegistrationQuestionChoiceAdmin,)
-
-
-class RegistrationQuestionResponseAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('question_type', 'question')
+    list_filter = ('question_type',)
 
 
 class TeamAdmin(admin.ModelAdmin):
     filter_horizontal = ('members',)
-    list_display = ('name', 'competition', 'paid')
-    list_filter = ('competition', 'paid')
+    list_display = ('name', 'competition', 'created', 'paid')
+    list_filter = ('competition', 'paid', 'created')
     prepopulated_fields = {"slug": ("name",)}
 
 class InvitationAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('receiver', 'sender', 'team', 'sent', 'read')
+    list_filter = ('sent', 'read')
 
 
 admin.site.register(Avatar, AvatarAdmin)
@@ -158,7 +157,5 @@ admin.site.register(OrganizerRole, OrganizerRoleAdmin)
 admin.site.register(Organizer, OrganizerAdmin)
 admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(RegistrationQuestion, RegistrationQuestionAdmin)
-admin.site.register(RegistrationQuestionResponse,
-                    RegistrationQuestionResponseAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Invitation, InvitationAdmin)
