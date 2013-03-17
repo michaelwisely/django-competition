@@ -44,3 +44,11 @@ def invitable_teams(parser, token):
         raise template.TemplateSyntaxError(msg)
 
     return TeamNode(variable_name)
+
+
+@register.filter
+def get_item(obj, arg):
+    try:
+        return obj[arg]
+    except (KeyError, TypeError):
+        return ''

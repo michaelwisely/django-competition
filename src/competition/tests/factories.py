@@ -5,7 +5,7 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 from competition.models import (Competition, Game, Avatar, Team,
-                                Score, Organizer, OrganizerRole,
+                                Organizer, OrganizerRole,
                                 Registration, Invitation)
 from competition.models import RegistrationQuestion as Question
 from competition.models import RegistrationQuestionChoice as Choice
@@ -56,10 +56,6 @@ class CompetitionFactory(factory.Factory):
     description = "This is the best MegaMinerAI ever yay!"
 
 
-class GameFactory(factory.Factory):
-    FACTORY_FOR = Game
-
-
 class AvatarFactory(factory.Factory):
     FACTORY_FOR = Avatar
 
@@ -83,8 +79,18 @@ class TeamFactory(factory.Factory):
         return team
 
 
-class ScoreFactory(factory.Factory):
-    FACTORY_FOR = Score
+class GameFactory(factory.Factory):
+    FACTORY_FOR = Game
+
+    competition = factory.SubFactory(CompetitionFactory)
+    start_time = factory.LazyAttribute(now)
+    end_time = factory.LazyAttribute(now)
+
+    team1 = factory.SubFactory(TeamFactory)
+    team1_score = factory.LazyAttribute(lambda _: random.randint(0, 100))
+
+    team2 = factory.SubFactory(TeamFactory)
+    team2_score = factory.LazyAttribute(lambda _: random.randint(0, 100))
 
 
 class OrganizerRoleFactory(factory.Factory):

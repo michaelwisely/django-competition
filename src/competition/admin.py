@@ -10,7 +10,6 @@ from competition.models.registration_model import Registration
 from competition.models.registration_model import RegistrationQuestion
 from competition.models.registration_model import RegistrationQuestionChoice
 from competition.models.registration_model import RegistrationQuestionResponse
-from competition.models.score_model import Score
 from competition.models.team_model import Team
 from competition.models.invitation_model import Invitation
 
@@ -29,12 +28,6 @@ class InlineTeamAdmin(admin.TabularInline):
               'time_paid', 'eligible_to_win')
     readonly_fields = ('avatar', 'created')
     ordering = ('created',)
-
-
-class InlineScoreAdmin(admin.TabularInline):
-    model = Score
-    fields = ('team', 'score')
-    extra = 2
 
 
 class InlineGameAdmin(admin.TabularInline):
@@ -123,7 +116,7 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(admin.ModelAdmin):
-    inlines = (InlineScoreAdmin,)
+    pass
 
 
 class OrganizerRoleAdmin(admin.ModelAdmin):

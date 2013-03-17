@@ -1,0 +1,82 @@
+{% extends "competition/competition_base.html" %}
+{% load competition_tags %}
+
+{% block content %}
+  <h2>Played Games</h2>
+  {% for game in games %}
+    {% if forloop.first %}
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>Game #</th>
+            <th>Opponent</th>
+            <th>Them</th>
+            <th>Us</th>
+            <th>Result</th>
+            {% for field in data_fields %}
+              <th>{{ field }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+    {% endif %}
+
+    <tr class="game-info" game_url="{{ game.get_absolute_url }}">
+      <td>{{ game.id }}</td>
+      {% if team == game.team1 %}
+        <td>{{ game.team2.name }}</td>
+        <td>{{ game.team2_score }}</td>
+        <td>{{ game.team1_score }}</td>
+        {% if game.team1_score > game.team2_score %}
+          <td class="win">Win</td>
+        {% endif %}
+        {% if game.team1_score < game.team2_score %}
+          <td class="loss">Loss</td>
+        {% endif %}
+        {% if game.team1_score == game.team2_score %}
+          <td class="tie">Tie</td>
+        {% endif %}
+      {% else %}
+        <td>{{ game.team1.name }}</td>
+        <td>{{ game.team1_score }}</td>
+        <td>{{ game.team2_score }}</td>
+        {% if game.team2_score > game.team1_score %}
+          <td class="win">Win</td>
+        {% endif %}
+        {% if game.team2_score < game.team1_score %}
+          <td class="loss">Loss</td>
+        {% endif %}
+        {% if game.team2_score == game.team1_score %}
+          <td class="tie">Tie</td>
+        {% endif %}
+      {% endif %}
+      {% for field in data_fields %}
+        <td>{{ game.data.display|get_item:field|default:"--" }}</td>
+      {% endfor %}
+    </tr>
+
+    {% if forloop.last %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% empty %}
+      <h3 class="text-center">No games, yet</h3>
+    {% endfor %}
+  </ul>
+
+{% include "competition/_paginator.html" with page=page_obj %}
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(function(){
+      $(".win").parent().toggleClass("success");
+      $(".loss").parent().toggleClass("error");
+      $(".tie").parent().toggleClass("warning");
+      $(".game-info").click(function() {
+        document.location.href = $(this).attr("game_url");
+      });
+    });
+  </script>
+{% endblock %}

@@ -14,6 +14,4 @@ from registration_model import RegistrationQuestion
 from registration_model import RegistrationQuestionChoice
 from registration_model import RegistrationQuestionResponse
 
-from score_model import Score
-
 from team_model import Team

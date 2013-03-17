@@ -6,6 +6,8 @@ from competition.views.team_views import TeamListView
 from competition.views.team_views import TeamDetailView
 from competition.views.team_views import TeamCreationView
 from competition.views.team_views import TeamLeaveView
+from competition.views.game_views import GameListView
+from competition.views.game_views import GameDetailView
 from competition.views.invitation_views import InvitationListView
 from competition.views.invitation_views import InvitationDetailView
 from competition.views.invitation_views import InvitationCreateView
@@ -48,6 +50,14 @@ urlpatterns = patterns(
     url(r'^competition/(?P<comp_slug>[\w-]+)/unregister/$',
         UnregisterView.as_view(),
         name='unregister_for'),
+
+    # Game Views
+    url(r'^competition/(?P<comp_slug>[\w-]+)/games/$',
+        GameListView.as_view(),
+        name='game_list'),
+    url(r'^competition/(?P<comp_slug>[\w-]+)/game/(?P<pk>\d+)/$',
+        GameDetailView.as_view(),
+        name='game_detail'),
 
     # Invitation Views
     url(r'^invitations/$',
