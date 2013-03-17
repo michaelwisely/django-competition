@@ -8,6 +8,14 @@
       Competition Details
     </a>
   </li>
+  {% if competition.is_running %}
+  <li>
+    <a href="{% url 'game_list' competition.slug %}">
+      <i class="icon-flag"></i>
+      Games
+    </a>
+  </li>
+  {% endif %}
 </ul>
 
 <h2 class="text-right">Teams</h2>
