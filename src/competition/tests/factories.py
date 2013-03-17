@@ -56,14 +56,6 @@ class CompetitionFactory(factory.Factory):
     description = "This is the best MegaMinerAI ever yay!"
 
 
-class GameFactory(factory.Factory):
-    FACTORY_FOR = Game
-
-    competition = factory.SubFactory(CompetitionFactory)
-    start_time = factory.LazyAttribute(now)
-    end_time = factory.LazyAttribute(now)
-
-
 class AvatarFactory(factory.Factory):
     FACTORY_FOR = Avatar
 
@@ -85,6 +77,20 @@ class TeamFactory(factory.Factory):
                 RegistrationFactory.create(user=u, competition=team.competition)
                 team.add_team_member(u)
         return team
+
+
+class GameFactory(factory.Factory):
+    FACTORY_FOR = Game
+
+    competition = factory.SubFactory(CompetitionFactory)
+    start_time = factory.LazyAttribute(now)
+    end_time = factory.LazyAttribute(now)
+
+    team1 = factory.SubFactory(TeamFactory)
+    team1_score = factory.LazyAttribute(lambda _: random.randint(0, 100))
+
+    team2 = factory.SubFactory(TeamFactory)
+    team2_score = factory.LazyAttribute(lambda _: random.randint(0, 100))
 
 
 class OrganizerRoleFactory(factory.Factory):
