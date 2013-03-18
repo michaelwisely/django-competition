@@ -26,6 +26,12 @@
       All Teams
     </a>
   </li>
+  <li>
+    <a href="{% url 'freeagent_list' competition.slug %}">
+      <i class="icon-bullhorn"></i>
+      Free Agents
+    </a>
+  </li>
   {% if not user_team %}
     {% if competition.is_open %}
       <li>
