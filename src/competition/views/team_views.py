@@ -2,12 +2,27 @@ from django.db import IntegrityError
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.models import User
 
 from competition.models.team_model import Team
 from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
                                       UserRegisteredMixin, ConfirmationMixin,
                                       CheckAllowedMixin, RequireOpenMixin)
 from competition.forms.team_forms import TeamForm
+
+
+class FreeAgentListView(UserRegisteredMixin, ListView):
+    """Lists all freeagents, provided that the user is logged in"""
+    context_object_name = 'users'
+    template_name = 'competition/team/freeagent_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        """Only list teams participating in self.get_competition()"""
+        c = self.get_competition()
+        users = User.objects.filter(registration__competition=c,
+                                    registration__active=True)
+        return users.exclude(team__competition=c)
 
 
 class TeamListView(LoggedInMixin, CompetitionViewMixin, ListView):

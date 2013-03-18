@@ -3,6 +3,7 @@ from django.conf.urls.defaults import patterns, url
 from competition.views.competition_views import CompetitionListView
 from competition.views.competition_views import CompetitionDetailView
 from competition.views.team_views import TeamListView
+from competition.views.team_views import FreeAgentListView
 from competition.views.team_views import TeamDetailView
 from competition.views.team_views import TeamCreationView
 from competition.views.team_views import TeamLeaveView
@@ -29,6 +30,9 @@ urlpatterns = patterns(
         name='competition_detail'),
 
     # Team Views
+    url(r'^competition/(?P<comp_slug>[\w-]+)/freeagents/$',
+        FreeAgentListView.as_view(),
+        name='freeagent_list'),
     url(r'^competition/(?P<comp_slug>[\w-]+)/teams/$',
         TeamListView.as_view(),
         name='team_list'),
