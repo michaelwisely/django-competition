@@ -1,3 +1,5 @@
+{% load url from future %}
+{% load competition_tags %}
 
 <table class="table table-condensed table-hover table-border">
   <thead>
@@ -52,5 +54,9 @@
         <td>{{ competition.max_num_team_members }}</td>
       </tr>
     {% endif %}
+      <tr>
+        <th>Number of registered competitors</th>
+        <td>{% registered_users_count competition %}</td>
+      </tr>
   </tbody>
 </table>

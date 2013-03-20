@@ -1,4 +1,5 @@
 {% load url from future %}
+{% load competition_tags %}
 
 <h2 class="text-right">Competition</h2>
 <ul class="nav nav-tabs nav-stacked">
@@ -23,13 +24,13 @@
   <li>
     <a href="{% url 'team_list' competition.slug %}">
       <i class="icon-th-list"></i>
-      All Teams
+      All Teams <span class="badge badge-info pull-right">{% team_count competition %}</span>
     </a>
   </li>
   <li>
     <a href="{% url 'freeagent_list' competition.slug %}">
       <i class="icon-bullhorn"></i>
-      Free Agents
+      Free Agents <span class="badge badge-info pull-right">{% freeagent_count competition %}</span>
     </a>
   </li>
   {% if not user_team %}
