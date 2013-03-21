@@ -113,6 +113,8 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(admin.ModelAdmin):
+    list_display = ('pk','competition','game_id')
+    list_filter = ('competition')
     pass
 
 class GameScoreAdmin(admin.ModelAdmin):
