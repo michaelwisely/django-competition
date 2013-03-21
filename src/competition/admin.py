@@ -118,6 +118,7 @@ class GameAdmin(admin.ModelAdmin):
 class GameScoreAdmin(admin.ModelAdmin):
     list_display = ('pk','game','team','score')
     list_filter = ('team',)
+    raw_id_fields = ('game',)
 
 class OrganizerRoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
