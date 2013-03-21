@@ -4,7 +4,7 @@ from datetime import timedelta
 from datetime import datetime
 
 from django.contrib.auth.models import User
-from competition.models import (Competition, Game, Avatar, Team,
+from competition.models import (Competition, Game, GameScore, Avatar, Team,
                                 Organizer, OrganizerRole,
                                 Registration, Invitation)
 from competition.models import RegistrationQuestion as Question
@@ -86,11 +86,13 @@ class GameFactory(factory.Factory):
     start_time = factory.LazyAttribute(now)
     end_time = factory.LazyAttribute(now)
 
-    team1 = factory.SubFactory(TeamFactory)
-    team1_score = factory.LazyAttribute(lambda _: random.randint(0, 100))
 
-    team2 = factory.SubFactory(TeamFactory)
-    team2_score = factory.LazyAttribute(lambda _: random.randint(0, 100))
+class GameScoreFactory(factory.Factory):
+    FACTORY_FOR = GameScore
+
+    game = factory.SubFactory(GameFactory)
+    team = factory.SubFactory(TeamFactory)
+    score = factory.LazyAttribute(lambda _: random.randint(0, 100))
 
 
 class OrganizerRoleFactory(factory.Factory):

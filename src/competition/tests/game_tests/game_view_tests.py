@@ -2,10 +2,10 @@ from django.core.urlresolvers import reverse
 from django.contrib.auth.models import Group
 
 from competition.tests.utils import FancyTestCase
-from competition.models.game_model import Game
+from competition.models.game_model import Game, GameScore
 from competition.tests.factories import (UserFactory, CompetitionFactory,
                                          TeamFactory, RegistrationFactory,
-                                         GameFactory)
+                                         GameFactory, GameScoreFactory)
 
 from unittest import skip
 import random
@@ -31,19 +31,29 @@ class GameViewsTest(FancyTestCase):
                                                   competition=self.space)
 
         # Add users to teams
-        self.space_teams[0].members.add(self.alice)
-        self.space_teams[1].members.add(self.bob)
+        self.alice_team = self.space_teams[0]
+        self.alice_team.members.add(self.alice)
+        self.bob_team = self.space_teams[1]
+        self.bob_team.members.add(self.bob)
 
-        GameFactory.create(team1=self.space_teams[0],
-                           team2=self.space_teams[1],
-                           competition=self.space)
-        GameFactory.create(team1=self.space_teams[0],
-                           team2=self.space_teams[2],
-                           competition=self.space)
+        # Some other team
+        self.other_team = self.space_teams[2]
+
+        # Add a game between bob and alice
+        g = GameFactory.create(competition=self.space)
+        GameScoreFactory.create(game=g, team=self.alice_team)
+        GameScoreFactory.create(game=g, team=self.bob_team)
+
+        # Add a game between alice and not-bob
+        g = GameFactory.create(competition=self.space)
+        GameScoreFactory.create(game=g, team=self.alice_team)
+        GameScoreFactory.create(game=g, team=self.other_team)
+
         for _ in range(20):
             team1, team2 = random.sample(self.space_teams, 2)
-            GameFactory.create(team1=team1, team2=team2,
-                               competition=self.space)
+            g = GameFactory.create(competition=self.space)
+            GameScoreFactory.create(game=g, team=team1)
+            GameScoreFactory.create(game=g, team=team2)
 
     def test_authenticated(self):
         """Must be logged in to view games"""
@@ -80,14 +90,14 @@ class GameViewsTest(FancyTestCase):
             response = self.client.get(games_url)
             self.assertTrue(len(response.context['games']) > 0)
             for game in response.context['games']:
-                if self.space_teams[0] != game.team1:
-                    self.assertEqual(self.space_teams[0], game.team2)
+                self.assertIn(self.alice_team, game.teams.all())
+                self.assertEqual(2, game.teams.count())  # sanity check
 
     def test_view_own_game_details(self):
         """Must view details for own games"""
         # Alice is team1, not-Bob is team2
-        games = self.space.game_set.filter(team1=self.space_teams[0],
-                                           team2=self.space_teams[2])
+        games = self.space.game_set.filter(teams=self.alice_team)
+        games = games.filter(teams=self.other_team)
         kwds = {'comp_slug': self.space.slug, 'pk': games[0].pk}
         games_url = reverse("game_detail", kwargs=kwds)
         with self.loggedInAs("alice", "123"):
@@ -101,8 +111,8 @@ class GameViewsTest(FancyTestCase):
     def test_both_teams_view_details(self):
         """Both teams must view details for own games"""
         # Alice is team1, Bob is team2
-        games = self.space.game_set.filter(team1=self.space_teams[0],
-                                           team2=self.space_teams[1])
+        games = self.space.game_set.filter(teams=self.alice_team)
+        games = games.filter(teams=self.bob_team)
         kwds = {'comp_slug': self.space.slug, 'pk': games[0].pk}
         games_url = reverse("game_detail", kwargs=kwds)
         with self.loggedInAs("alice", "123"):

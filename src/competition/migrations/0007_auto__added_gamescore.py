@@ -30,6 +30,11 @@ class Migration(SchemaMigration):
         # Deleting field 'Game.team1_score'
         db.delete_column('competition_game', 'team1_score')
 
+        # Adding field 'Game.game_id'
+        db.add_column('competition_game', 'game_id',
+                      self.gf('django.db.models.fields.IntegerField')(default=None, null=True, blank=True),
+                      keep_default=False)
+
         # Adding field 'Game.status'
         db.add_column('competition_game', 'status',
                       self.gf('django.db.models.fields.CharField')(default='', max_length=100, blank=True),
@@ -41,8 +46,14 @@ class Migration(SchemaMigration):
 
         # Changing field 'Game.end_time'
         db.alter_column('competition_game', 'end_time', self.gf('django.db.models.fields.DateTimeField')(null=True))
+        # Adding unique constraint on 'Game', fields ['game_id', 'competition']
+        db.create_unique('competition_game', ['game_id', 'competition_id'])
+
 
     def backwards(self, orm):
+        # Removing unique constraint on 'Game', fields ['game_id', 'competition']
+        db.delete_unique('competition_game', ['game_id', 'competition_id'])
+
         # Deleting model 'GameScore'
         db.delete_table('competition_gamescore')
 
@@ -65,6 +76,9 @@ class Migration(SchemaMigration):
         db.add_column('competition_game', 'team1_score',
                       self.gf('django.db.models.fields.IntegerField')(null=True),
                       keep_default=False)
+
+        # Deleting field 'Game.game_id'
+        db.delete_column('competition_game', 'game_id')
 
         # Deleting field 'Game.status'
         db.delete_column('competition_game', 'status')
@@ -135,11 +149,12 @@ class Migration(SchemaMigration):
             'start_time': ('django.db.models.fields.DateTimeField', [], {})
         },
         'competition.game': {
-            'Meta': {'object_name': 'Game'},
+            'Meta': {'unique_together': "(('game_id', 'competition'),)", 'object_name': 'Game'},
             'competition': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['competition.Competition']"}),
             'created': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
             'end_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'extra_data': ('django.db.models.fields.TextField', [], {'default': "'null'", 'null': 'True'}),
+            'game_id': ('django.db.models.fields.IntegerField', [], {'default': 'None', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'start_time': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'}),

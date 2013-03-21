@@ -23,6 +23,9 @@ class Game(models.Model):
     """
     class Meta:
         app_label = 'competition'
+        unique_together = (
+            ('game_id','competition'),
+        )
 
     competition = models.ForeignKey(Competition)
     game_id = models.IntegerField(null=True, blank=True, default=None)
@@ -37,15 +40,12 @@ class Game(models.Model):
     # Default to JSON null, which gets loaded as None
     extra_data = models.TextField(null=True, default="null")
 
-    class Meta:
-        unique_together = ('game_id','competition')
-
     def __unicode__(self):
         return "Game #%d" % self.id
 
     def save(self,*args,**kwargs):
         if self.game_id == None:
-            q = self.objects.filter(competition=self.competition)
+            q = Game.objects.filter(competition=self.competition)
             if not q.exists():
                 self.game_id = 1
             else:
@@ -70,33 +70,37 @@ class Game(models.Model):
     def data(self):
         return json.loads(self.extra_data)
 
+
 class GameScore(models.Model):
     """
-    This is a many to many relation with extra data to score the score of a matchup.
+    This is a many to many relation with extra data to score the score
+    of a matchup.
     """
     class Meta:
         app_label = 'competition'
 
-    game = models.ForeignKey('Game')
+    game = models.ForeignKey(Game, related_name="scores")
     team = models.ForeignKey(Team)
     score = models.IntegerField(null=True)
-    
+
     #Default field for extra data for just this match participant.
     extra_data = models.TextField(null=True,default="null")
-    
+
     def __unicode__(self):
-        return "Game #{} Team: {} Score {}".format(game.pk,team.name,self.score) 
+        return "Game #{} Team: {} Score {}".format(self.game.pk,
+                                                   self.team.name,
+                                                   self.score)
 
     def clean(self):
         try:
             if self.extra_data:
                 json.loads(self.extra_data)
         except ValueError:
-            raise ValidationError("InvalidJSON string.")
-    
+            raise ValidationError("Invalid JSON string.")
+
     @models.permalink
     def get_absolute_url(self):
-        return ('game_detail', (), {'pk': self.game.pk, 
+        return ('game_detail', (), {'pk': self.game.pk,
                                     'comp_slug': self.game.competition.slug})
 
     @property

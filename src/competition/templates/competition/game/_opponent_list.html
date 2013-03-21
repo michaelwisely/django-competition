@@ -1,0 +1,17 @@
+{% for score in scores %}
+  {% if forloop.first %}<ul class="unstyled">{% endif %}
+    <li>
+      {% if score.team == user_team %}
+	<strong>{{ score.team.name }}</strong>:
+      {% else %}
+	{{ score.team.name }}:
+      {% endif %}
+
+      {% if score.score == game.max_score %}
+	<span class="label label-success">{{ score.score }}</span>
+      {% else %}
+	{{ score.score }}
+      {% endif %}
+    </li>
+  {% if forloop.last %}</ul>{% endif %}
+{% endfor %}

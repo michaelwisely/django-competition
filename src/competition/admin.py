@@ -37,6 +37,13 @@ class InlineGameAdmin(admin.TabularInline):
     readonly_fields = ('id',)
 
 
+class InlineGameScoreAdmin(admin.TabularInline):
+    model = GameScore
+    fields = ('team','score', 'extra_data')
+    list_filter = ('team',)
+    raw_id_fields = ('game',)
+
+
 class InlineOrganizerAdmin(admin.TabularInline):
     model = Organizer
     extra = 0
@@ -113,9 +120,10 @@ class CompetitionAdmin(admin.ModelAdmin):
 
 
 class GameAdmin(admin.ModelAdmin):
+    inlines = (InlineGameScoreAdmin,)
     list_display = ('pk','competition','game_id')
-    list_filter = ('competition')
-    pass
+    list_filter = ('competition',)
+
 
 class GameScoreAdmin(admin.ModelAdmin):
     list_display = ('pk','game','team','score')
@@ -159,7 +167,6 @@ class InvitationAdmin(admin.ModelAdmin):
 admin.site.register(Avatar, AvatarAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Game, GameAdmin)
-admin.site.register(GameScore, GameScoreAdmin)
 admin.site.register(OrganizerRole, OrganizerRoleAdmin)
 admin.site.register(Organizer, OrganizerAdmin)
 admin.site.register(Registration, RegistrationAdmin)

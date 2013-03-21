@@ -1,10 +1,10 @@
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.db.models import Max
 from django.http import Http404
 
-from ..models import Game
+from ..models import Game, GameScore
 from .mixins import CompetitionViewMixin, RequireRunningMixin
 
 
@@ -33,9 +33,10 @@ class GameListView(GameView, ListView):
 
     def get_queryset(self):
         self.team = self.get_team()
-        q = Game.objects.prefetch_related('team1', 'team2', 'competition')
-        q = q.filter(Q(team1=self.team)|Q(team2=self.team))
-        return q.order_by('start_time')
+        q = Game.objects.annotate(max_score=Max('scores__score'))
+        q = q.prefetch_related('competition')
+        q = q.filter(teams=self.team)
+        return q
 
     def get_context_data(self, **kwargs):
         context = super(GameListView, self).get_context_data(**kwargs)
@@ -49,7 +50,7 @@ class GameDetailView(GameView, DetailView):
 
     def get_queryset(self):
         self.team = self.get_team()
-        return Game.objects.filter(Q(team1=self.team)|Q(team2=self.team))
+        return self.team.game_set.all()
 
     def get_context_data(self, **kwargs):
         context = super(GameDetailView, self).get_context_data(**kwargs)

@@ -8,57 +8,17 @@
         <th>Game #</th>
         <td>{{ game.id }}</td>
       </tr>
-      {% if team == game.team1 %}
-        <tr>
-          <th>Opponent</th>
-          <td>{{ game.team2.name }}</td>
-        </tr>
-        <tr>
-          <th>Them</th>
-          <td>{{ game.team2_score }}</td>
-        </tr>
-        <tr>
-          <th>Us</th>
-          <td>{{ game.team1_score }}</td>
-        </tr>
-        <tr>
-          <th>Result</th>
-          {% if game.team1_score > game.team2_score %}
-            <td class="win">Win</td>
-          {% endif %}
-          {% if game.team1_score < game.team2_score %}
-            <td class="loss">Loss</td>
-          {% endif %}
-          {% if game.team1_score == game.team2_score %}
-            <td class="tie">Tie</td>
-          {% endif %}
-        </tr>
-      {% else %}
-        <tr>
-          <th>Opponent</th>
-          <td>{{ game.team1.name }}</td>
-        </tr>
-        <tr>
-          <th>Them</th>
-          <td>{{ game.team1_score }}</td>
-        </tr>
-        <tr>
-          <th>Us</th>
-          <td>{{ game.team2_score }}</td>
-        </tr>
-        <tr>
-          <th>Result</th>
-          {% if game.team2_score > game.team1_score %}
-            <td class="win">Win</td>
-          {% endif %}
-          {% if game.team2_score < game.team1_score %}
-            <td class="loss">Loss</td>
-          {% endif %}
-          {% if game.team2_score == game.team1_score %}
-            <td class="tie">Tie</td>
-          {% endif %}
-        </tr>
-      {% endif %}
+      {% with scores=game.scores.select_related.all|dictsortreversed:"score" %}
+      <tr>
+        <th>Opponents</th>
+          <td>{% include "competition/game/_opponent_list.html" %}</td>
+      </tr>
+      <tr>
+        <th>Result</th>
+        {% include "competition/game/_result_display.html" %}
+      </tr>
+      {% endwith %}
+
       {% for field in data_fields %}
         <tr>
           <th>{{ field }}</th>
