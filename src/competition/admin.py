@@ -3,7 +3,7 @@ from django.db.models import Q
 
 from competition.models.avatar_model import Avatar
 from competition.models.competition_model import Competition
-from competition.models.game_model import Game
+from competition.models.game_model import Game, GameScore
 from competition.models.organizer_model import Organizer
 from competition.models.organizer_model import OrganizerRole
 from competition.models.registration_model import Registration
@@ -115,6 +115,9 @@ class CompetitionAdmin(admin.ModelAdmin):
 class GameAdmin(admin.ModelAdmin):
     pass
 
+class GameScoreAdmin(admin.ModelAdmin):
+    list_display = ('pk','game','team','score')
+    list_filter = ('team',)
 
 class OrganizerRoleAdmin(admin.ModelAdmin):
     list_display = ('name', 'description')
@@ -153,6 +156,7 @@ class InvitationAdmin(admin.ModelAdmin):
 admin.site.register(Avatar, AvatarAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Game, GameAdmin)
+admin.site.register(GameScore, GameScoreAdmin)
 admin.site.register(OrganizerRole, OrganizerRoleAdmin)
 admin.site.register(Organizer, OrganizerAdmin)
 admin.site.register(Registration, RegistrationAdmin)
