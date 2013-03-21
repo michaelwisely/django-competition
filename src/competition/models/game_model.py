@@ -30,6 +30,8 @@ class Game(models.Model):
     end_time = models.DateTimeField(null=True,blank=True)
     status = models.CharField(blank=True, max_length=100)
 
+    teams = models.ManyToManyField(Team, through='GameScore')
+
     # Default to JSON null, which gets loaded as None
     extra_data = models.TextField(null=True, default="null")
 
@@ -73,10 +75,10 @@ class GameScore(models.Model):
 
     def clean(self):
         try:
-            if self.extra_dat:
+            if self.extra_data:
                 json.loads(self.extra_data)
-            except ValueError:
-                raise ValidationError("InvalidJSON string.")
+        except ValueError:
+            raise ValidationError("InvalidJSON string.")
     
     @models.permalink
     def get_absolute_url(self):
