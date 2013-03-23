@@ -43,7 +43,9 @@ class Team(models.Model):
     competition = models.ForeignKey(Competition)
     members = models.ManyToManyField(User)
 
-    name = models.CharField(max_length=50, validators=[validate_name])
+    name = models.CharField(max_length=50, validators=[validate_name],
+            help_text="Team names must begin with an alphanumeric and contain " \
+                      "only alphanumerics, dashes, periods, colons and spaces.")
     slug = models.SlugField(blank=True)
 
     avatar = models.OneToOneField(Avatar, blank=True, null=True)
