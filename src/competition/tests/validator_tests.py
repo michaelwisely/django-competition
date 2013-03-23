@@ -23,7 +23,7 @@ class ValidationFunctionTest(TestCase):
         """Check name validator"""
         # Try some valid names
         valid_names = ['MegaMiner-AI 10: Galapagos', 'Chess 2012', '2012 Chess',
-                       'B.L.O.O.M. 2: Revenge of the Flowers', '__main__']
+                       'B.L.O.O.M. 2: Revenge of the Flowers']
         for name in valid_names:
             self.assertIsNone(validate_name(name))
 
