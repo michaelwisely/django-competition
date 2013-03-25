@@ -10,6 +10,7 @@ from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
                                       CheckAllowedMixin, RequireOpenMixin)
 from competition.forms.team_forms import TeamForm
 
+import re
 
 class FreeAgentListView(UserRegisteredMixin, ListView):
     """Lists all freeagents, provided that the user is logged in"""
@@ -20,10 +21,10 @@ class FreeAgentListView(UserRegisteredMixin, ListView):
     def get_queryset(self):
         """Only list teams participating in self.get_competition()"""
         c = self.get_competition()
+        
         users = User.objects.filter(registration__competition=c,
                                     registration__active=True)
         return users.exclude(team__competition=c)
-
 
 class TeamListView(LoggedInMixin, CompetitionViewMixin, ListView):
     """Lists all teams, provided that the user is logged in"""

@@ -2,11 +2,22 @@
 
 {% block content %}
   <h2>Free Agents</h2>
+  <form class="form-inline">
+    <label>Search:</label>
+    <input type="text" data-provide="typeahead">
+    <input type="submit" name="submit" value="Submit">
+  </form>
   <ul class="nav nav-tabs nav-stacked">
     {% for user in users %}
       <li>
         <a href="{{ user.get_absolute_url }}">
+          {% if user.get_full_name %}
+            {{user.get_full_name}} (
+          {% endif %}    
           {{ user.username }}
+          {% if user.get_full_name %}
+            )
+          {% endif %}    
         </a>
       </li>
     {% empty %}

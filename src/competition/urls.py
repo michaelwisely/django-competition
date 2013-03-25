@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls.defaults import patterns, url, include
 
 from competition.views.competition_views import CompetitionListView
 from competition.views.competition_views import CompetitionDetailView
@@ -20,6 +20,10 @@ from competition.views.registration_views import UnregisterView
 
 urlpatterns = patterns(
     "",
+
+    # API interfaces
+    url(r'^competition/api/',
+        include('competition.api.urls')),
 
     # Competition Views
     url(r'^competition/$',
