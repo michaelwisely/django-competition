@@ -1,3 +1,5 @@
+{% load competition_tags %}
+
 <div class="row-fluid">
   <div class="span{% if team.avatar %}9{% else %}12{% endif %}">
     <div class="well">
@@ -11,7 +13,7 @@
             {% for member in team.members.all %}
               <li>
                 <a href="{{ member.get_absolute_url }}">
-                  {{ member }}
+                    {% competitor_name member %}
                 </a>
               </li>
             {% endfor %}

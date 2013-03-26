@@ -1,4 +1,5 @@
 {% extends "competition/competition_base.html" %}
+{% load competition_tags %}
 
 {% block content %}
   <h2>Free Agents</h2>
@@ -11,13 +12,7 @@
     {% for user in users %}
       <li>
         <a href="{{ user.get_absolute_url }}">
-          {% if user.get_full_name %}
-            {{user.get_full_name}} (
-          {% endif %}    
-          {{ user.username }}
-          {% if user.get_full_name %}
-            )
-          {% endif %}    
+          {% competitor_name user %}
         </a>
       </li>
     {% empty %}
