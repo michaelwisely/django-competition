@@ -2,10 +2,10 @@
 
 {% block content %}
   <h2>Free Agents</h2>
-  <form class="form-inline">
+  <form class="form-inline" method="GET" autocomplete="off">
     <label>Search:</label>
-    <input type="text" data-provide="typeahead">
-    <input type="submit" name="submit" value="Submit">
+    <input type="text" name="search" value="{{request.GET.search}}" class="competitor-typeahead">
+    <input type="submit" value="Submit" class='btn'>
   </form>
   <ul class="nav nav-tabs nav-stacked">
     {% for user in users %}
@@ -21,9 +21,31 @@
         </a>
       </li>
     {% empty %}
-      <h3 class="text-center">No free agents</h3>
+      {% if request.GET.search %}
+        <h3 class="text-center">No search results</h3>
+      {% else %}
+        <h3 class="text-center">No free agents</h3>
+      {% endif %}
     {% endfor %}
   </ul>
 
 {% include "competition/_paginator.html" with page=page_obj %}
+{% endblock %}
+
+{% block script %}
+<script>
+function search_free_agents(query,process)
+{
+    var url = "{% url api-competition-freeagents competition.slug %}"+query+"/";
+    $.getJSON(url, function(data)
+    {
+        var items = [];
+        $.each(data, function(key) {
+            items.push(this.get_full_name+' ('+this.username+')');
+        });
+        process(items);
+    });
+}
+$('.competitor-typeahead').typeahead({source: search_free_agents});
+</script>
 {% endblock %}
