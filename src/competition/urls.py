@@ -22,8 +22,7 @@ urlpatterns = patterns(
     "",
 
     # API interfaces
-    url(r'^competition/api/',
-        include('competition.api.urls')),
+    url(r'^api/competition/', include('competition.api.urls')),
 
     # Competition Views
     url(r'^competition/$',

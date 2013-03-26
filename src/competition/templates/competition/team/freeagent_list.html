@@ -1,13 +1,17 @@
 {% extends "competition/competition_base.html" %}
+{% load url from future %}
 {% load competition_tags %}
 
 {% block content %}
-  <h2>Free Agents</h2>
-  <form class="form-inline" method="GET" autocomplete="off">
-    <label>Search:</label>
-    <input type="text" name="search" value="{{request.GET.search}}" class="competitor-typeahead">
-    <input type="submit" value="Submit" class='btn'>
+  <form class="form-inline pull-right" style="margin-top:5px;" method="GET" autocomplete="off">
+    <div class="input-append">
+      <input type="text" name="search" value="{{request.GET.search}}" class="competitor-typeahead">
+      <button class="btn" type="button"><i class="icon-search"></i></button>
+    </div>
   </form>
+
+  <h2>Free Agents</h2>
+
   <ul class="nav nav-tabs nav-stacked">
     {% for user in users %}
       <li>
@@ -31,7 +35,7 @@
 <script>
 function search_free_agents(query,process)
 {
-    var url = "{% url api-competition-freeagents competition.slug %}"+query+"/";
+    var url = "{% url 'api-competition-freeagents' competition.slug %}"+query+"/";
     $.getJSON(url, function(data)
     {
         var items = [];

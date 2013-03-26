@@ -9,9 +9,8 @@ from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
                                       UserRegisteredMixin, ConfirmationMixin,
                                       CheckAllowedMixin, RequireOpenMixin)
 from competition.forms.team_forms import TeamForm
-from competition.utility import competitor_search_filter 
+from competition.utility import competitor_search_filter
 
-import re
 
 class FreeAgentListView(UserRegisteredMixin, ListView):
     """Lists all freeagents, provided that the user is logged in"""
@@ -22,7 +21,7 @@ class FreeAgentListView(UserRegisteredMixin, ListView):
     def get_queryset(self):
         """Only list teams participating in self.get_competition()"""
         c = self.get_competition()
-        
+
         users = User.objects.filter(registration__competition=c,
                                     registration__active=True)
         if 'search' in self.request.GET:
@@ -35,6 +34,7 @@ class FreeAgentListView(UserRegisteredMixin, ListView):
             return redirect(queryset[0].get_absolute_url())
         else:
             return super(FreeAgentListView, self).render_to_response(*args,**kwargs)
+
 
 class TeamListView(LoggedInMixin, CompetitionViewMixin, ListView):
     """Lists all teams, provided that the user is logged in"""
