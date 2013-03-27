@@ -1,18 +1,50 @@
 {% extends "competition/competition_base.html" %}
+{% load url from future %}
+{% load competition_tags %}
 
 {% block content %}
+  <form class="form-inline pull-right" style="margin-top:5px;" method="GET" autocomplete="off">
+    <div class="input-append">
+      <input type="text" name="search" value="{{request.GET.search}}" class="competitor-typeahead">
+      <button class="btn" type="button"><i class="icon-search"></i></button>
+    </div>
+  </form>
+
   <h2>Free Agents</h2>
+
   <ul class="nav nav-tabs nav-stacked">
     {% for user in users %}
       <li>
         <a href="{{ user.get_absolute_url }}">
-          {{ user.username }}
+          {% competitor_name user %}
         </a>
       </li>
     {% empty %}
-      <h3 class="text-center">No free agents</h3>
+      {% if request.GET.search %}
+        <h3 class="text-center">No search results</h3>
+      {% else %}
+        <h3 class="text-center">No free agents</h3>
+      {% endif %}
     {% endfor %}
   </ul>
 
 {% include "competition/_paginator.html" with page=page_obj %}
+{% endblock %}
+
+{% block script %}
+<script>
+function search_free_agents(query,process)
+{
+    var url = "{% url 'api-competition-freeagents' competition.slug %}"+query+"/";
+    $.getJSON(url, function(data)
+    {
+        var items = [];
+        $.each(data, function(key) {
+            items.push(this.get_full_name+' ('+this.username+')');
+        });
+        process(items);
+    });
+}
+$('.competitor-typeahead').typeahead({source: search_free_agents});
+</script>
 {% endblock %}

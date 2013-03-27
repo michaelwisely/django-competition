@@ -15,5 +15,6 @@ setup(name='django-competition',
                         'django-guardian==1.0.4',
                         'django-crispy-forms==1.2.3',
                         'South==0.7.6',
+                        'django-piston==0.2.3',
                         ],
       )

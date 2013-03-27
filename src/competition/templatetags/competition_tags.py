@@ -69,3 +69,9 @@ def get_item(obj, arg):
         return obj[arg]
     except (KeyError, TypeError):
         return ''
+
+@register.simple_tag
+def competitor_name(user):
+    if user.get_full_name():
+        return "{} ({})".format(user.get_full_name(),user.username)
+    return user.username
