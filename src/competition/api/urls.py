@@ -1,9 +1,11 @@
 from django.conf.urls.defaults import url, patterns
 from piston.resource import Resource
-from piston.authentication import HttpBasicAuthentication
-from competition.api.handlers import CompetitiorHandler
 
-auth = HttpBasicAuthentication(realm="Competition")
+from competition.api.handlers import (CompetitiorHandler,
+                                      HttpSessionAuthentication)
+
+
+auth = HttpSessionAuthentication(realm="Competition")
 competitor_handler = Resource(CompetitiorHandler, authentication=auth)
 
 urlpatterns = patterns('',

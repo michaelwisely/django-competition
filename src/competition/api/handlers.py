@@ -1,10 +1,31 @@
 from django.contrib.auth.models import User
+from django.contrib.sessions.models import Session
 from django.shortcuts import get_object_or_404
 
 from piston.handler import BaseHandler
+from piston.authentication import HttpBasicAuthentication
 
 from competition.models.competition_model import Competition
 from competition.utility import competitor_search_filter
+
+
+class HttpSessionAuthentication(HttpBasicAuthentication):
+
+    def is_authenticated(self, request):
+        # If the user is authenticated with a session, let them through.
+        try:
+            session = Session.objects.get(pk=request.COOKIES['sessionid'])
+            user = User.objects.get(pk=session.get_decoded()['_auth_user_id'])
+            if user.is_authenticated():
+                return True
+        except (KeyError, Session.DoesNotExist):
+            pass
+
+        # Otherwise, see if they've provided HTTPBasicAuth
+        return super(HttpSessionAuthentication, self).is_authenticated(request)
+
+    def __repr__(self):
+        return u'<HTTPSession: realm=%s>' % self.realm
 
 
 class CompetitiorHandler(BaseHandler):
