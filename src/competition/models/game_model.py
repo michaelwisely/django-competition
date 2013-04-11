@@ -27,6 +27,7 @@ class Game(models.Model):
             ('game_id','competition'),
         )
         ordering = ['-pk']
+        get_latest_by = 'pk'
 
     competition = models.ForeignKey(Competition)
     game_id = models.IntegerField(null=True, blank=True, default=None)
