@@ -56,4 +56,5 @@ class GameDetailView(GameView, DetailView):
         context = super(GameDetailView, self).get_context_data(**kwargs)
         context['data_fields'] = self.parse_data([self.object])
         context['team'] = self.team
+        context['team_scores'] = self.object.scores.filter(team=self.team)
         return context
