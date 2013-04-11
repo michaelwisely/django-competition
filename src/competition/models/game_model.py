@@ -26,6 +26,7 @@ class Game(models.Model):
         unique_together = (
             ('game_id','competition'),
         )
+        ordering = ['-pk']
 
     competition = models.ForeignKey(Competition)
     game_id = models.IntegerField(null=True, blank=True, default=None)
