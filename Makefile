@@ -9,7 +9,7 @@ default: bin/buildout
 # Runs bootstrap
 bin/buildout: bootstrap.py
 	mkdir -p var/
-	python bootstrap.py
+	python bootstrap.py -v 2.1.1
 
 # Gets bootstrap
 bootstrap.py:

@@ -39,6 +39,9 @@ DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
 
+# Crispy setting
+CRISPY_TEMPLATE_PACK = 'bootstrap'
+
 # Django Guardian settings
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend', # this is default
