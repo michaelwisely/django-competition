@@ -1,4 +1,5 @@
 BOOTSTRAP_URL=http://downloads.buildout.org/2/bootstrap.py
+OLD_SETUPTOOLS=$(shell python -c "from distutils.version import LooseVersion; import setuptools; print LooseVersion(setuptools.__version__) < LooseVersion('0.7.0')")
 
 .PHONY: default clean very-clean
 
@@ -9,7 +10,13 @@ default: bin/buildout
 # Runs bootstrap
 bin/buildout: bootstrap.py
 	mkdir -p var/
+ifeq ($(OLD_SETUPTOOLS),True)
+	@echo "Found old setuptools. Using bootstrap 2.1.1"
 	python bootstrap.py -v 2.1.1
+else
+	@echo "Found new setuptools. Using bootstrap 2.2.1"
+	python bootstrap.py -v 2.2.1
+endif
 
 # Gets bootstrap
 bootstrap.py:
