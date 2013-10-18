@@ -3,7 +3,9 @@ from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
-from competition.tests.factories import CompetitionFactory
+from competition.tests.factories import (CompetitionFactory,
+                                         RegistrationFactory,
+                                         UserFactory)
 from competition.models import Competition
 
 from datetime import datetime, timedelta
@@ -85,13 +87,13 @@ class CompetitionModelValidationTest(TestCase):
 
     def test_positive_cost(self):
         """Cost must be greater than 0"""
-        c = CompetitionFactory.build(cost_per_person=-20.3)
+        c = CompetitionFactory.build(cost=-20.3)
 
         with self.assertRaises(ValidationError) as cm:
             c.full_clean()
 
         self.assertEqual(1, len(cm.exception.message_dict))
-        self.assertIn("cost_per_person", cm.exception.message_dict)
+        self.assertIn("cost", cm.exception.message_dict)
 
     def test_slug_set(self):
         """Competition slug should be set when it's saved"""
@@ -105,3 +107,38 @@ class CompetitionModelValidationTest(TestCase):
         CompetitionFactory.create(name="MegaMinerAI")
         with self.assertRaises(IntegrityError):
             CompetitionFactory.create(name="MegaMinerAI")
+
+    def test_no_duplicate_slugs(self):
+        """Make sure we can't have two competitions by the same slug"""
+        c = CompetitionFactory.create(name="MegaMinerAI-Galapagos")
+        c2 = CompetitionFactory.create(name="MegaMinerAI Galapagos")
+        with self.assertRaises(ValidationError):
+            c2.slug = c.slug
+            c2.full_clean()
+
+    def test_different_slug_similar_name(self):
+        """Two competitions with similar names have different slugs"""
+        c = CompetitionFactory.create(name="MegaMinerAI-Galapagos")
+        c2 = CompetitionFactory.create(name="MegaMinerAI Galapagos")
+        self.assertNotEqual(c, c2)
+
+    def test_slug_stays_same(self):
+        """Changing a name won't change the slug"""
+        c = CompetitionFactory.create(name="MegaMinerAI-Galapagos")
+        slug = c.slug
+        c.name = "derp"
+        c.save()
+        self.assertEqual(slug, c.slug)
+
+    def test_registrated_for_user(self):
+        """List competition where a user is registered"""
+        c1 = CompetitionFactory.create(name="MegaMinerAI1")
+        c2 = CompetitionFactory.create(name="MegaMinerAI2")
+        c3 = CompetitionFactory.create(name="MegaMinerAI3")
+        alice = UserFactory.create()
+        RegistrationFactory.create(user=alice, competition=c1)
+        RegistrationFactory.create(user=alice, competition=c3)
+        l = list(Competition.objects.user_registered(alice))
+        self.assertEqual(2, len(l))
+        self.assertIn(c1, l)
+        self.assertIn(c3, l)

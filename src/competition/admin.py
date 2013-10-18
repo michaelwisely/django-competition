@@ -3,14 +3,13 @@ from django.db.models import Q
 
 from competition.models.avatar_model import Avatar
 from competition.models.competition_model import Competition
-from competition.models.game_model import Game
+from competition.models.game_model import Game, GameScore
 from competition.models.organizer_model import Organizer
 from competition.models.organizer_model import OrganizerRole
 from competition.models.registration_model import Registration
 from competition.models.registration_model import RegistrationQuestion
 from competition.models.registration_model import RegistrationQuestionChoice
 from competition.models.registration_model import RegistrationQuestionResponse
-from competition.models.score_model import Score
 from competition.models.team_model import Team
 from competition.models.invitation_model import Invitation
 
@@ -31,17 +30,18 @@ class InlineTeamAdmin(admin.TabularInline):
     ordering = ('created',)
 
 
-class InlineScoreAdmin(admin.TabularInline):
-    model = Score
-    fields = ('team', 'score')
-    extra = 2
-
-
 class InlineGameAdmin(admin.TabularInline):
     model = Game
     extra = 0
     fields = ('id', 'start_time', 'end_time')
     readonly_fields = ('id',)
+
+
+class InlineGameScoreAdmin(admin.TabularInline):
+    model = GameScore
+    fields = ('team','score', 'extra_data')
+    list_filter = ('team',)
+    raw_id_fields = ('game',)
 
 
 class InlineOrganizerAdmin(admin.TabularInline):
@@ -112,21 +112,30 @@ class AvatarAdmin(admin.ModelAdmin):
 
 class CompetitionAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
-    inlines = (InlineTeamAdmin,
-               InlineOrganizerAdmin,
-               InlineRegistrationAdmin,
-               InlineGameAdmin,)
+    list_display = ('name', 'is_open', 'is_running',
+                    'start_time', 'end_time')
+    list_filter = ('is_open', 'is_running', 'start_time', 'end_time')
+    prepopulated_fields = {"slug": ("name",)}
+    inlines = (InlineOrganizerAdmin,)
 
 
 class GameAdmin(admin.ModelAdmin):
-    inlines = (InlineScoreAdmin,)
+    inlines = (InlineGameScoreAdmin,)
+    list_display = ('pk','competition','game_id')
+    list_filter = ('competition',)
 
+
+class GameScoreAdmin(admin.ModelAdmin):
+    list_display = ('pk','game','team','score')
+    list_filter = ('team',)
+    raw_id_fields = ('game',)
 
 class OrganizerRoleAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('name', 'description')
 
 
 class OrganizerAdmin(admin.ModelAdmin):
+    list_display = ('competition', 'user')
     filter_horizontal = ('role',)
 
 
@@ -134,21 +143,25 @@ class RegistrationAdmin(admin.ModelAdmin):
     inlines = (InlineShortAnswerResponseAdmin,
                InlineMultipleChoiceResponseAdmin,
                InlineAgreementResponseAdmin)
+    list_display = ('user', 'competition', 'signup_date', 'active')
+    list_filter = ('signup_date', 'active')
 
 
 class RegistrationQuestionAdmin(admin.ModelAdmin):
     inlines = (InlineRegistrationQuestionChoiceAdmin,)
-
-
-class RegistrationQuestionResponseAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('question_type', 'question')
+    list_filter = ('question_type',)
 
 
 class TeamAdmin(admin.ModelAdmin):
     filter_horizontal = ('members',)
+    list_display = ('name', 'competition', 'created', 'paid')
+    list_filter = ('competition', 'paid', 'created')
+    prepopulated_fields = {"slug": ("name",)}
 
 class InvitationAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('receiver', 'sender', 'team', 'sent', 'read')
+    list_filter = ('sent', 'read')
 
 
 admin.site.register(Avatar, AvatarAdmin)
@@ -158,7 +171,5 @@ admin.site.register(OrganizerRole, OrganizerRoleAdmin)
 admin.site.register(Organizer, OrganizerAdmin)
 admin.site.register(Registration, RegistrationAdmin)
 admin.site.register(RegistrationQuestion, RegistrationQuestionAdmin)
-admin.site.register(RegistrationQuestionResponse,
-                    RegistrationQuestionResponseAdmin)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Invitation, InvitationAdmin)

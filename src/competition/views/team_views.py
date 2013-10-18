@@ -2,12 +2,38 @@ from django.db import IntegrityError
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.models import User
 
 from competition.models.team_model import Team
 from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
                                       UserRegisteredMixin, ConfirmationMixin,
-                                      CheckAllowedMixin)
+                                      CheckAllowedMixin, RequireOpenMixin)
 from competition.forms.team_forms import TeamForm
+from competition.utility import competitor_search_filter
+
+
+class FreeAgentListView(UserRegisteredMixin, ListView):
+    """Lists all freeagents, provided that the user is logged in"""
+    context_object_name = 'users'
+    template_name = 'competition/team/freeagent_list.html'
+    paginate_by = 10
+
+    def get_queryset(self):
+        """Only list teams participating in self.get_competition()"""
+        c = self.get_competition()
+
+        users = User.objects.filter(registration__competition=c,
+                                    registration__active=True)
+        if 'search' in self.request.GET:
+            users = competitor_search_filter(users, self.request.GET['search'])
+        return users.exclude(team__competition=c)
+
+    def render_to_response(self, *args, **kwargs):
+        queryset = self.get_queryset()
+        if queryset.count() == 1 and 'search' in self.request.GET:
+            return redirect(queryset[0].get_absolute_url())
+        else:
+            return super(FreeAgentListView, self).render_to_response(*args,**kwargs)
 
 
 class TeamListView(LoggedInMixin, CompetitionViewMixin, ListView):
@@ -30,8 +56,14 @@ class TeamDetailView(LoggedInMixin, CompetitionViewMixin, DetailView):
         """Only list teams participating in self.get_competition()"""
         return Team.objects.filter(competition=self.get_competition())
 
+    def get_context_data(self, **kwargs):
+        context = super(TeamDetailView, self).get_context_data(**kwargs)
+        context['on_team'] = self.object.is_user_on_team(self.request.user)
+        return context
+
 
 class TeamCreationView(UserRegisteredMixin,
+                       RequireOpenMixin,
                        CheckAllowedMixin,
                        CreateView):
     """Allow users to create new teams"""
@@ -54,15 +86,16 @@ class TeamCreationView(UserRegisteredMixin,
     def check_if_allowed(self, request):
         """Checks to see if the user is already on a team. If they
         are, send them a 404"""
-        # If they're not on a team, they can create a team.
-        return self.get_team(request) is None
-        
+        # Call the RequireOpenMixin's check_if_allowed method
+        comp_open = super(TeamCreationView, self).check_if_allowed(request)
+        # If they're not on a team, they can create a team
+        return self.get_team(request) is None and comp_open
 
     def get_error_message(self, request):
         """Called when the user isn't allowed to create a new team
         """
-        msg = 'If you would like to create a new team, '
-        msg += 'please leave "%s" first' % self.get_team(request).name
+        msg = 'Cannot create a new team at this time. Check that this '
+        msg += 'competition is open and that you are not on any other teams'
         return msg
 
     def form_valid(self, form):
@@ -83,6 +116,7 @@ class TeamCreationView(UserRegisteredMixin,
 
 
 class TeamLeaveView(UserRegisteredMixin,
+                    RequireOpenMixin,
                     ConfirmationMixin):
     template_name = 'competition/team/team_leave.html'
 

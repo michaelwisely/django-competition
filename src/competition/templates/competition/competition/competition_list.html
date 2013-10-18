@@ -1,4 +1,6 @@
 {% extends "base.html" %}
+{% load url from future %}
+{% load competition_tags %}
 
 {% block page-header %}
   <div class="page-header">
@@ -14,6 +16,10 @@
           {{ competition.name }}
         </a>
       </li>
+    {% empty %}
+      <h2>No competitions, yet.</h2>
     {% endfor %}
   </ul>
+
+{% include "competition/_paginator.html" with page=page_obj %}
 {% endblock %}

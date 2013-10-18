@@ -1,10 +1,10 @@
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, m2m_changed
+from django.db.models.signals import (pre_save, post_save,
+                                      pre_delete, m2m_changed)
 from django.template.defaultfilters import slugify
-from django.core.validators import validate_slug
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 
 from competition.exceptions import TeamException
 from competition.models.competition_model import Competition
@@ -16,6 +16,19 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class TeamManager(models.Manager):
+
+    def invitable(self, user):
+        """Returns teams that have room for invitations"""
+        if user.is_anonymous():
+            return []
+        teams = self.filter(
+            members=user,               # Teams for this user
+            competition__is_open=True,  # where the competition is open
+        )
+        return [t for t in teams if t.num_invites_left() > 0]
+
+
 class Team(models.Model):
 
     class Meta:
@@ -24,11 +37,16 @@ class Team(models.Model):
         ordering = ['name']
         get_latest_by = "created"
 
+    # Use a custom manager
+    objects = TeamManager()
+
     competition = models.ForeignKey(Competition)
     members = models.ManyToManyField(User)
 
-    name = models.CharField(max_length=50, validators=[validate_name])
-    slug = models.SlugField()
+    name = models.CharField(max_length=50, validators=[validate_name],
+            help_text="Team names must begin with an alphanumeric and contain " \
+                      "only alphanumerics, dashes, periods, colons and spaces.")
+    slug = models.SlugField(blank=True)
 
     avatar = models.OneToOneField(Avatar, blank=True, null=True)
 
@@ -46,12 +64,19 @@ class Team(models.Model):
     def __str__(self):
         return "%s (%s)" % (self.name, self.competition.name)
 
+    @property
+    def group_name(self):
+        return "team-{0}-{1}".format(self.competition.pk, self.pk)
+
+    def get_group(self):
+        return Group.objects.get(name=self.group_name)
+
     def add_team_member(self, new_user):
         """Adds a user to the calling team
 
         Raises a TeamException if the team is full
         """
-        # If the team is full, thwo an exception
+        # If the team is full, throw an exception
         if self.members.count() >= self.competition.max_num_team_members:
             raise TeamException("Cannot add new user. Team is already full")
 
@@ -72,7 +97,7 @@ class Team(models.Model):
         return self.members.filter(pk=user.pk).exists()
 
     def num_invites_left(self):
-        """Returns the number of invites a team has left. 
+        """Returns the number of invites a team has left.
 
         e.g., if a competition allows teams of up to 3, and a team has
         1 member on it, that member can send up to two invites"""
@@ -87,6 +112,24 @@ def team_pre_save(sender, instance, **kwargs):
     - Sets slug according to name
     """
     instance.slug = slugify(instance.name)
+
+
+@receiver(post_save, sender=Team)
+def team_post_save(sender, instance, created, raw, **kwargs):
+    """Called after a Team is saved
+    - Creates an auth.group for the team
+    """
+    if created and not raw:
+        Group.objects.create(name=instance.group_name)
+
+
+@receiver(pre_delete, sender=Team)
+def team_pre_delete(sender, instance, **kwargs):
+    """Called before a team is deleted
+    - Deletes the auth.group for the team
+    """
+    instance.get_group().delete()
+
 
 @receiver(m2m_changed, sender=Team.members.through)
 @disable_for_loaddata
@@ -120,24 +163,29 @@ def team_m2m_changed(sender, instance, action, reverse,
 
         for team in teams:
             for user in users:
-                # If the team is full, thwo an exception
+                # If the team is full, throw an exception
                 if team.members.count() >= team.competition.max_num_team_members:
-                    logger.error("%s has too many members on it!", 
+                    logger.error("%s has too many members on it!",
                                  team.name)
                 # Remove the user from any old teams they might
                 # already be on for this competition
                 old_teams = user.team_set.filter(competition=team.competition)
                 for old_team in old_teams:
-                    logger.debug("Removing %s from %s", 
+                    logger.debug("Removing %s from %s",
                                  user.username, old_team.name)
                     user.team_set.remove(old_team)
 
+                # Add the user to the team's auth.group
+                user.groups.add(team.get_group())
+
     if action == "post_remove":
         for team in teams:
+            # Remove the user from the team's auth.group
             for user in users:
-                # If there aren't any members left on the team, delete it.
-                if team.members.count() == 0:
-                    logger.info("%s has no more team members. Deleting it.",
-                                team.name)
-                    team.delete()
+                user.groups.remove(team.get_group())
 
+            # If there aren't any members left on the team, delete it.
+            if team.members.count() == 0:
+                logger.info("%s has no more team members. Deleting it.",
+                            team.name)
+                team.delete()

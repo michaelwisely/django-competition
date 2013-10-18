@@ -3,17 +3,31 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
+  <h2>Register to compete in {{ competition.name }}</h2>
   {% url register_for competition.slug as form_action %}
   <form action="{{ form_action }}" class="form-horizontal" method="post">
-	{% csrf_token %}
+    {% csrf_token %}
 
-	{% for question, form in questions %}  
+    {% if questions %}
+      <p>
+        Please complete the form below to complete your registration.
+      </p>
+    {% endif %}
+
+    {% for question, form in questions %}
       {{ form|crispy }}
-	{% endfor %}  
-	<div class="control-group">
+    {% empty %}
+      <p>
+        Huh. Looks like there's no registration form to fill
+        out. Lucky you!
+      </p>
+
+      <p> Press the button below to register. </p>
+    {% endfor %}
+    <div class="control-group">
       <div class="controls">
-		<button type="submit" class="btn">Submit</button>
+        <button type="submit" class="btn btn-primary">Register!</button>
       </div>
-	</div>
+    </div>
   </form>
 {% endblock %}

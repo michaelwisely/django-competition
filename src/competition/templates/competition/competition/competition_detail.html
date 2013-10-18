@@ -2,28 +2,57 @@
 {% load url from future %}
 
 {% block page-header %}
-  <div class="hero-unit" style="margin-top:20px;">
-    <h1>{{ competition.name }}</h1>    
-    <p>{{ competition.description }}</p>
-    <p>
-      <a class="btn btn-primary btn-large"
-         href="{% url 'register_for' competition.slug %}">
-        Register now!
-      </a>
+  <div class="page-header" style="margin-top:20px;">
+    <div class="row-fluid">
+      <div id="name" class="span9">
+        <h1>{{ competition.name }}</h1>
+      </div>
+      {% if not user_registered and competition.is_open %}
+        <div class="span3">
+          <a class="btn btn-primary btn-large pull-right"
+             href="{% url 'register_for' competition.slug %}">
+             Register now!
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    <p style="font-size:16px;">
+      <i>{{ competition.description }}</i>
     </p>
   </div>
 {% endblock %}
 
-{% block content %}  
-  <br>
-
-  <div class="row">
-    <div class="offset1 span2">
-      <img src="{{ competition.avatar.thumbnail.url }}"
-           class="img-polaroid" alt="{{ competition.name }}" />
-    </div>
-    <div class="offset1 span4">
+{% block content %}
+  <div class="row-fluid">
+    {% if competition.avatar %}
+      <div id="avatar" class="span3">
+        <a href="{{ competition.avatar.image.url }}">
+          <img src="{{ competition.avatar.image.url }}"
+               class="img-polaroid" alt="{{ competition.name }}" />
+        </a>
+      </div>
+    {% endif %}
+    <div class="span9">
+      <h2>Details</h2>
       {% include "competition/competition/_competition_detail.html" %}
+      {% if user.is_authenticated and competition.is_open and not user_team %}
+        <p class="text-info text-center">
+          <span class="label label-info">Heads up</span>
+          You must be on a team to access competition code. Be
+          sure to join one!
+        </p>
+      {% endif %}
     </div>
   </div>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(function() {
+      if($("#no-sidebar").length > 0) {
+        $("#name").removeClass('span7').addClass('span10');
+        $("#avatar").removeClass('span5').addClass('span8');
+      }
+    });
+  </script>
 {% endblock %}

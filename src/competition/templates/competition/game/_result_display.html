@@ -1,0 +1,15 @@
+{% for score in scores|dictsortreversed:"score" %}
+  {% with next=forloop.counter|add:"1" prev=forloop.counter|add:"-1" %}
+    {% if score.team == user_team %}
+      {% if score.score == scores.next.score or score.score == scores.prev.score %}
+        <td class="tie">Tie</td>
+      {% else %}
+        {% if forloop.first %}
+          <td class="win">Win</td>
+        {% else %}
+          <td class="loss">Loss</td>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  {% endwith %}
+{% endfor %}

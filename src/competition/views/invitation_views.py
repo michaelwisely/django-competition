@@ -3,7 +3,9 @@ from django.http import Http404
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import TemplateView, DetailView, CreateView
+from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from competition.models.team_model import Team
 from competition.models.invitation_model import Invitation
@@ -12,22 +14,39 @@ from competition.views.mixins import (LoggedInMixin, UserRegisteredMixin,
                                       CheckAllowedMixin)
 from competition.forms.invitation_forms import InvitationForm
 
+import urllib
 import logging
 
 
 logger = logging.getLogger(__name__)
 
 
-class InvitationListView(LoggedInMixin, ListView):
+class InvitationListView(LoggedInMixin, TemplateView):
     """Lists all teams, provided that the user is logged in"""
-    context_object_name = 'invitations'
     template_name = 'competition/invitation/invitation_list.html'
     paginate_by = 10
 
-    def get_queryset(self):
-        """Only list invitations for this user"""
+    def process_page(self, items, query_param):
+        paginator = Paginator(items, self.paginate_by)
+        page_num = self.request.GET.get(query_param)
+
+        try:
+            return paginator.page(page_num)
+        except PageNotAnInteger:
+            return paginator.page(1)
+        except EmptyPage:
+            return paginator.page(paginator.num_pages)
+
+    def get_context_data(self, **kwargs):
+        context = super(InvitationListView, self).get_context_data(**kwargs)
         user = self.request.user
-        return Invitation.objects.filter(Q(sender=user) | Q(receiver=user))
+        invitations = Invitation.objects.filter(Q(sender=user) | Q(receiver=user))
+        received = self.process_page(invitations.filter(receiver=user),
+                                     'received_page')
+        sent = self.process_page(invitations.filter(sender=user),
+                                 'sent_page')
+        context.update({'received': received, 'sent': sent})
+        return context
 
 
 class InvitationDetailView(LoggedInMixin, DetailView):
@@ -58,7 +77,13 @@ class InvitationCreateView(LoggedInMixin,
     def get_available_teams(self):
         """Returns a list of competitions that are open for
         registration and team changes"""
-        return self.request.user.team_set.filter(competition__is_open=True)
+        teams = self.request.user.team_set.filter(competition__is_open=True)
+        if not teams.exists():
+            msg = "Can't send invites at this time. You're not"
+            msg += " registered for any open competitions"
+            messages.error(self.request, msg)
+            raise Http404(msg)
+        return teams
 
     def get_available_invitees(self):
         """Returns a list of users who can be invited"""
@@ -70,18 +95,19 @@ class InvitationCreateView(LoggedInMixin,
         try:
             team_id = self.request.GET.get('team')
             if team_id is not None:
+                team_id = int(team_id)
                 return self.get_available_teams().get(pk=team_id)
             return self.get_available_teams().latest()
-        except Team.DoesNotExist:
+        except (Team.DoesNotExist, ValueError):
             return None
 
     def get_invitee(self):
-        """If the user provided a 'team' query parameter, look up the
+        """If the user provided a 'invitee' query parameter, look up the
         team. Otherwise return None"""
         try:
-            invitee_id = self.request.GET['invitee']
+            invitee_id = int(self.request.GET['invitee'])
             return self.get_available_invitees().get(pk=invitee_id)
-        except (User.DoesNotExist, KeyError):
+        except (User.DoesNotExist, KeyError, ValueError):
             return None
 
     def get_form(self, form_class):
@@ -174,7 +200,14 @@ class InvitationAcceptView(InvitationResponseView):
         invitee = self.invitation.receiver
         if not competition.is_user_registered(invitee):
             # If the user isn't registered, make them register
-            return redirect('register_for', comp_slug=competition.slug)
+            msg = "You need to register for %s before you can join a team"
+            messages.error(self.request, msg % competition.name)
+            url = reverse('register_for',
+                          kwargs={'comp_slug': competition.slug})
+            query = urllib.urlencode(
+                {'next': self.invitation.get_absolute_url()}
+            )
+            return redirect(url + '?' + query)
 
         self.invitation.accept()
 

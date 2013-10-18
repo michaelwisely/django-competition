@@ -4,7 +4,8 @@ from django.shortcuts import redirect
 from django.contrib import messages
 
 from competition.views.mixins import (LoggedInMixin, CompetitionViewMixin,
-                                      UserRegisteredMixin, ConfirmationMixin)
+                                      UserRegisteredMixin, ConfirmationMixin,
+                                      RequireOpenMixin)
 from competition.forms.registration_forms import generate_question_form
 
 from competition.models import Registration
@@ -12,8 +13,11 @@ from competition.models import RegistrationQuestionChoice as Choice
 from competition.models import RegistrationQuestionResponse as Response
 
 
-class RegistrationView(LoggedInMixin, CompetitionViewMixin,
-                       TemplateResponseMixin, ProcessFormView):
+class RegistrationView(LoggedInMixin,
+                       CompetitionViewMixin,
+                       RequireOpenMixin,
+                       TemplateResponseMixin,
+                       ProcessFormView):
     """Allows a user to register to compete"""
     template_name = 'competition/registration/register.html'
 
@@ -121,13 +125,17 @@ class RegistrationView(LoggedInMixin, CompetitionViewMixin,
                 self.save_response(registration, question, form)
             msg = 'Successfully registered for %s!' % competition.name
             messages.success(request, msg)
+            if request.GET.get('next'):
+                return redirect(request.GET.get('next'))
             return redirect('competition_detail', comp_slug=competition.slug)
 
         return self.render_to_response({'questions': forms,
                                         'competition': self.get_competition()})
 
 
-class UnregisterView(UserRegisteredMixin, ConfirmationMixin):
+class UnregisterView(UserRegisteredMixin,
+                     RequireOpenMixin,
+                     ConfirmationMixin):
     template_name = 'competition/registration/unregister.html'
 
     def get_question(self):
@@ -139,7 +147,7 @@ class UnregisterView(UserRegisteredMixin, ConfirmationMixin):
 
     def agreed(self):
         competition = self.get_competition()
-        registration = Registration.objects.get(competition=competition, 
+        registration = Registration.objects.get(competition=competition,
                                                 user=self.request.user,
                                                 active=True)
         registration.deactivate()

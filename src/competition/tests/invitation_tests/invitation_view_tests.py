@@ -6,7 +6,7 @@ from competition.tests.factories import (UserFactory, CompetitionFactory,
                                          TeamFactory, InvitationFactory,
                                          RegistrationFactory)
 
-from unittest import skip
+from urllib import urlencode
 
 
 class InvitationViewsTest(FancyTestCase):
@@ -110,8 +110,7 @@ class InvitationViewsTest(FancyTestCase):
                                      data={'team': self.alice_team.pk,
                                            'receiver': self.carl.pk,
                                            'message': "Hello"})
-        self.assertIn('team', resp.context['form'].errors)
-        self.assertEqual(0, Invitation.objects.all().count())
+        self.assert404(resp)
 
     def test_cannot_invite_team_members(self):
         """Can't send invites to already members"""
@@ -179,7 +178,7 @@ class InvitationViewsTest(FancyTestCase):
     def test_registered_to_accept(self):
         """A user cannot accept unless registered to compete"""
         # Carl isn't registered!
-        inv = InvitationFactory.create(receiver=self.carl, 
+        inv = InvitationFactory.create(receiver=self.carl,
                                        team=self.alice_team)
         with self.loggedInAs("carl", "123"):
             # He can still view the invite...
@@ -191,7 +190,10 @@ class InvitationViewsTest(FancyTestCase):
                                      kwargs={'pk': inv.pk},
                                      data={'confirmed': True})
         competition_url = inv.team.competition.get_absolute_url()
-        self.assertRedirects(resp, competition_url + 'register/')
+        invitation_url = inv.get_absolute_url()
+        querystring = urlencode({'next': invitation_url})
+        redirect_url = competition_url + 'register/?' + querystring
+        self.assertRedirects(resp, redirect_url)
         self.assertIsNone(Invitation.objects.get(pk=inv.pk).response)
         self.assertFalse(self.alice_team.is_user_on_team(self.carl))
 
@@ -217,9 +219,9 @@ class InvitationViewsTest(FancyTestCase):
         # ... he's on Alice's team
         self.assertTrue(self.alice_team.is_user_on_team(self.carl))
         # ... off the other galapagos team
-        self.assertFalse(tg.is_user_on_team(self.carl)) 
+        self.assertFalse(tg.is_user_on_team(self.carl))
         # ... but still on his space team
-        self.assertTrue(ts.is_user_on_team(self.carl)) 
+        self.assertTrue(ts.is_user_on_team(self.carl))
 
     def test_reinviting(self):
         """User can be reinvited after leaving team"""
@@ -343,7 +345,7 @@ class InvitationViewsTest(FancyTestCase):
         # Register Carl to compete
         RegistrationFactory(user=self.carl, competition=self.galapagos)
         # Put him on a team
-        carl_team = TeamFactory.create(competition=self.galapagos, 
+        carl_team = TeamFactory.create(competition=self.galapagos,
                                        num_members=1)
         carl_team.add_team_member(self.carl)
 
@@ -439,5 +441,3 @@ class InvitationViewsTest(FancyTestCase):
             self.assert404(resp)
             # Still accepted, though
             self.assertEqual('A', Invitation.objects.get(pk=inv.pk).response)
-
-

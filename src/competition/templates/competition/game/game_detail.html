@@ -1,0 +1,42 @@
+{% extends "competition/competition_base.html" %}
+{% load competition_tags %}
+
+{% block content %}
+  <table class="table table-hover">
+    <tbody>
+      <tr>
+        <th>Game #</th>
+        <td>{{ game.id }}</td>
+      </tr>
+      {% with scores=game.scores.select_related.all|dictsortreversed:"score" %}
+      <tr>
+        <th>Opponents</th>
+          <td>{% include "competition/game/_opponent_list.html" %}</td>
+      </tr>
+      <tr>
+        <th>Result</th>
+        {% include "competition/game/_result_display.html" %}
+      </tr>
+      {% endwith %}
+
+      {% for field in data_fields %}
+        <tr>
+          <th>{{ field }}</th>
+          <td>{{ game.data.display|get_item:field|default:"--" }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
+
+{% block script %}
+  <script>
+    $(function(){
+    $('#eligible').tooltip({placement: "left"});
+    $('#ineligible').tooltip({placement: "left"});
+    $('#paid-up').tooltip({placement: "left"});
+    $('#out-of-invites').tooltip({placement: "left"});
+    $('#full-team').tooltip({placement: "left"});
+    });
+  </script>
+{% endblock %}

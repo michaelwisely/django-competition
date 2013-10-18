@@ -29,7 +29,8 @@ NOSE_ARGS = ['--cover-package=competition',  # Only check the
 
              '--with-yanc',                  # Use colorized output
 
-             '--with-achievements',          # Track achievements!
+             # Achievements have been misbehaving. Leave them out for now
+             # '--with-achievements',          # Track achievements!
              ]
 
 # Django Debug Toolbar settings
@@ -37,6 +38,9 @@ INTERNAL_IPS = ('127.0.0.1',)
 DEBUG_TOOLBAR_CONFIG = {
     'INTERCEPT_REDIRECTS': False,
 }
+
+# Crispy setting
+CRISPY_TEMPLATE_PACK = 'bootstrap'
 
 # Django Guardian settings
 AUTHENTICATION_BACKENDS = (
@@ -134,6 +138,8 @@ INSTALLED_APPS = (
     'guardian',
     'crispy_forms',
     'competition',
+
+    'south',
 )
 
 LOGGING = {

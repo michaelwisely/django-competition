@@ -49,3 +49,6 @@ class FancyTestCase(DjangoTestCase):
 
     def assert404(self, response):
         return self.assertEqual(404, response.status_code)
+
+    def assertInGroup(self, user, group):
+        return self.assertTrue(user.groups.filter(name=group.name).exists())

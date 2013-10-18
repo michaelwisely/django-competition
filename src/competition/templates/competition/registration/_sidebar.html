@@ -1,0 +1,11 @@
+{% load url from future %}
+
+<h2 class="text-right">Registration</h2>
+<ul id="registration-nav" class="nav nav-tabs nav-stacked" style="margin-top:20px;">
+  <li>
+    <a href="{% url 'unregister_for' competition.slug %}">
+      <i class="icon-remove"></i>
+      Unregister
+    </a>
+  </li>
+</ul>

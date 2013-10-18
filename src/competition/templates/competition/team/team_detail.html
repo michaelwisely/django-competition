@@ -1,5 +1,17 @@
 {% extends "competition/competition_base.html" %}
 
-{% block content %}  
+{% block content %}
   {% include "competition/team/_team_detail.html" %}
+{% endblock %}
+
+{% block script %}
+<script>
+$(function(){
+  $('#eligible').tooltip({placement: "left"});
+  $('#ineligible').tooltip({placement: "left"});
+  $('#paid-up').tooltip({placement: "left"});
+  $('#out-of-invites').tooltip({placement: "left"});
+  $('#full-team').tooltip({placement: "left"});
+});
+</script>
 {% endblock %}

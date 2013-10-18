@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import Group
 
 from competition.tests.utils import FancyTestCase
 from competition.models.team_model import Team
@@ -10,8 +11,10 @@ from unittest import skip
 class TeamViewsTest(FancyTestCase):
 
     def setUp(self):
-        self.space = CompetitionFactory.create(name="Space")
-        self.galapagos = CompetitionFactory.create(name="Galapagos")
+        self.space = CompetitionFactory.create(name="Space",
+                                               is_open=True)
+        self.galapagos = CompetitionFactory.create(name="Galapagos",
+                                                   is_open=True)
 
         self.space_teams = [TeamFactory.create(competition=self.space,
                                                num_members=1)
@@ -80,6 +83,8 @@ class TeamViewsTest(FancyTestCase):
         self.assertEqual(1, team.members.count())
         self.assertEqual('Team Awesome', team.name)
         self.assertEqual('team-awesome', team.slug)  # Make sure slug got set
+        self.assertInGroup(self.alice, team.get_group())
+        self.assertEqual(1, self.alice.groups.count())
 
     def test_create_team_unregistered(self):
         """unregistered users cannot create teams"""
@@ -106,6 +111,7 @@ class TeamViewsTest(FancyTestCase):
         # Bob didn't create a new team
         self.assertEqual(num_teams + 1, Team.objects.all().count())
         self.assertFalse(Team.objects.filter(members=self.bob).exists())
+        self.assertEqual(0, self.bob.groups.count())
 
     def test_create_team_registered(self):
         """Must be registered to create a team"""
@@ -133,6 +139,8 @@ class TeamViewsTest(FancyTestCase):
         t.members.add(self.alice)
 
         self.assertEqual(2, t.members.count())   # Sanity check
+        self.assertInGroup(self.alice, t.get_group())
+        self.assertEqual(1, self.alice.groups.count())
 
         with self.loggedInAs("alice", "123"):
             resp = self.client.get(url)
@@ -142,6 +150,7 @@ class TeamViewsTest(FancyTestCase):
             resp = self.client.post(url, data={'confirmed': True}, follow=True)
             self.assertRedirects(resp, self.space.get_absolute_url())
             self.assertEqual(1, t.members.count())
+            self.assertEqual(0, self.alice.groups.count())
 
     def test_leave_team_decline(self):
         """Declining leaving a team does nothing"""
@@ -150,11 +159,13 @@ class TeamViewsTest(FancyTestCase):
         t.members.add(self.alice)
 
         self.assertEqual(2, t.members.count())   # Sanity check
+        self.assertInGroup(self.alice, t.get_group())
 
         with self.loggedInAs("alice", "123"):
             resp = self.client.post(url, data={'confirmed': False}, follow=True)
             self.assertRedirects(resp, t.get_absolute_url())
             self.assertEqual(2, t.members.count())
+            self.assertInGroup(self.alice, t.get_group())
 
     def test_leave_team_no_team(self):
         """Users can't leave a team if they're not on a team"""
@@ -172,8 +183,41 @@ class TeamViewsTest(FancyTestCase):
         # Sanity checks
         self.assertTrue(Team.objects.filter(pk=t.pk).exists())
         self.assertEqual(1, t.members.count())
+        self.assertInGroup(self.alice, t.get_group())
+        self.assertEqual(1, self.alice.groups.count())
 
         with self.loggedInAs("alice", "123"):
             resp = self.client.post(url, data={'confirmed': True}, follow=True)
             self.assertRedirects(resp, self.space.get_absolute_url())
             self.assertFalse(Team.objects.filter(pk=t.pk).exists())
+            self.assertEqual(0, self.alice.groups.count())
+            self.assertEqual(0, Group.objects.filter(name=t.group_name).count())
+
+    def test_create_team_competition_closed(self):
+        """Users can't create a team if competition is closed"""
+        self.space.is_open = False
+        self.space.save()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertEqual(404, resp.status_code)
+
+    def test_leave_team_competition_closed(self):
+        """Users can't leave a team if competition is closed"""
+        self.space.is_open = False
+        self.space.save()
+        url = reverse('team_leave', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url)
+            self.assertEqual(404, resp.status_code)
+
+    def test_team_deleted_on_unregister(self):
+        """Team gets deleted when the last user unregisters"""
+        num_teams = Team.objects.all().count()
+        url = reverse('team_create', kwargs={'comp_slug': self.space.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.post(url, follow=True,
+                                    data={'name': 'Team Awesome'})
+        self.assertEqual(num_teams + 1, Team.objects.all().count())
+        self.alice_reg.deactivate()  # Deactivate registration
+        self.assertEqual(num_teams, Team.objects.all().count())  # one less team

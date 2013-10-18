@@ -13,6 +13,16 @@ from competition.validators import (validate_name, non_negative,
                                     greater_than_zero)
 
 
+class CompetitionManager(models.Manager):
+
+    def user_registered(self, user):
+        """Returns competitions that the user is registered for"""
+        if user.is_anonymous():
+            return []
+        return self.filter(registration__user=user.pk,
+                           registration__active=True)
+
+
 class Competition(models.Model):
     class Meta:
         app_label = 'competition'
@@ -24,11 +34,21 @@ class Competition(models.Model):
             ("mark_paid", "Can mark a registration as paid"),
         )
 
+    PER_TEAM_PAYMENT = 'T'
+    PER_PERSON_PAYMENT = 'P'
+    PAYMENT_OPTIONS = (
+        (PER_TEAM_PAYMENT, 'Per-team Payment'),
+        (PER_PERSON_PAYMENT, 'Per-person Payment'),
+    )
+
+    # Custom object manager
+    objects = CompetitionManager()
+
     # Typical info
     name = models.CharField(max_length=50, unique=True,
                             help_text="Name of the competition",
                             validators=[validate_name])
-    slug = models.SlugField(blank=True, editable=False)
+    slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(help_text="Describe the competition")
     avatar = models.OneToOneField(Avatar, blank=True, null=True)
 
@@ -44,7 +64,9 @@ class Competition(models.Model):
     questions = models.ManyToManyField("competition.RegistrationQuestion",
                                        blank=True, null=True)
 
-    cost_per_person = models.FloatField(validators=[non_negative])
+    payment_option= models.CharField(max_length=1, choices=PAYMENT_OPTIONS,
+                                     default=PER_TEAM_PAYMENT)
+    cost = models.FloatField(validators=[non_negative])
 
     # Team details
     min_num_team_members = models.IntegerField(verbose_name="Minimum number " +
@@ -73,12 +95,16 @@ class Competition(models.Model):
     def is_user_registered(self, user):
         """Return true if the given user has an **active**
         registration for this competition, else return false"""
-        return self.registration_set.filter(user=user, active=True).exists()
+        if user.is_anonymous():
+            return False
+        return self.registration_set.filter(user=user.pk, active=True).exists()
 
     def is_user_organizer(self, user):
         """Return true if the given user is an organizer for this
         competition, else false"""
-        return self.organizer_set.filter(user=user).exists()
+        if user.is_anonymous():
+            return False
+        return self.organizer_set.filter(user=user.pk).exists()
 
     @staticmethod
     def get_organizer_permissions():
@@ -90,9 +116,14 @@ class Competition(models.Model):
 def competition_pre_save(sender, instance, **kwargs):
     """Called before a Competition is saved
 
-    Updates the competition's slug
+    Updates the competition's slug, assigning a unique slug if necessary
     """
-    instance.slug = slugify(instance.name)
+    if instance.slug == "":
+        slug, i = slugify(instance.name), 1
+        while Competition.objects.filter(slug=slug).exists():
+            slug = slugify("{0}-{1}".format(instance.name, i))
+            i += 1
+        instance.slug = slug
 
 
 @receiver(pre_delete, sender=Competition)
@@ -103,7 +134,7 @@ def competition_pre_delete(sender, instance, **kwargs):
 
 
 @receiver(post_syncdb, sender=Competition)
-def my_callback(sender, **kwargs):
+def setup_organizer_group(sender, **kwargs):
     comp_content_type = ContentType.objects.get(app_label='competition',
                                                 model='competition')
     staff = Group.objects.create(name="Competition Staff")

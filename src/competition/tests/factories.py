@@ -4,8 +4,8 @@ from datetime import timedelta
 from datetime import datetime
 
 from django.contrib.auth.models import User
-from competition.models import (Competition, Game, Avatar, Team,
-                                Score, Organizer, OrganizerRole,
+from competition.models import (Competition, Game, GameScore, Avatar, Team,
+                                Organizer, OrganizerRole,
                                 Registration, Invitation)
 from competition.models import RegistrationQuestion as Question
 from competition.models import RegistrationQuestionChoice as Choice
@@ -27,10 +27,10 @@ def later(_=None):
     return datetime.now() + timedelta(hours=12)
 
 
-class UserFactory(factory.Factory):
+class UserFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = User
 
-    username = factory.Sequence(lambda n: 'user' + n)
+    username = factory.Sequence(lambda n: 'user{}'.format(n))
     password = "123"
 
     @classmethod
@@ -44,27 +44,23 @@ class UserFactory(factory.Factory):
         return user
 
 
-class CompetitionFactory(factory.Factory):
+class CompetitionFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Competition
 
     name = factory.Sequence(lambda n: "MegaMinerAI: %s" % n)
     start_time = factory.LazyAttribute(now)
     end_time = factory.LazyAttribute(later)
-    cost_per_person = 8.00
+    cost = 8.00
     min_num_team_members = 1
     max_num_team_members = 3
     description = "This is the best MegaMinerAI ever yay!"
 
 
-class GameFactory(factory.Factory):
-    FACTORY_FOR = Game
-
-
-class AvatarFactory(factory.Factory):
+class AvatarFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Avatar
 
 
-class TeamFactory(factory.Factory):
+class TeamFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Team
 
     competition = factory.SubFactory(CompetitionFactory)
@@ -83,18 +79,30 @@ class TeamFactory(factory.Factory):
         return team
 
 
-class ScoreFactory(factory.Factory):
-    FACTORY_FOR = Score
+class GameFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = Game
+
+    competition = factory.SubFactory(CompetitionFactory)
+    start_time = factory.LazyAttribute(now)
+    end_time = factory.LazyAttribute(now)
 
 
-class OrganizerRoleFactory(factory.Factory):
+class GameScoreFactory(factory.django.DjangoModelFactory):
+    FACTORY_FOR = GameScore
+
+    game = factory.SubFactory(GameFactory)
+    team = factory.SubFactory(TeamFactory)
+    score = factory.LazyAttribute(lambda _: random.randint(0, 100))
+
+
+class OrganizerRoleFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = OrganizerRole
 
     name = factory.Sequence(lambda n: "Role #%s" % n)
     description = "Role description."
 
 
-class OrganizerFactory(factory.Factory):
+class OrganizerFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Organizer
 
     user = factory.SubFactory(UserFactory)
@@ -111,14 +119,14 @@ class OrganizerFactory(factory.Factory):
         return organizer
 
 
-class RegistrationFactory(factory.Factory):
+class RegistrationFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Registration
 
     user = factory.SubFactory(UserFactory)
     competition = factory.SubFactory(CompetitionFactory)
 
 
-class RegistrationQuestionFactory(factory.Factory):
+class RegistrationQuestionFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Question
 
     question = factory.Sequence(lambda n: "Question #%s" % n)
@@ -136,21 +144,21 @@ class RegistrationQuestionFactory(factory.Factory):
         return q
 
 
-class RegistrationQuestionChoiceFactory(factory.Factory):
+class RegistrationQuestionChoiceFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Choice
 
     question = factory.SubFactory(RegistrationQuestionFactory)
     choice = factory.Sequence(lambda n: "Choice #%s" % n)
 
 
-class RegistrationQuestionResponseFactory(factory.Factory):
+class RegistrationQuestionResponseFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Response
 
     question = factory.SubFactory(RegistrationQuestionFactory)
     registration = factory.SubFactory(RegistrationFactory)
 
 
-class InvitationFactory(factory.Factory):
+class InvitationFactory(factory.django.DjangoModelFactory):
     FACTORY_FOR = Invitation
 
     team = factory.SubFactory(TeamFactory)

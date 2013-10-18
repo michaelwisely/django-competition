@@ -1,9 +1,12 @@
 {% extends "base.html" %}
+{% load url from future %}
+{% load crispy_forms_tags%}
 
 {% block content %}
   {% if not form.fields.team.queryset.exists %}
-    <p> You cannot send invitations at the moment</p>    
+    <p> You cannot send invitations at the moment</p>
   {% endif %}
-  {% url invitation_create competition.slug as form_action %}
-  {% include "competition/includes/horizontal_form.inc.html" %}    
+
+  {% crispy form %}
+
 {% endblock %}
