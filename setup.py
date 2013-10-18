@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(name='django-competition',
-      version='1.0',
+      version='0.2',
       url='http://github.com/michaelwisely/django-competition',
       license='BSD',
       description='A reusable Django app for hosting various competitions',
