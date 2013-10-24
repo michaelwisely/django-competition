@@ -2,7 +2,7 @@
 
 {% block content %}
   <h2>Teams</h2>
-  <ul class="nav nav-tabs nav-stacked">
+  <ul class="nav nav-pills nav-stacked">
     {% for team in teams %}
       <li>
         <a href="{{ team.get_absolute_url }}">
