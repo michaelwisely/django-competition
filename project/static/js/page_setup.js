@@ -1,7 +1,7 @@
 $(function() {
     // If we're not using the sidebar, expand the main content
     if ($("#no-sidebar").length > 0) {
-        $("#content").toggleClass('span9');
+        $("#content").toggleClass('col-md-9');
     }
 
     // If we're not using the breadcrumb, add 20px of margin to the body
