@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-  {% url invitation_accept competition.slug as form_action %}
+  {% url 'invitation_accept' competition.slug as form_action %}
   <form action="{{ form_action }}" class="form-horizontal" method="post">
-	{% csrf_token %}
+        {% csrf_token %}
 
-	{% for field in form %}
-	  <div class="control-group">
-		<p>{{question}}</p>
-		<label>{{ field.errors }}</label>
+        {% for field in form %}
+          <div class="control-group">
+                <p>{{question}}</p>
+                <label>{{ field.errors }}</label>
 
         <label class="checkbox">
-		  {{ field }} {{ field.label }}
+                  {{ field }} {{ field.label }}
         </label>
-	  </div>
-	{% endfor %}
+          </div>
+        {% endfor %}
 
-	<div class="control-group">
+        <div class="control-group">
       <div class="controls">
-		<button type="submit" class="btn">Submit</button>
+                <button type="submit" class="btn">Submit</button>
       </div>
-	</div>
+        </div>
   </form>
 {% endblock %}

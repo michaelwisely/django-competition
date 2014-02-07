@@ -42,10 +42,10 @@
     {% endif %}
 
     {% if invitation.receiver == user and not invitation.response %}
-      <a href="{% url invitation_accept pk=invitation.pk %}" class="btn btn-success">
+      <a href="{% url 'invitation_accept' pk=invitation.pk %}" class="btn btn-success">
         Accept Invitation
       </a>
-      <a href="{% url invitation_decline pk=invitation.pk %}" class="btn btn-danger">
+      <a href="{% url 'invitation_decline' pk=invitation.pk %}" class="btn btn-danger">
         Decline Invitation
       </a>
     {% endif %}

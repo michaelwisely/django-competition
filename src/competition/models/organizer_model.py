@@ -3,7 +3,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_delete
 from django.contrib.auth.models import User
 
-from guardian.shortcuts import assign, remove_perm
+from guardian.shortcuts import assign_perm, remove_perm
 
 from competition.validators import validate_name
 from competition.models.competition_model import Competition
@@ -46,7 +46,7 @@ def organizer_post_save(sender, instance, created, **kwargs):
     # If we just made this organizer, grant them organizer permissions
     if created:
         for permission_code in Competition.get_organizer_permissions():
-            assign(permission_code, instance.user, instance.competition)
+            assign_perm(permission_code, instance.user, instance.competition)
 
 
 @receiver(pre_delete, sender=Organizer)

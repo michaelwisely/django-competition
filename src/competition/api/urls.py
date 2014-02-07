@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import url, patterns
+from django.conf.urls import url, patterns
 from piston.resource import Resource
 
 from competition.api.handlers import (CompetitiorHandler,
