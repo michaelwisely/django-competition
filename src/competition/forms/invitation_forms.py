@@ -9,7 +9,7 @@ from competition.models.invitation_model import Invitation
 
 
 cancel_button = """
-<a href="{% url invitation_list %}" class="btn">
+<a href="{% url 'invitation_list' %}" class="btn">
   Cancel
 </a>
 """

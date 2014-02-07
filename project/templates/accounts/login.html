@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load url from future %}
 
 {% block page-header %}
   <div class="page-header">
@@ -12,7 +13,7 @@
     <p>Your username and password didn't match. Please try again.</p>
   {% endif %}
 
-  <form method="post" action="{% url django.contrib.auth.views.login %}">
+  <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
     {% csrf_token %}
     <table>
       <tr>
