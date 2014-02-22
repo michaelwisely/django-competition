@@ -1,7 +1,7 @@
 {% load competition_tags %}
 
 <h2 class="text-right">Teams</h2>
-<ul id="team-nav" class="nav nav-tabs nav-stacked">
+<ul id="team-nav" class="nav nav-pills nav-stacked">
   <li>
     <a href="{% url 'team_list' competition.slug %}">
       <i class="icon-th-list"></i>
@@ -10,7 +10,7 @@
   </li>
   <li>
     <a href="{% url 'freeagent_list' competition.slug %}">
-      <i class="icon-bullhorn"></i>
+      <i class="glyphicon glyphicon-bullhorn"></i>
       Free Agents <span class="badge badge-info pull-right">{% freeagent_count competition %}</span>
     </a>
   </li>
@@ -18,7 +18,7 @@
     {% if competition.is_open %}
       <li>
         <a href="{% url 'team_create' competition.slug %}">
-          <i class="icon-plus"></i>
+          <i class="glyphicon glyphicon-plus"></i>
           Create Team
         </a>
       </li>
@@ -26,14 +26,14 @@
   {% else %}
     <li>
       <a href="{{ user_team.get_absolute_url }}">
-        <i class="icon-user"></i>
+        <i class="glyphicon glyphicon-user"></i>
         My Team
       </a>
     </li>
     {% if competition.is_open %}
       <li>
         <a href="{% url 'team_leave' competition.slug %}">
-          <i class="icon-remove"></i>
+          <i class="glyphicon glyphicon-remove"></i>
           Leave Team
         </a>
       </li>

@@ -1,15 +1,15 @@
 <h2 class="text-right">Competition</h2>
-<ul id="competition-nav" class="nav nav-tabs nav-stacked">
+<ul id="competition-nav" class="nav nav-pills nav-stacked">
   <li>
     <a href="{% url 'competition_detail' competition.slug %}">
-      <i class="icon-comment"></i>
+      <i class="glyphicon glyphicon-comment"></i>
       Competition Details
     </a>
   </li>
   {% if competition.is_running and user_team %}
   <li>
     <a href="{% url 'game_list' competition.slug %}">
-      <i class="icon-flag"></i>
+      <i class="glyphicon glyphicon-flag"></i>
       Games
     </a>
   </li>

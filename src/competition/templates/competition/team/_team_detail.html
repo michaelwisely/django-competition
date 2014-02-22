@@ -1,10 +1,10 @@
 {% load competition_tags %}
 
-<div class="row-fluid">
+<div class="row">
   <div class="span{% if team.avatar %}9{% else %}12{% endif %}">
     <div class="well">
-      <div class="row-fluid">
-        <div class="span8">
+      <div class="row">
+        <div class="col-sm-8 col-md-8">
           <h2>
             {{ team.name }}
           </h2>
@@ -20,38 +20,33 @@
           </ul>
         </div>
         {% if on_team %}
-          <div class="span4 pull-right">
+          <div class="pull-right col-sm-4 col-md-4">
             <h2>Your team!</h2>
             {% if team.eligible_to_win %}
-              <a id="eligible" href="#" data-toggle="tooltip"
-                 title="Your team is presently eligible to win prizes">
+              <a id="eligible" href="#" data-toggle="tooltip" title="Your team is presently eligible to win prizes">
                  <span class="label label-success">Eligible to win prizes</span>
               </a>
             {% else %}
-              <a id="ineligible" href="#" data-toggle="tooltip"
-                 title="Your team is presently not eligible to win prizes">
+              <a id="ineligible" href="#" data-toggle="tooltip" title="Your team is presently not eligible to win prizes">
                  <span class="label label-important">Ineligible to win prizes</span>
               </a>
             {% endif %}
             {% if team.paid %}
-              <a id="paid-up" href="#" data-toggle="tooltip"
-                 title="Your team has fully paid!">
+              <a id="paid-up" href="#" data-toggle="tooltip" title="Your team has fully paid!">
                  <span class="label label-success">
                    Paid up {% if team.time_paid %} at {{ team.time_paid }}{% endif %}
                  </span>
               </a>
             {% endif %}
             {% if team.num_invites_left == 0 %}
-              <a id="out-of-invites" href="#" data-toggle="tooltip"
-                 title="Your team has maxed out its number of sent invites for now. Wait until invitees respond or someone leaves.">
+              <a id="out-of-invites" href="#" data-toggle="tooltip" title="Your team has maxed out its number of sent invites for now. Wait until invitees respond or someone leaves.">
                 <span class="label label-warning">
                   Out of invites
                 </span>
               </a>
             {% endif %}
             {% if team.members.count == team.competition.max_num_team_members %}
-              <a id="full-team" href="#" data-toggle="tooltip"
-                 title="Your team is full">
+              <a id="full-team" href="#" data-toggle="tooltip" title="Your team is full">
                 <span class="label label-warning">
                   Full team!
                 </span>
@@ -63,8 +58,8 @@
     </div>
   </div>
   {% if team.avatar %}
-    <div class="span3">
-      <img src="{{ team.avatar.thumbnail.url }}" class="img-polaroid" />
+    <div class="col-sm-3 col-md-3">
+      <img src="{{ team.avatar.thumbnail.url }}" class="img-polaroid">
     </div>
   {% endif %}
 </div>
