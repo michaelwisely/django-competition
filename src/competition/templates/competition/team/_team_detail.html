@@ -22,6 +22,9 @@
         {% if on_team %}
           <div class="pull-right col-sm-4 col-md-4">
             <h2>Your team!</h2>
+            <a href="/var/qr/{{ team.slug }}.png" class="btn btn-primary btn-large">
+              Generate Team QR Code
+            </a>
             {% if team.eligible_to_win %}
               <a id="eligible" href="#" data-toggle="tooltip" title="Your team is presently eligible to win prizes">
                  <span class="label label-success">Eligible to win prizes</span>

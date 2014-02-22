@@ -15,6 +15,8 @@ from competition.signals import disable_for_loaddata
 import logging
 logger = logging.getLogger(__name__)
 
+import qrcode
+import os
 
 class TeamManager(models.Manager):
 
@@ -121,6 +123,17 @@ def team_post_save(sender, instance, created, raw, **kwargs):
     """
     if created and not raw:
         Group.objects.create(name=instance.group_name)
+
+    # Create Team QR code if it doesn't exist
+    if not os.path.isfile(settings.VAR_DIR + "/qr/" + instance.slug + ".png"):
+        qr = qrcode.make("http://megaminerai.com/competition/" + 
+                         instance.competition.slug + "/team/" + instance.slug)
+
+        file_name = instance.slug + ".png"
+
+        qr_file = open(settings.VAR_DIR + "/qr/" + file_name, 'w')
+        qr.save(qr_file, "PNG")
+        qr_file.close()
 
 
 @receiver(pre_delete, sender=Team)
