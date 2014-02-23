@@ -30,7 +30,7 @@ db:
 	python bin/django loaddata src/competition/fixtures/*.yaml
 
 test: bin/buildout
-	python bin/buildout install simple-django
+	python bin/buildout install simple-django var-directory
 	python bin/nosey
 
 clean:
