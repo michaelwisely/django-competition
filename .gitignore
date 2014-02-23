@@ -37,5 +37,6 @@ secret_settings.py
 # Ignore other nose files
 .noseids
 
-# Ignore uploads
+# Ignore uploads and qr codes
 var/uploads/
+var/qr/
