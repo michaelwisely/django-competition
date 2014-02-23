@@ -69,6 +69,10 @@ class Team(models.Model):
         return "%s (%s)" % (self.name, self.competition.name)
 
     @property
+    def qr_filename(self):
+        return "{}-{}.png".format(self.slug, self.id)
+
+    @property
     def group_name(self):
         return "team-{0}-{1}".format(self.competition.pk, self.pk)
 
@@ -126,7 +130,7 @@ def team_post_save(sender, instance, created, raw, **kwargs):
     if created and not raw:
         Group.objects.create(name=instance.group_name)
 
-    image_file = os.path.join(settings.QR_DIR, instance.slug + ".png")
+    image_file = os.path.join(settings.QR_DIR, instance.qr_filename)
     if not os.path.isfile(image_file):
         # The domain might change one day (though that's pretty unlikely).
         # This fetches it from the database.
@@ -135,7 +139,6 @@ def team_post_save(sender, instance, created, raw, **kwargs):
         # event that it should ever change. Also, **you'll need to import urlparse**
         # that library helps with parsing and forming URLs
         url = urlparse.urljoin(domain, instance.get_absolute_url())
-        print url
         qr = qrcode.make(url)
 
         with open(image_file, 'w') as qr_file:
