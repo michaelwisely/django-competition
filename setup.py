@@ -16,5 +16,6 @@ setup(name='django-competition',
                         'django-crispy-forms==1.4.0',
                         'South==0.8.4',
                         'django-piston==0.2.3',
+                        'qrcode==4.0.4',
                         ],
       )

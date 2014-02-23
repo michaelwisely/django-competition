@@ -4,6 +4,8 @@ SETTINGS_DIR = os.path.dirname(__file__)
 BUILDOUT_DIR = os.path.dirname(SETTINGS_DIR)
 VAR_DIR = os.path.join(BUILDOUT_DIR, "var")
 
+QR_DIR = os.path.join(VAR_DIR, "qr")
+
 # If a secret_settings file isn't defined, open a new one and save a
 # SECRET_KEY in it. Then import it.
 try:

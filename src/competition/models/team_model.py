@@ -5,6 +5,7 @@ from django.db.models.signals import (pre_save, post_save,
                                       pre_delete, m2m_changed)
 from django.template.defaultfilters import slugify
 from django.contrib.auth.models import User, Group
+from django.contrib.sites.models import Site
 
 from competition.exceptions import TeamException
 from competition.models.competition_model import Competition
@@ -15,6 +16,7 @@ from competition.signals import disable_for_loaddata
 import logging
 logger = logging.getLogger(__name__)
 
+import urlparse
 import qrcode
 import os
 
@@ -126,15 +128,16 @@ def team_post_save(sender, instance, created, raw, **kwargs):
 
     image_file = os.path.join(settings.QR_DIR, instance.slug + ".png")
     if not os.path.isfile(image_file):
-        # The domain might change one day (though that's pretty unlikely). 
+        # The domain might change one day (though that's pretty unlikely).
         # This fetches it from the database.
-        domain = Site.objects.get_current().domain
-        # get_absolute_url will reverse the URL from the pattern in urls.py, in the 
+        domain = "http://" + Site.objects.get_current().domain
+        # get_absolute_url will reverse the URL from the pattern in urls.py, in the
         # event that it should ever change. Also, **you'll need to import urlparse**
         # that library helps with parsing and forming URLs
         url = urlparse.urljoin(domain, instance.get_absolute_url())
+        print url
         qr = qrcode.make(url)
- 
+
         with open(image_file, 'w') as qr_file:
             qr.save(qr_file, "PNG")
 

@@ -22,7 +22,7 @@
         {% if on_team %}
           <div class="pull-right col-sm-4 col-md-4">
             <h2>Your team!</h2>
-            <a href="{{ STATIC_URL }}qr/{{ team.slug }}.png" class="btn btn-primary btn-large">
+            <a href="/team-qr/{{ team.slug }}.png" class="btn btn-primary btn-large">
               Generate Team QR Code
             </a>
             {% if team.eligible_to_win %}
