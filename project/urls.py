@@ -24,7 +24,7 @@ urlpatterns = patterns(
 if settings.DEBUG:
     urlpatterns += patterns(
         'django.views.static',
-        url(r'^team-qr/(?P<path>.*\.png)$', 'serve',
+        url(r'^qr/(?P<path>.*\.png)$', 'serve',
          {'document_root': settings.QR_DIR}),
         url(r'^static/(?P<path>.*)$', 'serve',
          {'document_root': settings.STATIC_ROOT}),
