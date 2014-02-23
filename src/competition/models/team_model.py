@@ -124,16 +124,19 @@ def team_post_save(sender, instance, created, raw, **kwargs):
     if created and not raw:
         Group.objects.create(name=instance.group_name)
 
-    # Create Team QR code if it doesn't exist
-    if not os.path.isfile(settings.VAR_DIR + "/qr/" + instance.slug + ".png"):
-        qr = qrcode.make("http://megaminerai.com/competition/" + 
-                         instance.competition.slug + "/team/" + instance.slug)
-
-        file_name = instance.slug + ".png"
-
-        qr_file = open(settings.VAR_DIR + "/qr/" + file_name, 'w')
-        qr.save(qr_file, "PNG")
-        qr_file.close()
+    image_file = os.path.join(settings.QR_DIR, instance.slug + ".png")
+    if not os.path.isfile(image_file):
+        # The domain might change one day (though that's pretty unlikely). 
+        # This fetches it from the database.
+        domain = Site.objects.get_current().domain
+        # get_absolute_url will reverse the URL from the pattern in urls.py, in the 
+        # event that it should ever change. Also, **you'll need to import urlparse**
+        # that library helps with parsing and forming URLs
+        url = urlparse.urljoin(domain, instance.get_absolute_url())
+        qr = qrcode.make(url)
+ 
+        with open(image_file, 'w') as qr_file:
+            qr.save(qr_file, "PNG")
 
 
 @receiver(pre_delete, sender=Team)
