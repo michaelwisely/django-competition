@@ -23,14 +23,14 @@
 {% block content %}
   <div class="row">
     {% if competition.avatar %}
-      <div id="avatar" class="col-sm-3 col-md-3">
+      <div id="avatar" class="col-sm-6 col-md-6">
         <br>
         <a href="{{ competition.avatar.image.url }}">
           <img src="{{ competition.avatar.image.url }}" class="img-polaroid" alt="{{ competition.name }}" style="width:100%">
         </a>
       </div>
     {% endif %}
-    <div class="col-sm-9 col-md-9">
+    <div class="col-sm-6 col-md-6">
       <h2>Details</h2>
       {% include "competition/competition/_competition_detail.html" %}
       {% if user.is_authenticated and competition.is_open and not user_team %}
