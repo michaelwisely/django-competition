@@ -21,9 +21,6 @@ from competition.views.registration_views import UnregisterView
 urlpatterns = patterns(
     "",
 
-    # API interfaces
-    url(r'^api/competition/', include('competition.api.urls')),
-
     # Competition Views
     url(r'^competition/$',
         CompetitionListView.as_view(),
