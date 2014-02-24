@@ -32,7 +32,7 @@
     </li>
     {% if competition.is_open %}
       <li>
-        <a data-toggle="modal" data-target="#leaveTeam" href="#">
+        <a data-toggle="modal" data-target="#leaveTeamModal" href="#">
           <i class="glyphicon glyphicon-remove"></i>
           Leave Team
         </a>
@@ -45,6 +45,6 @@
 {% with team=user_team.name %}
   {% with body="Are you sure you want to leave "|add:team|add:"?" %}
     {% url 'team_leave' competition.slug as leave_team%}
-    {% include "competition/_confirmation_modal.html" with id="leaveTeam" title="Leave Team?" body=body action=leave_team %}
+    {% include "competition/_confirmation_modal.html" with id="leaveTeamModal" title="Leave Team?" body=body action=leave_team %}
   {% endwith %}
 {% endwith %}
