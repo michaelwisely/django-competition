@@ -24,8 +24,9 @@
   <div class="row">
     {% if competition.avatar %}
       <div id="avatar" class="col-sm-3 col-md-3">
+        <br>
         <a href="{{ competition.avatar.image.url }}">
-          <img src="{{ competition.avatar.image.url }}" class="img-polaroid" alt="{{ competition.name }}">
+          <img src="{{ competition.avatar.image.url }}" class="img-polaroid" alt="{{ competition.name }}" style="width:100%">
         </a>
       </div>
     {% endif %}
