@@ -1,6 +1,6 @@
 {% load competition_tags %}
 
-<h2 class="text-right">Teams</h2>
+<h4>Teams</h4>
 <ul id="team-nav" class="nav nav-pills nav-stacked">
   <li>
     <a href="{% url 'team_list' competition.slug %}">
@@ -32,7 +32,7 @@
     </li>
     {% if competition.is_open %}
       <li>
-        <a href="{% url 'team_leave' competition.slug %}">
+        <a data-toggle="modal" data-target="#leaveTeamModal" href="#">
           <i class="glyphicon glyphicon-remove"></i>
           Leave Team
         </a>
@@ -40,3 +40,11 @@
     {% endif %}
   {% endif %}
 </ul>
+
+{# Oh my glob. #}
+{% with team=user_team.name %}
+  {% with body="Are you sure you want to leave "|add:team|add:"?" %}
+    {% url 'team_leave' competition.slug as leave_team%}
+    {% include "competition/_confirmation_modal.html" with id="leaveTeamModal" title="Leave Team?" body=body action=leave_team %}
+  {% endwith %}
+{% endwith %}

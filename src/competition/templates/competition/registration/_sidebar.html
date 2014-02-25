@@ -1,9 +1,14 @@
-<h2 class="text-right">Registration</h2>
+<h4>Registration</h4>
 <ul id="registration-nav" class="nav nav-pills nav-stacked" style="margin-top:20px;">
   <li>
-    <a href="{% url 'unregister_for' competition.slug %}">
+    <a data-toggle="modal" data-target="#unregisterModal" href="#">
       <i class="glyphicon glyphicon-remove"></i>
       Unregister
     </a>
   </li>
 </ul>
+
+{% with body="Are you sure you want to unregister for "|add:competition.name|add:"?" %}
+  {% url 'unregister_for' competition.slug as unregister %}
+  {% include "competition/_confirmation_modal.html" with id="unregisterModal" title="Unregister?" body=body action=unregister %}
+{% endwith %}

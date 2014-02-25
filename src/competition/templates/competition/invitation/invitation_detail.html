@@ -42,13 +42,30 @@
     {% endif %}
 
     {% if invitation.receiver == user and not invitation.response %}
-      <a href="{% url 'invitation_accept' pk=invitation.pk %}" class="btn btn-success">
+      <a data-toggle="modal" data-target="#acceptInviteModal" class="btn btn-success" href="#">
         Accept Invitation
       </a>
-      <a href="{% url 'invitation_decline' pk=invitation.pk %}" class="btn btn-danger">
+      <a data-toggle="modal" data-target="#declineInviteModal" class="btn btn-danger" href="#">
         Decline Invitation
       </a>
     {% endif %}
   </div>
+
+
+  {% with team=invitation.team.name %}
+    {# Accept modal #}
+    {% url "invitation_accept" pk=invitation.pk as accept_invite%}
+    {% with body="Are you sure you want to join "|add:team|add:"?" %}
+      {% with warning="Joining a new team will cause you to leave any other teams you have joined for "|add:invitation.team.competition.name|add:"!" %}
+        {% include "competition/_confirmation_modal.html" with id="acceptInviteModal" title="Accept Invitation?" body=body warning=warning action=accept_invite %}
+      {% endwith %}
+    {% endwith %}
+
+    {# Decline modal #}
+    {% url "invitation_decline" pk=invitation.pk as decline_invite%}
+    {% with body="Are you sure you want to decline your invitation to join "|add:team|add:" for "|add:invitation.team.competition.name|add:"?" %}
+      {% include "competition/_confirmation_modal.html" with id="declineInviteModal" title="Decline Invitation?" body=body action=decline_invite %}
+    {% endwith %}
+  {% endwith %}
 
 {% endblock %}
