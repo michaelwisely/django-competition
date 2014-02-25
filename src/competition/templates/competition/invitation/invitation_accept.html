@@ -3,23 +3,23 @@
 {% block content %}
   {% url 'invitation_accept' competition.slug as form_action %}
   <form action="{{ form_action }}" class="form-horizontal" method="post">
-        {% csrf_token %}
+    {% csrf_token %}
 
-        {% for field in form %}
-          <div class="control-group">
-                <p>{{question}}</p>
-                <label>{{ field.errors }}</label>
+    {% for field in form %}
+      <div class="control-group">
+        <p>{{question}}</p>
+        <label>{{ field.errors }}</label>
 
         <label class="checkbox">
-                  {{ field }} {{ field.label }}
+          {{ field }} {{ field.label }}
         </label>
-          </div>
-        {% endfor %}
-
-        <div class="control-group">
-      <div class="controls">
-                <button type="submit" class="btn">Submit</button>
       </div>
-        </div>
+    {% endfor %}
+
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </div>
   </form>
 {% endblock %}

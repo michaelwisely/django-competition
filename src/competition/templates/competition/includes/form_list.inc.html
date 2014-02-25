@@ -6,23 +6,23 @@
   {% csrf_token %}
 
   {% for form in forms %}  
-	{% for field in form %}
+  	{% for field in form %}
       {% if field.is_hidden %}
-		{{ field }}
+  		  {{ field }}
       {% else %}
-		<div class="control-group">
+  		  <div class="control-group">
           <label>{{ field.errors }}</label>
           <label class="control-label">{{ field.label_tag }}</label>
           <div class="controls">
-			{{ field }}
+  		      {{ field }}
           </div>
-		</div>
+  		  </div>
       {% endif %}
-	{% endfor %}
+  	{% endfor %}
   {% endfor %}  
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn">Submit</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </div>
   </div>
 </form>
