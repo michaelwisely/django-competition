@@ -8,10 +8,14 @@
       </div>
       {% if not user_registered and competition.is_open %}
         <div class="col-sm-3 col-md-3">
-          <a class="btn btn-primary pull-right btn-lg" href="{% url 'register_for' competition.slug %}">
-             Register now!
+          <a data-toggle="modal" data-target="#registerModal" href="#" class="btn btn-primary">
+            Register Now!
           </a>
         </div>
+        {% with body="Are you sure you want to register for "|add:competition.name|add:"?" %}
+          {% url 'register_for' competition.slug as register %}
+          {% include "competition/_confirmation_modal.html" with id="registerModal" title="Register?" register=True body=body action=register %}
+        {% endwith %}
       {% endif %}
     </div>
     <p style="font-size:16px;">
