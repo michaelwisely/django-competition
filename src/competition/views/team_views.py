@@ -153,7 +153,7 @@ class TeamUpdateView(CompetitionViewMixin, UpdateView):
     fields = ('eligible_to_win', 'paid')
     form_class = TeamUpdateForm
     
-    @method_decorator(permission_required('mark_paid'))
+    @method_decorator(permission_required('mark_paid', raise_exception=True))
     def dispatch(self, *args, **kwargs):
         return super(TeamUpdateView, self).dispatch(*args, **kwargs)    
  

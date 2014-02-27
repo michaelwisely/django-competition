@@ -25,6 +25,10 @@ class TeamViewsTest(FancyTestCase):
         self.alice = UserFactory.create(username="alice")
         self.bob = UserFactory.create(username="bob")
         self.carl = UserFactory.create(username="carl")
+        self.superuser = UserFactory.create(username="superuser")
+        self.superuser.is_superuser = True
+        self.superuser.save()
+
         # Register Alice and Bob for Space
         self.alice_reg = RegistrationFactory.create(user=self.alice,
                                                     competition=self.space)
@@ -221,3 +225,41 @@ class TeamViewsTest(FancyTestCase):
         self.assertEqual(num_teams + 1, Team.objects.all().count())
         self.alice_reg.deactivate()  # Deactivate registration
         self.assertEqual(num_teams, Team.objects.all().count())  # one less team
+
+    def test_team_update(self):
+        """Only staff can view pages to update teams"""
+        t = TeamFactory.create(competition=self.space, num_members=1)
+        t.members.add(self.alice)
+        url = reverse('team_update', kwargs={'comp_slug': self.space.slug, 
+                                             'slug': t.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.get(url, follow=False)
+        self.assertEqual(403, resp.status_code)
+
+        with self.loggedInAs("superuser", "123"):
+            resp = self.client.get(url, follow=False)
+        self.assertEqual(200, resp.status_code)
+
+    def test_team_update_post(self):
+        """Only staff can submit forms to update teams"""
+        t = TeamFactory.create(competition=self.space, num_members=1)
+        t.members.add(self.alice)
+        url = reverse('team_update', kwargs={'comp_slug': self.space.slug, 
+                                             'slug': t.slug})
+        with self.loggedInAs("alice", "123"):
+            resp = self.client.post(url, follow=False,
+                                    data={'paid': False, 'eligible_to_win': False})
+        self.assertEqual(403, resp.status_code)
+
+        t.paid = True
+        t.eligible_to_win = True
+        t.save()
+
+        with self.loggedInAs("superuser", "123"):
+            resp = self.client.post(url, follow=True,
+                                    data={'paid': False, 'eligible_to_win': False})
+        self.assertEqual(200, resp.status_code)
+
+        t = self.alice.team_set.get(competition=self.space) 
+        self.assertFalse(t.paid)
+        self.assertFalse(t.eligible_to_win)
