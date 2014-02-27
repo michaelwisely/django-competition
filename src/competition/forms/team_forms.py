@@ -46,3 +46,25 @@ class TeamForm(forms.ModelForm):
             self.instance.validate_unique(exclude=exclude)
         except ValidationError, e:
             self._update_errors(e.message_dict)
+
+class TeamUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Team
+        fields = ('eligible_to_win', 'paid')
+ 
+    def __init__(self, *args, **kwargs):
+        self.helper = FormHelper()
+        self.helper.form_class = 'form-horizontal'
+        self.helper.label_class = 'col-lg-2'
+        self.helper.field_class = 'col-lg-8'
+        self.helper.layout = Layout(
+            Fieldset(
+                'Update team',
+                'eligible_to_win',
+                'paid'
+            ),
+            FormActions(
+                Submit('submit', 'Submit')
+            )
+        )
+        super(TeamUpdateForm, self).__init__(*args, **kwargs)

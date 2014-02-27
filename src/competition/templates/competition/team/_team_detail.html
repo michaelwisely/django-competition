@@ -3,7 +3,7 @@
 <div class="well">
   <div class="row">
     <!-- The Well with the deets -->
-    <div class="col-xs-8">
+    <div class="col-sm-8 col-xs-12">
       <h2>{{ team.name }}</h2>
       <h4 class="tex-muted">Formed {{ team.created }}</h4>
       <ul class="nav nav-pills nav-stacked">
@@ -13,14 +13,29 @@
         </li>
         {% endfor %}
       </ul>
-    </div>
-    <div class="col-xs-4">
+    </div> 
+    <div class="col-sm-4 col-xs-12">
       <a href="/qr/{{ team.qr_filename }}" class="btn btn-primary pull-right">
         <i class="glyphicon glyphicon-qrcode"></i>
       </a>
       {% if on_team %}
         <h3>Team Status</h3>
         {% include "competition/team/_team_status.html" %}
+      {% endif %}
+      {% if user.is_staff %}
+        <form action="{% url 'team_update' competition.slug team.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" {% if not team.paid %}value="checked"{% endif %} name="paid">
+          <input type="hidden" {% if team.eligible_to_win %}value="checked"{% endif %} name="eligible_to_win">
+          <input class="btn btn-primary" type="submit" {% if not team.paid %}value="Mark Paid"{% else %}value="Mark Not Paid{% endif %}">
+        </form>
+        <br>
+        <form action="{% url 'team_update' competition.slug team.slug %}" method="POST">
+          {% csrf_token %}
+          <input type="hidden" {% if team.paid %}value="checked"{% endif %} name="paid">
+          <input type="hidden" {% if not team.eligible_to_win %}value="checked"{% endif %} name="eligible_to_win">
+          <input class="btn btn-primary" type="submit" {% if not team.eligible_to_win %}value="Mark Eligible"{% else %}value="Mark Not Eligible{% endif %}">
+        </form>
       {% endif %}
     </div>
   </div>
