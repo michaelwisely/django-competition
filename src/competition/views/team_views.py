@@ -8,8 +8,12 @@ from competition.models.team_model import Team
 from competition.views.mixins import (CompetitionViewMixin, LoggedInMixin,
                                       UserRegisteredMixin, ConfirmationMixin,
                                       CheckAllowedMixin, RequireOpenMixin)
-from competition.forms.team_forms import TeamForm
+from competition.forms.team_forms import TeamForm, TeamUpdateForm
 from competition.utility import competitor_search_filter
+
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
+from django.views.generic.edit import UpdateView
 
 
 class FreeAgentListView(UserRegisteredMixin, ListView):
@@ -141,3 +145,18 @@ class TeamLeaveView(UserRegisteredMixin,
 
     def disagreed(self):
         return redirect(self.get_team())
+
+class TeamUpdateView(CompetitionViewMixin, UpdateView):
+    """Change details about a particular team"""
+    template_name = 'competition/team/team_update.html'
+    context_object_name = 'team'
+    fields = ('eligible_to_win', 'paid')
+    form_class = TeamUpdateForm
+    
+    @method_decorator(permission_required('mark_paid', raise_exception=True))
+    def dispatch(self, *args, **kwargs):
+        return super(TeamUpdateView, self).dispatch(*args, **kwargs)    
+ 
+    def get_queryset(self):
+        """Only list teams participating in self.get_competition()"""
+        return Team.objects.filter(competition=self.get_competition())

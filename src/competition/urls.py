@@ -7,6 +7,7 @@ from competition.views.team_views import FreeAgentListView
 from competition.views.team_views import TeamDetailView
 from competition.views.team_views import TeamCreationView
 from competition.views.team_views import TeamLeaveView
+from competition.views.team_views import TeamUpdateView
 from competition.views.game_views import GameListView
 from competition.views.game_views import GameDetailView
 from competition.views.invitation_views import InvitationListView
@@ -45,6 +46,9 @@ urlpatterns = patterns(
     url(r'^competition/(?P<comp_slug>[\w-]+)/team-leave/$',
         TeamLeaveView.as_view(),
         name='team_leave'),
+    url(r'^competition/(?P<comp_slug>[\w-]+)/team/(?P<slug>[\w-]+)/update/$',
+        TeamUpdateView.as_view(),
+        name='team_update'),
 
     # Registration Views
     url(r'^competition/(?P<comp_slug>[\w-]+)/register/$',
