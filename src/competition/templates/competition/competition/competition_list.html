@@ -8,12 +8,67 @@
 {% endblock %}
 
 {% block content %}
-  <ul class="nav nav-pills nav-stacked">
+  <ul class="media-list">
     {% for competition in competitions %}
-      <li>
-        <a href="{{ competition.get_absolute_url }}">
-          {{ competition.name }}
+      <li class="media well">
+        <a class="pull-left" href="{{ competition.get_absolute_url }}">
+          <img src="{{ competition.avatar.thumbnail.url }}"
+               alt="{{ competition.name }}">
         </a>
+        <div class="media-body">
+          <!-- Left Side -->
+          <div class="col-md-6 pull-left">
+            <a href="{{ competition.get_absolute_url }}">
+              <h4 class="media-heading">{{ competition.name }}</h4>
+            </a>
+            {{ competition.description }}
+            <br>
+            <br>
+            <h4>
+              <span class="label label-{% if competition.is_open %}success
+                           {% else %}danger{% endif %} label-lg">
+                {% if competition.is_open %}
+                  Currently Open!
+                {% else %}
+                  Currently Closed :(
+                {% endif %}
+              </span>
+            </h4>
+            <h4>
+              <span class="label label-{% if competition.is_running %}success
+                           {% else %}danger{% endif %} label-lg">
+                {% if competition.is_running %}
+                  Running!
+                {% else %}
+                  Not Running :(
+                {% endif %}
+              </span>
+            </h4>
+          </div>
+          <div class="col-md-1"></div>
+          <!-- Right Side -->
+          <div class="col-md-5">
+            <div class="panel panel-info">
+              <div class="panel-heading">Competition Statistics</div>
+              <div class="panel-body">
+                <span class="badge">
+                  {% registered_users_count competition %}
+                </span>
+                 Registered Users
+                <br>
+                <span class="badge">
+                  {% freeagent_count competition %}
+                </span>
+                 Free Agents
+                <br>
+                <span class="badge">
+                  {{ competition.game_set.count }}
+                </span>
+                 Games Played
+              </div>
+            </div>
+          </div>
+        </div>
       </li>
     {% empty %}
       <h2>No competitions, yet.</h2>
@@ -22,3 +77,12 @@
 
 {% include "competition/_paginator.html" with page=page_obj %}
 {% endblock %}
+
+<table class="table">
+  <tr><th></th></tr>
+  <tr><td>{% registered_users_count competition %} Registered Users</td></tr>
+  <tr><td>{% freeagent_count competition %} Free Agents</td></tr>
+  <tr><td>{{ competition.game_set.count }} Games Played So Far</td></tr>
+</table>
+
+<p><small>Created with the <a href="http://www.textfixer.com/html/html-table-generator.php" target="_blank">HTML Table Generator</a></small></p>
