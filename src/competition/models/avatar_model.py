@@ -8,7 +8,7 @@ from cStringIO import StringIO
 import os
 import datetime
 
-THUMB_SIZE = getattr(settings, "AVATAR_THUMBNAIL_SIZE", (250, 416))
+THUMB_SIZE = getattr(settings, "AVATAR_THUMBNAIL_SIZE", (175, 258))
 
 
 def image_location(instance=None, filename=None):
