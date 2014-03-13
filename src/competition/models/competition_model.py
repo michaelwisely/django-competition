@@ -38,6 +38,8 @@ class Competition(models.Model):
         )
 
     THUMB_SIZE = getattr(settings, "COMPETITION_THUMBNAIL_SIZE", (175, 258))
+    DEFAULT_IMAGE = getattr(settings, "COMPETITION_DEFAULT_IMAGE",
+                            "/static/default_competition_image_t.png")
 
     PER_TEAM_PAYMENT = 'T'
     PER_PERSON_PAYMENT = 'P'
