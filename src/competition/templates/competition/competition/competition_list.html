@@ -12,7 +12,7 @@
     {% for competition in competitions %}
       <li class="media well">
         <a class="pull-left" href="{{ competition.get_absolute_url }}">
-          <img src="{{ competition.avatar.thumbnail.url }}"
+          <img src="{{ competition.thumbnail_url }}"
                alt="{{ competition.name }}">
         </a>
         <div class="media-body">
