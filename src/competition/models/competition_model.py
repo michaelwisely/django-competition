@@ -101,8 +101,8 @@ class Competition(models.Model):
     @property
     def _thumbnail_filename(self):
         name_with_extension = os.path.basename(self.image.name)
-        name = os.path.splitext(name_with_extension)
-        return "t_{}.png".format(name)
+        name, _ext = os.path.splitext(name_with_extension)
+        return "{}_t.png".format(name)
 
     @property
     def thumbnail_path(self):
