@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, pre_delete, post_syncdb
+from django.db.models.signals import pre_save, post_syncdb
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_slug
@@ -149,11 +149,6 @@ def competition_pre_save(sender, instance, update_fields=(), **kwargs):
         create_thumbnail(instance)
 
 
-@receiver(pre_delete, sender=Competition)
-def competition_pre_delete(sender, instance, **kwargs):
-    """Called before a Competition is deleted
-    """
-    pass
 
 
 @receiver(post_syncdb, sender=Competition)
