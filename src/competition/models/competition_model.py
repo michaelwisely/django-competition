@@ -1,7 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
-from django.db.models.signals import pre_save, post_syncdb
+from django.db.models.signals import pre_save, post_save, post_syncdb
 from django.template.defaultfilters import slugify
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_slug
@@ -12,6 +12,7 @@ from competition.validators import (validate_name, non_negative,
                                     greater_than_zero)
 from competition.utility import create_thumbnail
 
+import os
 import urlparse
 
 
@@ -133,7 +134,7 @@ class Competition(models.Model):
 
 
 @receiver(pre_save, sender=Competition)
-def competition_pre_save(sender, instance, update_fields=(), **kwargs):
+def competition_pre_save(sender, instance, **kwargs):
     """Called before a Competition is saved
 
     Updates the competition's slug, assigning a unique slug if necessary
@@ -145,10 +146,15 @@ def competition_pre_save(sender, instance, update_fields=(), **kwargs):
             i += 1
         instance.slug = slug
 
-    if "image" in update_fields:
+
+@receiver(post_save, sender=Competition)
+def competition_post_save(sender, instance, **kwargs):
+    """Called after a Competition is saved
+
+    Creates a thumbnail image for the competition
+    """
+    if instance.image:
         create_thumbnail(instance)
-
-
 
 
 @receiver(post_syncdb, sender=Competition)
