@@ -11,10 +11,17 @@
   <ul class="media-list">
     {% for competition in competitions %}
       <li class="media well">
-        <a class="pull-left" href="{{ competition.get_absolute_url }}">
-          <img src="{{ competition.avatar.thumbnail.url }}"
-               alt="{{ competition.name }}">
-        </a>
+        {% if competition.image %}
+          <a class="pull-left" href="{{ competition.get_absolute_url }}">
+            <img src="{{ competition.thumbnail_url }}"
+                 alt="{{ competition.name }}">
+          </a>
+        {% else %}
+          <a class="pull-left" href="{{ competition.get_absolute_url }}">
+            <img src="{{ competition.DEFAULT_IMAGE }}"
+                 alt="{{ competition.name }}">
+          </a>
+        {% endif %}
         <div class="media-body">
           <!-- Left Side -->
           <div class="col-md-6 pull-left">

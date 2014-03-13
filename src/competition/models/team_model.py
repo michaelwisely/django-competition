@@ -9,7 +9,6 @@ from django.contrib.sites.models import Site
 
 from competition.exceptions import TeamException
 from competition.models.competition_model import Competition
-from competition.models.avatar_model import Avatar
 from competition.validators import validate_name
 from competition.signals import disable_for_loaddata
 
@@ -51,8 +50,6 @@ class Team(models.Model):
             help_text="Team names must begin with an alphanumeric and contain " \
                       "only alphanumerics, dashes, periods, colons and spaces.")
     slug = models.SlugField(blank=True)
-
-    avatar = models.OneToOneField(Avatar, blank=True, null=True)
 
     paid = models.BooleanField(default=False)
     time_paid = models.DateTimeField(blank=True, null=True)

@@ -4,7 +4,7 @@ from datetime import timedelta
 from datetime import datetime
 
 from django.contrib.auth.models import User
-from competition.models import (Competition, Game, GameScore, Avatar, Team,
+from competition.models import (Competition, Game, GameScore, Team,
                                 Organizer, OrganizerRole,
                                 Registration, Invitation)
 from competition.models import RegistrationQuestion as Question
@@ -54,10 +54,6 @@ class CompetitionFactory(factory.django.DjangoModelFactory):
     min_num_team_members = 1
     max_num_team_members = 3
     description = "This is the best MegaMinerAI ever yay!"
-
-
-class AvatarFactory(factory.django.DjangoModelFactory):
-    FACTORY_FOR = Avatar
 
 
 class TeamFactory(factory.django.DjangoModelFactory):
