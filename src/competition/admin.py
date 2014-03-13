@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.db.models import Q
 
-from competition.models.avatar_model import Avatar
 from competition.models.competition_model import Competition
 from competition.models.game_model import Game, GameScore
 from competition.models.organizer_model import Organizer
@@ -24,9 +23,9 @@ class InlineTeamAdmin(admin.TabularInline):
     model = Team
     extra = 0
     max_num = 0
-    fields = ('created', 'avatar', 'name', 'paid',
+    fields = ('created', 'name', 'paid',
               'time_paid', 'eligible_to_win')
-    readonly_fields = ('avatar', 'created')
+    readonly_fields = ('created')
     ordering = ('created',)
 
 
@@ -105,10 +104,6 @@ class InlineAgreementResponseAdmin(InlineResponseAdmin):
 #
 ##############################################################################
 
-class AvatarAdmin(admin.ModelAdmin):
-    readonly_fields = ('image_height', 'image_width',
-                       'thumbnail', 'thumbnail_height', 'thumbnail_width')
-
 
 class CompetitionAdmin(admin.ModelAdmin):
     filter_horizontal = ('questions',)
@@ -164,7 +159,6 @@ class InvitationAdmin(admin.ModelAdmin):
     list_filter = ('sent', 'read')
 
 
-admin.site.register(Avatar, AvatarAdmin)
 admin.site.register(Competition, CompetitionAdmin)
 admin.site.register(Game, GameAdmin)
 admin.site.register(OrganizerRole, OrganizerRoleAdmin)
