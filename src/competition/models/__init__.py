@@ -1,5 +1,3 @@
-from avatar_model import Avatar
-
 from competition_model import Competition
 
 from game_model import Game
