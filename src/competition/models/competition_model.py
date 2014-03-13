@@ -111,7 +111,9 @@ class Competition(models.Model):
 
     @property
     def thumbnail_url(self):
-        return urlparse.urljoin(self.image.url, self._thumbnail_filename)
+        if self.image:
+            return urlparse.urljoin(self.image.url, self._thumbnail_filename)
+        return None
 
     def is_user_registered(self, user):
         """Return true if the given user has an **active**
@@ -154,7 +156,10 @@ def competition_post_save(sender, instance, **kwargs):
     Creates a thumbnail image for the competition
     """
     if instance.image:
-        create_thumbnail(instance)
+        path = instance.image.path
+        tpath = instance.thumbnail_path
+        size = instance.THUMB_SIZE
+        create_thumbnail(path, tpath, size)
 
 
 @receiver(post_syncdb, sender=Competition)

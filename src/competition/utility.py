@@ -21,13 +21,13 @@ def competitor_search_filter(queryset, search):
     return queryset.filter(query).distinct()
 
 
-def create_thumbnail(competition):
-    image = Image.open(competition.image)
+def create_thumbnail(original_path, thumb_path, thumb_size):
+    image = Image.open(original_path)
 
     if image.mode not in ('L', 'RGB'):
         image = image.convert('RGB')
 
-    image.thumbnail(competition.THUMB_SIZE, Image.ANTIALIAS)
+    image.thumbnail(thumb_size, Image.ANTIALIAS)
 
     # save the thumbnail
-    image.save(competition.thumbnail_path, 'png')
+    image.save(thumb_path, 'png')
