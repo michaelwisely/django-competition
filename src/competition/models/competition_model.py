@@ -8,9 +8,11 @@ from django.core.validators import validate_slug
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 
-from competition.models.avatar_model import Avatar
 from competition.validators import (validate_name, non_negative,
                                     greater_than_zero)
+from competition.utility import create_thumbnail
+
+import urlparse
 
 
 class CompetitionManager(models.Manager):
@@ -29,10 +31,12 @@ class Competition(models.Model):
         ordering = ['-is_running', '-is_open', '-start_time']
         get_latest_by = "created"
         permissions = (
-            ("moderate_teams", "Can moderate team names and avatars"),
+            ("moderate_teams", "Can moderate team names"),
             ("view_registrations", "Can view competitor registrations"),
             ("mark_paid", "Can mark a registration as paid"),
         )
+
+    THUMB_SIZE = getattr(settings, "AVATAR_THUMBNAIL_SIZE", (175, 258))
 
     PER_TEAM_PAYMENT = 'T'
     PER_PERSON_PAYMENT = 'P'
@@ -50,7 +54,8 @@ class Competition(models.Model):
                             validators=[validate_name])
     slug = models.SlugField(blank=True, unique=True)
     description = models.TextField(help_text="Describe the competition")
-    avatar = models.OneToOneField(Avatar, blank=True, null=True)
+    image = models.ImageField(upload_to="competition_images",
+                              blank=True, null=True)
 
     # These are the scheduled start and end times for a competition
     start_time = models.DateTimeField()
@@ -92,6 +97,21 @@ class Competition(models.Model):
     def __str__(self):
         return self.name
 
+    @property
+    def _thumbnail_filename(self):
+        name_with_extension = os.path.basename(self.image.name)
+        name = os.path.splitext(name_with_extension)
+        return "t_{}.png".format(name)
+
+    @property
+    def thumbnail_path(self):
+        directory = os.path.dirname(self.image.path)
+        return os.path.join(directory, self._thumbnail_filename)
+
+    @property
+    def thumbnail_url(self):
+        return urlparse.urljoin(self.image.url, self._thumbnail_filename)
+
     def is_user_registered(self, user):
         """Return true if the given user has an **active**
         registration for this competition, else return false"""
@@ -113,7 +133,7 @@ class Competition(models.Model):
 
 
 @receiver(pre_save, sender=Competition)
-def competition_pre_save(sender, instance, **kwargs):
+def competition_pre_save(sender, instance, update_fields=(), **kwargs):
     """Called before a Competition is saved
 
     Updates the competition's slug, assigning a unique slug if necessary
@@ -124,6 +144,9 @@ def competition_pre_save(sender, instance, **kwargs):
             slug = slugify("{0}-{1}".format(instance.name, i))
             i += 1
         instance.slug = slug
+
+    if "image" in update_fields:
+        create_thumbnail(instance)
 
 
 @receiver(pre_delete, sender=Competition)

@@ -1,4 +1,5 @@
 from django.db.models import Q
+from PIL import Image
 
 
 def competitor_search_filter(queryset, search):
@@ -18,3 +19,15 @@ def competitor_search_filter(queryset, search):
 
     # Execute the query and return only unique results
     return queryset.filter(query).distinct()
+
+
+def create_thumbnail(competition):
+    image = Image.open(competition.image)
+
+    if image.mode not in ('L', 'RGB'):
+        image = image.convert('RGB')
+
+    image.thumbnail(competition.THUMB_SIZE, Image.ANTIALIAS)
+
+    # save the thumbnail
+    image.save(competition.thumbnail_path, 'png')
