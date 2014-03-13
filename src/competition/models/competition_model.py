@@ -37,7 +37,7 @@ class Competition(models.Model):
             ("mark_paid", "Can mark a registration as paid"),
         )
 
-    THUMB_SIZE = getattr(settings, "AVATAR_THUMBNAIL_SIZE", (175, 258))
+    THUMB_SIZE = getattr(settings, "COMPETITION_THUMBNAIL_SIZE", (175, 258))
 
     PER_TEAM_PAYMENT = 'T'
     PER_PERSON_PAYMENT = 'P'
