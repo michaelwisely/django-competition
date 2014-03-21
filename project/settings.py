@@ -141,6 +141,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'django_extensions',
     'django_nose',
+    'rest_framework',
     'guardian',
     'crispy_forms',
     'competition',
