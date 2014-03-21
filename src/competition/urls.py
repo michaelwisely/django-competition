@@ -17,10 +17,15 @@ from competition.views.invitation_views import InvitationAcceptView
 from competition.views.invitation_views import InvitationDeclineView
 from competition.views.registration_views import RegistrationView
 from competition.views.registration_views import UnregisterView
+from competition.api.api import GameListAPIView
 
 
 urlpatterns = patterns(
     "",
+
+    url(r'^api/competition/(?P<comp_slug>[\w-]+)/games/',
+        GameListAPIView.as_view(),
+        name='game_list_api'),
 
     # Competition Views
     url(r'^competition/$',
