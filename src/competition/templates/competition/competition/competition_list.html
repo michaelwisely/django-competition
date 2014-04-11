@@ -84,11 +84,10 @@
   </ul>
   <!-- Mobile View -->
   <div class="hidden-md hidden-lg hidden-xl">
-    <link href="{{ STATIC_URL }}css/mobile.css" rel="stylesheet">
     {% for competition in competitions %}
       <li class="well col-xs-12 col-sm-12" style="list-style-type:none">
         <!-- Competition Image -->
-        <div id="comp_img" class="container">
+        <div id="comp_img" class="container text-center"">
           {% if competition.image %}
             <a href="{{ competition.get_absolute_url }}">
               <img src="{{ competition.thumbnail_url }}"
@@ -103,7 +102,7 @@
         </div>
         <br>
         <!-- Competition Description and Labels -->
-        <div class="container" style="text-align:center">
+        <div class="container text-center">
           <a href="{{ competition.get_absolute_url }}">
             <h4 class="media-heading">{{ competition.name }}</h4>
           </a>
