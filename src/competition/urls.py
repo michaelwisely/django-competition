@@ -18,6 +18,7 @@ from competition.views.invitation_views import InvitationDeclineView
 from competition.views.registration_views import RegistrationView
 from competition.views.registration_views import UnregisterView
 from competition.api.api import GameListAPIView
+from competition.api.api import TeamListAPIView
 
 
 urlpatterns = patterns(
@@ -26,6 +27,9 @@ urlpatterns = patterns(
     url(r'^api/competition/(?P<comp_slug>[\w-]+)/games/',
         GameListAPIView.as_view(),
         name='game_list_api'),
+    url(r'^api/competition/(?P<comp_slug>[\w-]+)/teams/',
+        TeamListAPIView.as_view(),
+        name='team_list_api'),
 
     # Competition Views
     url(r'^competition/$',
