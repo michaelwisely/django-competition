@@ -13,7 +13,13 @@ $(function() {
 
     objects.initialize();
 
-    $('#prefetch').typeahead(null, {
+    // Clear local cache when we load the page
+    objects.clearPrefetchCache();
+
+    $('#prefetch').typeahead({
+        hint: false,
+        highlight: true,
+    }, {
         name: 'objects',
         displayKey: 'name',
         source: objects.ttAdapter()
