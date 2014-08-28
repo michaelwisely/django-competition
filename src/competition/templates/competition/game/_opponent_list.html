@@ -1,10 +1,10 @@
 {% for score in scores %}
-  {% if forloop.first %}<ul class="unstyled" style="margin-bottom:0">{% endif %}
+  {% if forloop.first %}<ul class="list-unstyled" style="margin-bottom:0">{% endif %}
   <li>
     {% if score.team == user_team %}
-      <strong>{{ score.team.name }}</strong>:
+      <strong><a href="{{ score.team.get_absolute_url }}">{{ score.team.name }}</a></strong>:
     {% else %}
-      {{ score.team.name }}:
+      <a href="{{ score.team.get_absolute_url }}">{{ score.team.name }}</a>:
     {% endif %}
 
     {% if score.score == game.max_score %}
