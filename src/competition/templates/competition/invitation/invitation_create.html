@@ -1,7 +1,7 @@
-{% extends "base.html" %}
+{% extends "competition/competition_base_plain.html" %}
 {% load crispy_forms_tags%}
 
-{% block content %}
+{% block competition_content %}
   {% if not form.fields.team.queryset.exists %}
     <p> You cannot send invitations at the moment</p>
   {% endif %}
