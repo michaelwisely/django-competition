@@ -10,9 +10,4 @@
     </li>
   </ul>
 
-  {% with body="Are you sure you want to unregister for "|add:competition.name|add:"?" %}
-    {% url 'unregister_for' competition.slug as unregister %}
-    {% include "competition/_confirmation_modal.html" with id="unregisterModal" title="Unregister?" body=body action=unregister %}
-  {% endwith %}
-
 {% endif %}

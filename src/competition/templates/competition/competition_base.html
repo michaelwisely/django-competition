@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block modal %}
+
+  {% if competition %}
+    {% with body="Are you sure you want to unregister for "|add:competition.name|add:"?" %}
+      {% url 'unregister_for' competition.slug as unregister %}
+      {% include "competition/_confirmation_modal.html" with id="unregisterModal" title="Unregister?" body=body action=unregister %}
+    {% endwith %}
+
+    {% with team=user_team.name %}
+      {% with body="Are you sure you want to leave "|add:team|add:"?" %}
+        {% url 'team_leave' competition.slug as leave_team %}
+        {% include "competition/_confirmation_modal.html" with id="leaveTeamModal" title="Leave Team?" body=body action=leave_team %}
+      {% endwith %}
+    {% endwith %}
+  {% endif %}
+
+{% endblock modal %}
