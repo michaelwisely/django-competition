@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "competition/competition_base_plain.html" %}
 {% load competition_tags %}
 
 {% block page-header %}
@@ -7,56 +7,49 @@
   </div>
 {% endblock %}
 
-{% block content %}
-  <!-- Desktop View -->
-  <ul class="media-list hidden-xs hidden-sm">
+{% block competition_content %}
     {% for competition in competitions %}
-      <li class="media well">
-        {% if competition.image %}
-          <a class="pull-left" href="{{ competition.get_absolute_url }}">
-            <img src="{{ competition.thumbnail_url }}"
-                 alt="{{ competition.name }}">
-          </a>
-        {% else %}
-          <a class="pull-left" href="{{ competition.get_absolute_url }}">
-            <img src="{{ competition.DEFAULT_THUMB }}"
-                 alt="{{ competition.name }}">
-          </a>
-        {% endif %}
-        <div class="media-body">
-          <!-- Left Side -->
-          <div class="col-md-6 pull-left">
-            <a href="{{ competition.get_absolute_url }}">
-              <h4 class="media-heading">{{ competition.name }}</h4>
-            </a>
-            {{ competition.description }}
-            <br>
-            <br>
-            <h4>
-              <span class="label label-{% if competition.is_open %}success
-                           {% else %}danger{% endif %} label-lg">
-                {% if competition.is_open %}
-                  Currently Open!
+      <div class="well">
+        <div class="row">
+          <div class="col-xs-12 col-sm-8">
+            <div class="media">
+              <a class="pull-left" href="{{ competition.get_absolute_url }}">
+                {% if competition.image %}
+                  <img class="media-object" src="{{ competition.thumbnail_url }}" alt="{{ competition.name }}" />
                 {% else %}
-                  Currently Closed :(
+                  <img class="media-object" src="{{ competition.DEFAULT_THUMB }}" alt="{{ competition.name }}" />
                 {% endif %}
-              </span>
-            </h4>
-            <h4>
-              <span class="label label-{% if competition.is_running %}success
-                           {% else %}danger{% endif %} label-lg">
-                {% if competition.is_running %}
-                  Running!
-                {% else %}
-                  Not Running :(
-                {% endif %}
-              </span>
-            </h4>
+              </a>
+              <div class="media-body">
+                <a href="{{ competition.get_absolute_url }}">
+                  <h4 class="media-heading">{{ competition.name }}</h4>
+                </a>
+                {{ competition.description }}
+                <h4>
+                  <span class="label label-{% if competition.is_open %}success {% else %}danger{% endif %} label-lg">
+                    {% if competition.is_open %}
+                      Currently Open!
+                    {% else %}
+                      Currently Closed :(
+                    {% endif %}
+                  </span>
+                </h4>
+                <h4>
+                  <span class="label label-{% if competition.is_running %}success {% else %}danger{% endif %} label-lg">
+                    {% if competition.is_running %}
+                      Running!
+                    {% else %}
+                      Not Running :(
+                    {% endif %}
+                  </span>
+                </h4>
+              </div>
+            </div>
           </div>
-          <div class="col-md-1"></div>
+
           <!-- Right Side -->
-          <div class="col-md-5">
-            <div class="panel panel-info">
+          <div class="col-xs-4 hidden-xs hidden-sm">
+            <div class="panel panel-info" style="margin-top:20px;">
               <div class="panel-heading">Competition Statistics</div>
               <div class="panel-body">
                 <span class="badge">
@@ -77,85 +70,9 @@
             </div>
           </div>
         </div>
-      </li>
+      </div>
     {% empty %}
       <h2>No competitions, yet.</h2>
     {% endfor %}
-  </ul>
-  <!-- Mobile View -->
-  <div class="hidden-md hidden-lg hidden-xl">
-    {% for competition in competitions %}
-      <li class="well col-xs-12 col-sm-12" style="list-style-type:none">
-        <!-- Competition Image -->
-        <div id="comp_img" class="container text-center"">
-          {% if competition.image %}
-            <a href="{{ competition.get_absolute_url }}">
-              <img src="{{ competition.thumbnail_url }}"
-                   alt="{{ competition.name }}">
-            </a>
-          {% else %}
-            <a href="{{ competition.get_absolute_url }}">
-              <img src="{{ competition.DEFAULT_THUMB }}"
-                   alt="{{ competition.name }}">
-            </a>
-          {% endif %}
-        </div>
-        <br>
-        <!-- Competition Description and Labels -->
-        <div class="container text-center">
-          <a href="{{ competition.get_absolute_url }}">
-            <h4 class="media-heading">{{ competition.name }}</h4>
-          </a>
-          {{ competition.description }}
-          <br>
-          <h4>
-            <span class="label label-{% if competition.is_open %}success
-                         {% else %}danger{% endif %} label-lg">
-              {% if competition.is_open %}
-                Currently Open!
-              {% else %}
-                Currently Closed :(
-              {% endif %}
-            </span>
-          </h4>
-          <h4>
-            <span class="label label-{% if competition.is_running %}success
-                         {% else %}danger{% endif %} label-lg">
-              {% if competition.is_running %}
-                Running!
-              {% else %}
-                Not Running :(
-              {% endif %}
-            </span>
-          </h4>
-        </div>
-        <!-- Competition Statistics -->
-        <div class="container">
-          <div class="panel panel-info">
-            <div class="panel-heading">Competition Statistics</div>
-            <div class="panel-body">
-              <span class="badge">
-                {% registered_users_count competition %}
-              </span>
-               Registered Users
-              <br>
-              <span class="badge">
-                {% freeagent_count competition %}
-              </span>
-               Free Agents
-              <br>
-              <span class="badge">
-                {{ competition.game_set.count }}
-              </span>
-               Games Played
-            </div>
-          </div>
-        </div>
-      </li>
-    {% empty %}
-      <h2>No competitions, yet.</h2>
-    {% endfor %}
-  </div>
-
   {% include "competition/_paginator.html" with page=page_obj %}
 {% endblock %}
