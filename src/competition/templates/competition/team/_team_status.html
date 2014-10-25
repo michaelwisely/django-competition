@@ -1,14 +1,14 @@
 <ul class="list-unstyled">
   {% if team.eligible_to_win %}
     <li>
-      <a id="eligible" href="#" data-toggle="tooltip"
+      <a id="eligible" href="#" data-toggle="tooltip" data-placement="left"
          title="Your team is presently eligible to win prizes">
         <span class="label label-success">Eligible to win prizes</span>
       </a>
     </li>
   {% else %}
     <li>
-      <a id="ineligible" href="#" data-toggle="tooltip"
+      <a id="ineligible" href="#" data-toggle="tooltip" data-placement="left"
          title="Your team is presently not eligible to win prizes">
         <span class="label label-danger">Ineligible to win prizes</span>
       </a>
@@ -17,7 +17,7 @@
 
   {% if team.paid %}
     <li>
-      <a id="paid-up" href="#" data-toggle="tooltip"
+      <a id="paid-up" href="#" data-toggle="tooltip" data-placement="left"
          title="Your team has fully paid!">
         <span class="label label-success">
           Paid up {% if team.time_paid %} at {{ team.time_paid }}{% endif %}
@@ -28,7 +28,7 @@
 
   {% if team.num_invites_left == 0 %}
     <li>
-      <a id="out-of-invites" href="#" data-toggle="tooltip"
+      <a id="out-of-invites" href="#" data-toggle="tooltip" data-placement="left"
          title="Your team has maxed out its number of sent invites for now. Wait until invitees respond or someone leaves.">
         <span class="label label-warning">
           Out of invites
@@ -39,7 +39,8 @@
 
   {% if team.members.count == team.competition.max_num_team_members %}
     <li>
-      <a id="full-team" href="#" data-toggle="tooltip" title="Your team is full">
+      <a id="full-team" href="#" data-toggle="tooltip" data-placement="left"
+         title="Your team is full">
         <span class="label label-warning">
           Full team!
         </span>

@@ -1,4 +1,4 @@
-{% extends "competition/competition_base.html" %}
+{% extends "competition/competition_base_sidebar.html" %}
 
 {% block page-header %}
   <div class="page-header" style="margin-top:20px;">
@@ -6,13 +6,6 @@
       <div id="name" class="col-sm-9 col-md-9">
         <h1>{{ competition.name }}</h1>
       </div>
-      {% if not user_registered and competition.is_open %}
-        <div class="col-sm-3 col-md-3">
-          <a class="btn btn-primary pull-right btn-lg" href="{% url 'register_for' competition.slug %}">
-            Register Now!
-          </a>
-        </div>
-      {% endif %}
     </div>
     <p style="font-size:16px;">
       <i>{{ competition.description }}</i>
@@ -20,7 +13,7 @@
   </div>
 {% endblock %}
 
-{% block content %}
+{% block competition_content %}
   <div class="row">
     {% if competition.image %}
       <div id="avatar" class="col-sm-6 col-md-6">
@@ -43,15 +36,4 @@
       {% endif %}
     </div>
   </div>
-{% endblock %}
-
-{% block script %}
-  <script>
-    $(function() {
-      if($("#no-sidebar").length > 0) {
-        $("#name").removeClass('span7').addClass('span10');
-        $("#avatar").removeClass('span5').addClass('span8');
-      }
-    });
-  </script>
 {% endblock %}

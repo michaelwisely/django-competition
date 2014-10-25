@@ -1,7 +1,7 @@
-{% extends "competition/competition_base.html" %}
+{% extends "competition/competition_base_sidebar.html" %}
 
-{% block content %}
-  {% url 'team_leave competition.slug' as form_action %}
+{% block competition_content %}
+  {% url 'team_leave' competition.slug as form_action %}
   <form action="{{ form_action }}" class="form-horizontal" method="post">
     {% csrf_token %}
 

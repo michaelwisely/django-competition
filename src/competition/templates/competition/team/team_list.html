@@ -1,16 +1,6 @@
-{% extends "competition/competition_base.html" %}
+{% extends "competition/competition_base_sidebar.html" %}
 
-{% block link %}
-  <link href="{{ STATIC_URL}}css/typeahead.css" rel="stylesheet"/>
-{% endblock %}
-
-{% block content %}
-  <form class="form-inline pull-right" role="form">
-    <div class="input-group">
-      <input id="prefetch" class="form-control" type="text" placeholder="Team">
-    </div>
-  </form>
-
+{% block competition_content %}
   <h2>Teams</h2>
 
   <ul class="nav nav-pills nav-stacked">
@@ -24,14 +14,4 @@
   </ul>
 
 {% include "competition/_paginator.html" with page=page_obj %}
-{% endblock %}
-
-{% block script %}
-  <script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.2/typeahead.bundle.min.js" type="text/javascript"></script>
-
-  <script type="text/javascript">
-    window.typeahead_url = "{% url 'team_list_api' comp_slug=competition.slug %}";
-  </script>
-
-  <script src="{{ STATIC_URL }}js/competition-typeahead.js" type="text/javascript"></script>
 {% endblock %}

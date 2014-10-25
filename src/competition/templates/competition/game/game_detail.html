@@ -1,7 +1,7 @@
-{% extends "competition/competition_base.html" %}
+{% extends "competition/competition_base_sidebar.html" %}
 {% load competition_tags %}
 
-{% block content %}
+{% block competition_content %}
   <table class="table table-hover">
     <tbody>
       <tr>
@@ -27,16 +27,4 @@
       {% endfor %}
     </tbody>
   </table>
-{% endblock %}
-
-{% block script %}
-  <script>
-    $(function(){
-    $('#eligible').tooltip({placement: "left"});
-    $('#ineligible').tooltip({placement: "left"});
-    $('#paid-up').tooltip({placement: "left"});
-    $('#out-of-invites').tooltip({placement: "left"});
-    $('#full-team').tooltip({placement: "left"});
-    });
-  </script>
 {% endblock %}
