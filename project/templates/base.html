@@ -44,13 +44,17 @@
               <i class="glyphicon glyphicon-arrow-left"></i> Toggle Sidebar
             </button>
 
-            <a class="navbar-brand" href="/competition">
+            <a class="navbar-brand" href="{% url 'competition_list' %}">
               <img src="{{ STATIC_URL }}img/brand.png" alt="SIG-Game">
             </a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="{% url 'competition_list' %}">Competitions</a></li>
+              <li><a href="{% url 'invitation_list' %}">Invitations</a></li>
+            </ul>
             <ul class="nav navbar-nav navbar-right">
               {% if user.is_authenticated %}
                 {% include "navbar/_authenticated_users.html" %}
