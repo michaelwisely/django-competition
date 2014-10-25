@@ -1,17 +1,37 @@
 {% extends "base.html" %}
 
-{% block page-header %}
-  <div class="page-header" style="margin-top:20px;">
-    <h1>
-      {{ competition.name }}
-    </h1>
-  </div>
-{% endblock %}
+{% block modal %}
 
-{% block sidebar %}
-  {% if user_registered %}
-    {% include "competition/_sidebar.html" %}
-  {% else %}
-    {{ block.super }}
+  {% if competition %}
+    {% with body="Are you sure you want to unregister for "|add:competition.name|add:"?" %}
+      {% url 'unregister_for' competition.slug as unregister %}
+      {% include "competition/_confirmation_modal.html" with id="unregisterModal" title="Unregister?" body=body action=unregister %}
+    {% endwith %}
+
+    {% with team=user_team.name %}
+      {% with body="Are you sure you want to leave "|add:team|add:"?" %}
+        {% url 'team_leave' competition.slug as leave_team %}
+        {% include "competition/_confirmation_modal.html" with id="leaveTeamModal" title="Leave Team?" body=body action=leave_team %}
+      {% endwith %}
+    {% endwith %}
   {% endif %}
-{% endblock %}
+
+  {% if invitation %}
+    {% with team=invitation.team.name %}
+      {# Accept modal #}
+      {% url "invitation_accept" pk=invitation.pk as accept_invite%}
+      {% with body="Are you sure you want to join "|add:team|add:"?" %}
+        {% with warning="Joining a new team will cause you to leave any other teams you have joined for "|add:invitation.team.competition.name|add:"!" %}
+          {% include "competition/_confirmation_modal.html" with id="acceptInviteModal" title="Accept Invitation?" body=body warning=warning action=accept_invite %}
+        {% endwith %}
+      {% endwith %}
+
+      {# Decline modal #}
+      {% url "invitation_decline" pk=invitation.pk as decline_invite%}
+      {% with body="Are you sure you want to decline your invitation to join "|add:team|add:" for "|add:invitation.team.competition.name|add:"?" %}
+        {% include "competition/_confirmation_modal.html" with id="declineInviteModal" title="Decline Invitation?" body=body action=decline_invite %}
+      {% endwith %}
+    {% endwith %}
+  {% endif %}
+
+{% endblock modal %}

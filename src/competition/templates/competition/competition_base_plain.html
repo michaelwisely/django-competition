@@ -1,0 +1,18 @@
+{% extends "competition/competition_base.html" %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-xs-12">
+        {% block page-header %}
+          <div class="page-header" style="margin-top:20px;">
+            <h1>{{ competition.name }}</h1>
+          </div>
+        {% endblock %}
+
+        {% block competition_content %}
+        {% endblock competition_content %}
+      </div>
+    </div>
+  </div>
+{% endblock content %}

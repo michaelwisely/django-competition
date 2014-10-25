@@ -1,7 +1,7 @@
-{% extends "competition/competition_base.html" %}
+{% extends "competition/competition_base_plain.html" %}
 {% load crispy_forms_tags %}
 
-{% block content %}
+{% block competition_content %}
   <h2>Register to compete in {{ competition.name }}</h2>
   {% url 'register_for competition.slug' as form_action %}
   <form action="{{ form_action }}" class="form-horizontal" method="post">

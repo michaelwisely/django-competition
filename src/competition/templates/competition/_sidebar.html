@@ -1,5 +1,17 @@
 {% load competition_tags %}
 
-{% include "competition/competition/_sidebar.html" %}
-{% include "competition/team/_sidebar.html" %}
-{% include "competition/registration/_sidebar.html" %}
+{% if user_registered %}
+  {% include "competition/competition/_sidebar.html" %}
+  {% include "competition/team/_sidebar.html" %}
+  {% include "competition/registration/_sidebar.html" %}
+{% else %}
+  <h4>Registration</h4>
+  <ul id="registration-nav" class="nav nav-pills nav-stacked">
+    <li class="{% if not competition.is_open %}disabled{% endif %}">
+      <a href="{% url 'register_for' competition.slug %}">
+        <i class="glyphicon glyphicon-comment"></i>
+        Register Now!
+      </a>
+    </li>
+  </ul>
+{% endif %}

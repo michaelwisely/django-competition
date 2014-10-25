@@ -1,7 +1,7 @@
-{% extends "competition/competition_base.html" %}
+{% extends "competition/competition_base_sidebar.html" %}
 {% load competition_tags %}
 
-{% block content %}
+{% block competition_content %}
   <h2>Played Games</h2>
   {% for game in games %}
     {% if forloop.first %}
@@ -24,7 +24,7 @@
 
       {% with scores=game.scores.select_related.all|dictsortreversed:"score" %}
         <td>{% include "competition/game/_opponent_list.html" %}</td>
-	{% include "competition/game/_result_display.html" %}
+        {% include "competition/game/_result_display.html" %}
       {% endwith %}
 
       {% for field in data_fields %}
@@ -43,17 +43,4 @@
   </ul>
 
 {% include "competition/_paginator.html" with page=page_obj %}
-{% endblock %}
-
-{% block script %}
-  <script>
-    $(function(){
-      $(".win").parent().toggleClass("success");
-      $(".loss").parent().toggleClass("danger");
-      $(".tie").parent().toggleClass("warning");
-      $(".game-info").click(function() {
-        document.location.href = $(this).attr("game_url");
-      });
-    });
-  </script>
 {% endblock %}
