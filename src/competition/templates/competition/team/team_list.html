@@ -23,7 +23,7 @@
       <hr>
 
       <ul class="list-unstyled" ng-controller="TeamListController as team_list">
-        <li ng-repeat="team in team_list.teams | filter:search">
+        <li ng-repeat="team in team_list.teams | filter:search | orderBy: 'name'">
           <a href="{{ team.url }}">{{ team.name }}</a>
         </li>
         <li ng-show="team_list.empty()">No Teams</li>
