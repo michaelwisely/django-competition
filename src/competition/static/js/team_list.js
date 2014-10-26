@@ -1,17 +1,16 @@
 (function(){
   var app = angular.module('team_list', ['ngResource']);
 
-  app.factory("Team", function($resource) {
-
-    return $resource("/api/competition/" + window.competition_slug + "/teams/");
-  })
-
-  app.controller('TeamListController', function(Team){
+  app.controller('TeamListController', function($http){
     controller = this;
 
     controller.teams = [];
 
-    Team.query(function(data) {
+    protocol = window.location.protocol;
+    host = window.location.host;
+    url = protocol + "//" + host + "/api/competition/" + window.competition_slug + "/teams/";
+
+    $http.get(url).success(function(data, status, headers, config) {
       controller.teams = data;
       console.log(data);
     });
