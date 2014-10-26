@@ -2,19 +2,39 @@
 {% load competition_tags %}
 
 {% block competition_content %}
-  <h2>Free Agents</h2>
+  {% verbatim %}
+    <div ng-app="free_agent_list">
+      <div>
+        <div class="col-xs-3 col-sm-6">
+          <h2 style="display:inline">Free Agents</h2>
+        </div>
+        <div class="col-sm-6">
+          <form novalidate class="form-inline pull-right" role="form">
+            <div class="form-group">
+              <input type="text" class="form-control" id="name" placeholder="Search for Free Agent"
+                     ng-model="search" style="width:100%" autocomplete="off">
+            </div>
+          </form>
+        </div>
+      </div>
 
-  <ul class="nav nav-pills nav-stacked">
-    {% for user in users %}
-      <li>
-        <a href="{{ user.get_absolute_url }}">
-          {% competitor_name user %}
-        </a>
-      </li>
-    {% empty %}
-      <h3 class="text-center">No free agents</h3>
-    {% endfor %}
-  </ul>
+      <br class="hidden-sm hidden-md hidden-lg">
+      <br>
+      <br>
+      <hr>
 
-{% include "competition/_paginator.html" with page=page_obj %}
+      <ul class="list-unstyled" ng-controller="FreeAgentController as free_agent_list">
+        <li ng-repeat="free_agent in free_agent_list.free_agents | filter:search">
+          <a href="{{ free_agent.url }}">{{ free_agent.name }}</a>
+        </li>
+        <li ng-show="free_agent_list.empty()">No Free Agents</li>
+      </ul>
+    </div>
+  {% endverbatim %}
+
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+  <script type="text/javascript" src="/static/js/free_agent_list.js"></script>
 {% endblock %}

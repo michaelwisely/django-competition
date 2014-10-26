@@ -1,5 +1,13 @@
 {% extends "base.html" %}
 
+{% block script %}
+  {% if competition %}
+    <script>
+      window.competition_slug = "{{ competition.slug }}";
+    </script>
+  {% endif %}
+{% endblock %}
+
 {% block modal %}
 
   {% if competition %}
