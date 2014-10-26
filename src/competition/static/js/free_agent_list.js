@@ -1,17 +1,16 @@
 (function(){
   var app = angular.module('free_agent_list', ['ngResource']);
 
-  app.factory("FreeAgent", function($resource) {
-
-    return $resource("/api/competition/" + window.competition_slug + "/freeagents/");
-  })
-
-  app.controller('FreeAgentController', function(FreeAgent){
+  app.controller('FreeAgentController', function($http){
     controller = this;
 
     controller.free_agents = [];
 
-    FreeAgent.query(function(data) {
+    protocol = window.location.protocol;
+    host = window.location.host;
+    url = protocol + "//" + host + "/api/competition/" + window.competition_slug + "/freeagents/";
+
+    $http.get(url).success(function(data, status, headers, config) {
       controller.free_agents = data;
       console.log(data);
     });
