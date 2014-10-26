@@ -7,16 +7,20 @@
   <h4>Teams</h4>
   {% include "competition/team/_sidebar.html" %}
 
-  <h4>Registration</h4>
-  {% include "competition/registration/_sidebar.html" %}
+  {% if competition.is_open %}
+    <h4>Registration</h4>
+    {% include "competition/registration/_sidebar.html" %}
+  {% endif %}
 {% else %}
-  <h4>Registration</h4>
-  <ul id="registration-nav" class="nav nav-pills nav-stacked">
-    <li class="{% if not competition.is_open %}disabled{% endif %}">
-      <a href="{% url 'register_for' competition.slug %}">
-        <i class="fa fa-pencil-square-o"></i>
-        Register Now!
-      </a>
-    </li>
-  </ul>
+  {% if competition.is_open %}
+    <h4>Registration</h4>
+    <ul id="registration-nav" class="nav nav-pills nav-stacked">
+      <li class="{% if not competition.is_open %}disabled{% endif %}">
+        <a href="{% url 'register_for' competition.slug %}">
+          <i class="fa fa-pencil-square-o"></i>
+          Register Now!
+        </a>
+      </li>
+    </ul>
+  {% endif %}
 {% endif %}
