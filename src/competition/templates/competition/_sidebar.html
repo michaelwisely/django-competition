@@ -1,8 +1,13 @@
 {% load competition_tags %}
 
 {% if user_registered %}
+  <h4>Competition</h4>
   {% include "competition/competition/_sidebar.html" %}
+
+  <h4>Teams</h4>
   {% include "competition/team/_sidebar.html" %}
+
+  <h4>Registration</h4>
   {% include "competition/registration/_sidebar.html" %}
 {% else %}
   <h4>Registration</h4>
