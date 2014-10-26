@@ -1,14 +1,14 @@
 <ul id="competition-nav" class="nav nav-pills nav-stacked">
   <li>
     <a href="{% url 'competition_detail' competition.slug %}">
-      <i class="glyphicon glyphicon-comment"></i>
+      <i class="fa fa-newspaper-o"></i>
       Competition Details
     </a>
   </li>
   {% if competition.is_running and user_team %}
   <li>
     <a href="{% url 'game_list' competition.slug %}">
-      <i class="glyphicon glyphicon-flag"></i>
+      <i class="fa fa-flag"></i>
       Games
     </a>
   </li>
