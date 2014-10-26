@@ -1,17 +1,38 @@
 {% extends "competition/competition_base_sidebar.html" %}
 
 {% block competition_content %}
-  <h2>Teams</h2>
+  {% verbatim %}
+    <div ng-app="team_list">
+      <div>
+        <div class="col-xs-3 col-sm-6">
+          <h2 style="display:inline">Teams</h2>
+        </div>
+        <div class="col-sm-6">
+          <form novalidate class="form-inline pull-right" role="form">
+            <div class="form-group">
+              <input type="text" class="form-control" id="name" placeholder="Search for Teams"
+                     ng-model="search" style="width:100%" autocomplete="off">
+            </div>
+          </form>
+        </div>
+      </div>
 
-  <ul class="nav nav-pills nav-stacked">
-    {% for team in teams %}
-      <li>
-        <a href="{{ team.get_absolute_url }}">
-          {{ team.name }}
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+      <br class="hidden-sm hidden-md hidden-lg">
+      <br>
+      <br>
+      <hr>
 
-{% include "competition/_paginator.html" with page=page_obj %}
+      <ul class="list-unstyled" ng-controller="TeamListController as team_list">
+        <li ng-repeat="team in team_list.teams | filter:search">
+          <a href="{{ team.url }}">{{ team.name }}</a>
+        </li>
+        <li ng-show="team_list.empty()">No Teams</li>
+      </ul>
+    </div>
+  {% endverbatim %}
+{% endblock %}
+
+{% block script %}
+  {{ block.super }}
+  <script type="text/javascript" src="/static/js/team_list.js"></script>
 {% endblock %}
