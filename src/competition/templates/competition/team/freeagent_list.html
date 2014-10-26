@@ -24,7 +24,7 @@
       <hr>
 
       <ul class="list-unstyled" ng-controller="FreeAgentController as free_agent_list">
-        <li ng-repeat="free_agent in free_agent_list.free_agents | filter:search">
+        <li ng-repeat="free_agent in free_agent_list.free_agents | filter:search | orderBy: 'name'">
           <a href="{{ free_agent.url }}">{{ free_agent.name }}</a>
         </li>
         <li ng-show="free_agent_list.empty()">No Free Agents</li>
