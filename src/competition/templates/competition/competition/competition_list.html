@@ -25,24 +25,31 @@
                   <h4 class="media-heading">{{ competition.name }}</h4>
                 </a>
                 {{ competition.description }}
-                <h4>
-                  <span class="label label-{% if competition.is_open %}success {% else %}danger{% endif %} label-lg">
-                    {% if competition.is_open %}
-                      Currently Open!
-                    {% else %}
-                      Currently Closed :(
-                    {% endif %}
-                  </span>
-                </h4>
-                <h4>
-                  <span class="label label-{% if competition.is_running %}success {% else %}danger{% endif %} label-lg">
-                    {% if competition.is_running %}
-                      Running!
-                    {% else %}
-                      Not Running :(
-                    {% endif %}
-                  </span>
-                </h4>
+                {% if not competition.is_open and not competition.is_running %}
+                  <h4>
+                    <span class="label label-info label-lg">
+                      Complete
+                    </span>
+                  </h4>
+                {% else %}
+                  <h4>
+                    <span class="label label-{% if competition.is_open %}success {% else %}danger{% endif %} label-lg">
+                      {% if competition.is_open %}
+                        Registration Open!
+                      {% else %}
+                        Registration Closed :(
+                      {% endif %}
+                    </span>
+                  </h4>
+
+                  {% if competition.is_running %}
+                  <h4>
+                    <span class="label label-{% if competition.is_running %}success {% else %}danger{% endif %} label-lg">
+                        In Progress!
+                      {% endif %}
+                    </span>
+                  </h4>
+                {% endif %}
               </div>
             </div>
           </div>
