@@ -20,7 +20,7 @@ def non_negative(value):
 def validate_name(value):
     """Ensures that a string matches a regular expression and that the
     slugified version of a string is not the empty string"""
-    if value.lower() == "bye":
+    if value.lower().strip() == "bye":
         msg = "Name cannot be 'Bye'"
         raise ValidationError(msg)
     if NAME_REGULAR_EXPRESSION.match(value) is None:
