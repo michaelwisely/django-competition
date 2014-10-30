@@ -20,6 +20,9 @@ def non_negative(value):
 def validate_name(value):
     """Ensures that a string matches a regular expression and that the
     slugified version of a string is not the empty string"""
+    if value.lower() == "bye":
+        msg = "Name cannot be 'Bye'"
+        raise ValidationError(msg)
     if NAME_REGULAR_EXPRESSION.match(value) is None:
         msg = "Team name doesn't start with an alphanumeric or contains " \
               "invalid characters."
