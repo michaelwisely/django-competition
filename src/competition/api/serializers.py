@@ -30,7 +30,7 @@ class UserSerializer(serializers.ModelSerializer):
         username = obj.username
         full_name = obj.get_full_name()
         if full_name:
-            return "{} ({})".format(username, full_name)
+            return u"{} ({})".format(username, full_name)
         return username
 
     def get_url(self, obj):
