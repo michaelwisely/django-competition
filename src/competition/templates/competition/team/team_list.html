@@ -3,27 +3,33 @@
 {% block competition_content %}
   {% verbatim %}
     <div ng-app="team_list">
-      <div>
-        <div class="col-xs-3 col-sm-6">
-          <h2 style="display:inline">Teams</h2>
+      <div class="row">
+        <div class="col-xs-12 col-sm-7 col-md-8 col-lg-9">
+          <h2 class="inline">Teams</h2>
         </div>
-        <div class="col-sm-6">
-          <form novalidate class="form-inline pull-right" role="form">
-            <div class="form-group">
-              <input type="text" class="form-control" id="name" placeholder="Search for Teams"
-                     ng-model="search" style="width:100%" autocomplete="off">
-            </div>
-          </form>
+        <br class="hidden-sm hidden-md hidden-lg">
+        <br class="hidden-sm hidden-md hidden-lg">
+        <div class="col-xs-12 col-sm-5 col-md-4 col-lg-3">
+          <div class="search-form">
+            <form novalidate class="form search-form" role="form">
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" class="form-control" id="name" placeholder="Search for Teams"
+                         ng-model="search" autocomplete="off">
+                  <span class="input-group-addon"><i class="fa fa-search"></i></span>
+                </div>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
 
-      <br class="hidden-sm hidden-md hidden-lg">
-      <br>
-      <br>
+
       <hr>
 
-      <ul class="list-unstyled" ng-controller="TeamListController as team_list">
-        <li ng-repeat="team in team_list.teams | filter:search | orderBy: 'name'">
+      <ul class="list-group" ng-controller="TeamListController as team_list">
+        <li ng-repeat="team in team_list.teams | filter:search | orderBy: 'name'"
+            class="list-group-item">
           <a href="{{ team.url }}">{{ team.name }}</a>
         </li>
         <li ng-show="team_list.empty()">No Teams</li>
