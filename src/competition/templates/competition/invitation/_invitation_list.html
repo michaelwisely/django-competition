@@ -6,7 +6,7 @@
   <div class="accordion-group">
     <div class="accordion-heading">
       <a class="accordion-toggle" data-toggle="collapse"
-         data-parent="#invite-accordion" href="#collapse{{ forloop.counter }}">
+         data-parent="#invite-accordion" href="#{{ name }}Collapse{{ forloop.counter }}">
          {% if invitation.receiver == user %}
            Invitation from <strong>{{ invitation.sender }}</strong>
          {% else %}
@@ -19,7 +19,7 @@
          {% endif %}
       </a>
     </div>
-    <div id="collapse{{ forloop.counter }}" class="accordion-body collapse">
+    <div id="{{ name }}Collapse{{ forloop.counter }}" class="accordion-body collapse">
       <div class="accordion-inner">
         <p>
           {{ invitation.message }}
