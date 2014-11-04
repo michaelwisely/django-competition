@@ -13,13 +13,15 @@
       </p>
     {% endif %}
 
-    {% for question, form in questions %}
-      {{ form|crispy }}
-    {% empty %}
+    <div class="well" id="formWell">
+      {% for question, form in questions %}
+        {{ form|crispy }}
+      {% empty %}
       <p>
         Huh. Looks like there's no registration form to fill
         out. Lucky you!
       </p>
+    </div>
 
       <p> Press the button below to register. </p>
     {% endfor %}
