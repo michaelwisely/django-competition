@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, url, include
 from django.conf import settings
 from django.contrib import admin
+from django.core.urlresolvers import reverse_lazy
+from django.views.generic.base import RedirectView
 
 import competition
 
@@ -9,6 +11,7 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
+    url(r'^$', RedirectView.as_view(url=reverse_lazy('competition_list'))),
     url(r'', include(competition.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin_tools/', include('admin_tools.urls')),
