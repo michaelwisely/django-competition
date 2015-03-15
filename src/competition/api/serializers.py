@@ -11,7 +11,7 @@ class TeamSerializer(serializers.ModelSerializer):
         model = Team
         fields = ('name', 'slug', 'url')
 
-    url = serializers.SerializerMethodField('get_url')
+    url = serializers.SerializerMethodField(read_only=True)
 
     def get_url(self, obj):
         return obj.get_absolute_url()
@@ -23,8 +23,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ('name', 'url')
 
-    name = serializers.SerializerMethodField('get_name')
-    url = serializers.SerializerMethodField('get_url')
+    name = serializers.SerializerMethodField(read_only=True)
+    url = serializers.SerializerMethodField(read_only=True)
 
     def get_name(self, obj):
         username = obj.username
