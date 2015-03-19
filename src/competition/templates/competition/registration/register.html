@@ -16,6 +16,10 @@
     <div class="well" id="formWell">
       {% for question, form in questions %}
         {{ form|crispy }}
+        {% if not form.last %}
+          <hr>
+        {% endif %}
+
       {% empty %}
       <p>
         Huh. Looks like there's no registration form to fill
