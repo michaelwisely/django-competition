@@ -25,7 +25,8 @@ class RegistrationView(LoggedInMixin,
         """Generates a list of (question, form) tuples based on the
         current competition
         """
-        questions = self.get_competition().questions.select_related().all()
+        questions = self.get_competition().questions.select_related()
+        questions = questions.order_by('-question_type').all()
         return [(q, generate_question_form(q)) for q in questions]
 
     def save_response(self, registration, question, form):
