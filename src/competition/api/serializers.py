@@ -9,7 +9,7 @@ class TeamSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Team
-        fields = ('name', 'slug', 'url')
+        fields = ('id', 'name', 'slug', 'url')
 
     url = serializers.SerializerMethodField(read_only=True)
 
