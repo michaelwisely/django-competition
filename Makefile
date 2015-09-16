@@ -18,7 +18,8 @@ bootstrap.py:
 # Destroys existing test database and creates a new one
 db:
 	rm -f var/db/*.db
-	python bin/django syncdb --noinput
+	python bin/django makemigrations
+	python bin/django migrate --no-initial-data
 	python bin/django migrate
 	python bin/django loaddata src/competition/fixtures/*.yaml
 
