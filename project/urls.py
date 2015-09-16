@@ -11,7 +11,7 @@ admin.autodiscover()
 urlpatterns = patterns(
     '',
 
-    url(r'^$', RedirectView.as_view(url=reverse_lazy('competition_list'))),
+    url(r'^$', RedirectView.as_view(permanent=True,url=reverse_lazy('competition_list'))),
     url(r'', include(competition.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin_tools/', include('admin_tools.urls')),
