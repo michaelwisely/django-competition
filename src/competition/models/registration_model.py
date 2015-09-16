@@ -80,7 +80,7 @@ class RegistrationQuestionResponse(models.Model):
                                      related_name="response_set")
     text_response = models.TextField(blank=True)
     choices = models.ManyToManyField(RegistrationQuestionChoice,
-                                     null=True, blank=True,
+                                     blank=True,
                                      related_name="response_set")
     agreed = models.BooleanField(default=False)
 
