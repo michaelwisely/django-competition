@@ -125,10 +125,6 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 )
 
 INSTALLED_APPS = (
-    'admin_tools',
-    'admin_tools.theming',
-    'admin_tools.menu',
-    'admin_tools.dashboard',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -138,15 +134,19 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+    'admin_tools.dashboard',
+
     'debug_toolbar',
     'django_extensions',
     'django_nose',
     'rest_framework',
     'guardian',
     'crispy_forms',
-    'competition',
 
-    'south',
+    'competition',
 )
 
 LOGGING = {

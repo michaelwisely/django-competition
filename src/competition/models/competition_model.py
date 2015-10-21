@@ -72,7 +72,7 @@ class Competition(models.Model):
 
     # Questions to ask registering competitors
     questions = models.ManyToManyField("competition.RegistrationQuestion",
-                                       blank=True, null=True)
+                                       blank=True)
 
     payment_option= models.CharField(max_length=1, choices=PAYMENT_OPTIONS,
                                      default=PER_TEAM_PAYMENT)
