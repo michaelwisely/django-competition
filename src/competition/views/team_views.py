@@ -140,7 +140,6 @@ class TeamUpdateView(CompetitionViewMixin, UpdateView):
     """Change details about a particular team"""
     template_name = 'competition/team/team_update.html'
     context_object_name = 'team'
-    fields = ('eligible_to_win', 'paid')
     form_class = TeamUpdateForm
 
     @method_decorator(permission_required('mark_paid', raise_exception=True))
