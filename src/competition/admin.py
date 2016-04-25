@@ -150,7 +150,8 @@ class RegistrationQuestionAdmin(admin.ModelAdmin):
 
 class TeamAdmin(admin.ModelAdmin):
     filter_horizontal = ('members',)
-    list_display = ('name', 'competition', 'created', 'paid')
+    list_display = ('name', 'competition', 'created',
+                    'eligible_to_win', 'paid')
     list_filter = ('competition', 'paid', 'created')
     prepopulated_fields = {"slug": ("name",)}
 
