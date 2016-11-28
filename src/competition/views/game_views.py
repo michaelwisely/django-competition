@@ -36,11 +36,8 @@ class GameListView(GameView, ListView):
 
         q = Game.objects.annotate(max_score=Max('scores__score'))
 
-        # Limit of how many games show up on the games list
-        limit = 1000
-        count = q.count()
         q = q.prefetch_related('competition')
-        q = q.filter(teams=self.team)[count-limit:]
+        q = q.filter(teams=self.team)[:1000]
 
         return q
 
