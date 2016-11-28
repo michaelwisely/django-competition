@@ -40,7 +40,7 @@ class GameListView(GameView, ListView):
         limit = 1000
         count = q.count()
         q = q.prefetch_related('competition')
-        q = q.filter(teams=self.team).order_by('end_time')[count-limit:]
+        q = q.filter(teams=self.team)[count-limit:]
 
         return q
 
