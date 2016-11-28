@@ -33,9 +33,15 @@ class GameListView(GameView, ListView):
 
     def get_queryset(self):
         self.team = self.get_team()
+
         q = Game.objects.annotate(max_score=Max('scores__score'))
+
+        # Limit of how many games show up on the games list
+        limit = 1000
+        count = q.count()
         q = q.prefetch_related('competition')
-        q = q.filter(teams=self.team)
+        q = q.filter(teams=self.team).order_by('end_time')[count-limit:]
+
         return q
 
     def get_context_data(self, **kwargs):
